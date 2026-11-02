@@ -1,0 +1,127 @@
+/* GP House — base */
+/* ==========================================================================
+   GP House — main stylesheet
+   Values are taken 1:1 from the Figma UI design (1440px desktop frame).
+   ========================================================================== */
+
+/* Tokens ------------------------------------------------------------------ */
+:root {
+	--gp-primary: #ffc646;
+	--gp-primary-hover: #f5b82c;
+	--gp-navy: #011041;
+	--gp-navy-2: #0b1e5a;
+	--gp-black: #1a1a1a;
+	--gp-text: #6b6b6b;
+	--gp-stroke: #e4e4e4;
+	--gp-sand: #e1e0dd;
+	--gp-sand-light: #f0efeb;
+	--gp-b20: #f5f6f7;
+	--gp-b30: #ebedf0;
+	--gp-white: #fff;
+
+	--gp-font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--gp-font-head: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+	--gp-container: 1128px;
+	--gp-shadow-float: drop-shadow(0 82px 24.5px rgba(27, 27, 29, .05)) drop-shadow(0 9px 10px rgba(27, 27, 29, .1));
+	--gp-shadow-arrow: drop-shadow(0 2px 24.5px rgba(27, 27, 29, .05)) drop-shadow(0 4px 10px rgba(27, 27, 29, .1));
+	--gp-glass-box: linear-gradient(to bottom, #5a6898, rgba(23, 35, 73, .4));
+}
+
+/* Base -------------------------------------------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+	margin: 0;
+	background: var(--gp-white);
+	color: var(--gp-black);
+	font-family: var(--gp-font-body);
+	font-size: 16px;
+	line-height: 1.5;
+	font-variation-settings: "opsz" 14;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	overflow-x: hidden;
+}
+
+img,
+svg { display: block; max-width: none; }
+
+a { color: inherit; text-decoration: none; }
+
+button,
+input,
+select { font: inherit; color: inherit; }
+
+button { cursor: pointer; text-transform: inherit; }
+
+p { margin: 0; }
+
+:focus-visible { outline: 2px solid var(--gp-primary); outline-offset: 2px; }
+
+.gp-skip-link {
+	position: absolute;
+	left: 16px;
+	top: -100px;
+	z-index: 100;
+	padding: 10px 16px;
+	border-radius: 8px;
+	background: var(--gp-navy);
+	color: #fff;
+}
+.gp-skip-link:focus { top: 16px; }
+
+/* Figma sets text-case "Capitalize" on the marketing UI. */
+.gp-header,
+.gp-home,
+.gp-footer-area { text-transform: capitalize; }
+
+.gp-container {
+	width: min(var(--gp-container), 100% - 48px);
+	margin-inline: auto;
+}
+
+.gp-icon { flex: none; }
+
+/* Typography -------------------------------------------------------------- */
+.gp-heading { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.gp-heading--12 { gap: 12px; }
+.gp-heading--center { align-items: center; text-align: center; }
+
+.gp-kicker { font-size: 18px; line-height: 1.6; color: var(--gp-text); }
+.gp-kicker--lh15 { line-height: 1.5; }
+.gp-kicker--lhn { line-height: normal; }
+.gp-kicker--light { color: #fff; }
+.gp-kicker--dark { color: var(--gp-black); }
+
+.gp-title {
+	margin: 0;
+	font-family: var(--gp-font-head);
+	font-weight: 600;
+	font-size: 49px;
+	line-height: 1.2;
+	color: var(--gp-navy);
+	font-variation-settings: normal;
+}
+.gp-title--gold { color: var(--gp-primary); }
+
+.gp-text { font-size: 16px; line-height: 1.5; color: var(--gp-text); }
+
+/* Generic pages ----------------------------------------------------------- */
+.gp-page { padding: 160px 0 40px; }
+.gp-entry + .gp-entry { margin-top: 48px; }
+.gp-entry__content { margin-top: 24px; color: var(--gp-text); line-height: 1.6; }
+
+@keyframes gp-fade { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after { animation: none !important; transition: none !important; }
+	.gp-story { position: relative; top: 0; transform: none !important; }
+}
+.gp-anim-in { animation: gp-fade .3s ease; }
