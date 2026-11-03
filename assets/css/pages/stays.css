@@ -1,0 +1,42 @@
+/* GP House — Stays page (Figma "Home / Stays", 1148:7257) */
+
+.gp-stays { padding: 220px 0 106px; background: #fff; }
+
+.gp-filters { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.gp-filters__selects { display: flex; align-items: flex-start; gap: 12px; }
+.gp-filters__right { display: flex; align-items: center; gap: 56px; }
+.gp-filters__tags,
+.gp-filters__sort { display: flex; align-items: center; gap: 12px; }
+.gp-filters__sort-label { color: var(--gp-navy); font-weight: 500; font-size: 16px; line-height: 1.25; text-transform: capitalize; }
+
+.gp-stays__list { display: flex; flex-direction: column; gap: 32px; margin-top: 40px; }
+.gp-stays__empty { padding: 80px 0; color: var(--gp-text); text-align: center; }
+
+@media (max-width: 1180px) {
+	.gp-stays { padding-top: 80px; }
+	.gp-room__thumb.is-extra { display: none; }
+	.gp-room__thumb.is-active { width: 59px; height: 44px; border-radius: 8px; }
+	.gp-filters { flex-wrap: wrap; }
+	.gp-filters__right { flex-wrap: wrap; gap: 16px 32px; }
+	.gp-room__media,
+	.gp-room__card { flex: 1 1 0; }
+	.gp-room__media { min-height: 432px; }
+	.gp-room__specs { gap: 48px; }
+}
+
+@media (max-width: 600px) {
+	.gp-stays { padding: 32px 0 6px; }
+	.gp-filters { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 20px; }
+	.gp-filters__selects { gap: 12px; }
+	.gp-filters__selects .gp-select { flex: 1 1 0; min-width: 0; }
+	.gp-filters__selects .gp-select__toggle { justify-content: space-between; width: 100%; }
+	.gp-filters__right { flex-direction: column; align-items: stretch; gap: 16px; }
+	.gp-filters__tags { margin-right: -20px; padding-right: 20px; overflow-x: auto; scrollbar-width: none; }
+	.gp-filters__tags::-webkit-scrollbar { display: none; }
+	.gp-filter-chip { flex: none; }
+	.gp-stays__list { gap: 12px; margin-top: 32px; }
+	.gp-room__media,
+	.gp-room__card { flex: none; }
+	.gp-room__media { min-height: 0; }
+	.gp-room__media .gp-chip { padding: 5px 8px; font-size: 12px; }
+}

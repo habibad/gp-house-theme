@@ -19,6 +19,9 @@ add_action( 'after_setup_theme', function () {
 	add_image_size( 'gp-card', 720, 480, true );
 	add_image_size( 'gp-wide', 2256, 840, true );
 	add_image_size( 'gp-portrait', 720, 1160, true );
+	add_image_size( 'gp-room', 1120, 864, true );
+	add_image_size( 'gp-room-thumb', 172, 146, true );
+	add_image_size( 'gp-room-strip', 344, 240, true );
 
 	register_nav_menus( array(
 		'primary'        => __( 'Header — main links', 'gp-house' ),

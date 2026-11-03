@@ -286,6 +286,185 @@
 		set( current );
 	}
 
+
+	/* Filter dropdowns (gp_dropdown) ------------------------------------- */
+	function initDropdowns() {
+		const all = $$( '[data-dropdown]' );
+		const close = ( dd ) => {
+			dd.classList.remove( 'is-open' );
+			$( '.gp-select__toggle', dd ).setAttribute( 'aria-expanded', 'false' );
+			$( '.gp-select__menu', dd ).hidden = true;
+		};
+		all.forEach( ( dd ) => {
+			const toggle = $( '.gp-select__toggle', dd );
+			const menu = $( '.gp-select__menu', dd );
+			const input = $( 'input[type=hidden]', dd );
+			const text = $( '.gp-select__text', dd );
+			const showValue = dd.classList.contains( 'gp-select--sort' );
+			toggle.addEventListener( 'click', () => {
+				const open = ! dd.classList.contains( 'is-open' );
+				all.forEach( close );
+				if ( open ) {
+					dd.classList.add( 'is-open' );
+					toggle.setAttribute( 'aria-expanded', 'true' );
+					menu.hidden = false;
+					( $( '[aria-selected=true]', menu ) || menu.firstElementChild ).focus();
+				}
+			} );
+			const choose = ( li ) => {
+				$$( 'li', menu ).forEach( ( o ) => o.setAttribute( 'aria-selected', String( o === li ) ) );
+				input.value = li.dataset.value;
+				text.textContent = li.dataset.value || showValue ? li.textContent : toggle.dataset.label;
+				dd.classList.toggle( 'is-set', !! li.dataset.value && ! showValue );
+				close( dd );
+				toggle.focus();
+				input.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+			};
+			menu.addEventListener( 'click', ( e ) => {
+				const li = e.target.closest( 'li' );
+				if ( li ) choose( li );
+			} );
+			menu.addEventListener( 'keydown', ( e ) => {
+				const items = $$( 'li', menu );
+				const i = items.indexOf( document.activeElement );
+				if ( e.key === 'ArrowDown' || e.key === 'ArrowUp' ) {
+					e.preventDefault();
+					items[ ( i + ( e.key === 'ArrowDown' ? 1 : -1 ) + items.length ) % items.length ].focus();
+				} else if ( e.key === 'Enter' || e.key === ' ' ) {
+					e.preventDefault();
+					if ( items[ i ] ) choose( items[ i ] );
+				} else if ( e.key === 'Escape' ) {
+					close( dd );
+					toggle.focus();
+				}
+			} );
+		} );
+		document.addEventListener( 'click', ( e ) => {
+			all.forEach( ( dd ) => {
+				if ( ! dd.contains( e.target ) ) close( dd );
+			} );
+		} );
+	}
+
+	/* Stays: filter rooms in place and keep the URL in sync --------------- */
+	function initRoomFilters() {
+		const form = $( '[data-filters]' );
+		const list = $( '[data-rooms]' );
+		if ( ! form || ! list ) return;
+		const tagsInput = $( 'input[name=tags]', form );
+		const empty = $( '[data-rooms-empty]', list );
+		const rooms = $$( '[data-room]', list );
+
+		const apply = () => {
+			const v = Object.fromEntries( new FormData( form ) );
+			const tags = ( v.tags || '' ).split( ',' ).filter( Boolean );
+			let shown = 0;
+			rooms.forEach( ( r ) => {
+				const d = r.dataset;
+				const on = ( ! v.destination || d.location === v.destination )
+					&& ( ! v.room || d.type === v.room )
+					&& ( ! v.bed || d.beds.split( ' ' ).includes( v.bed ) )
+					&& tags.every( ( t ) => d.tags.split( ' ' ).includes( t ) );
+				r.hidden = ! on;
+				if ( on ) shown++;
+			} );
+			const key = { 'price-asc': ( a, b ) => a.dataset.price - b.dataset.price, 'price-desc': ( a, b ) => b.dataset.price - a.dataset.price, 'size-desc': ( a, b ) => b.dataset.area - a.dataset.area }[ v.sort ];
+			const ordered = key ? rooms.slice().sort( key ) : rooms;
+			ordered.forEach( ( r ) => list.insertBefore( r, empty ) );
+			empty.hidden = shown > 0;
+
+			const params = new URLSearchParams( window.location.search );
+			[ 'destination', 'room', 'bed', 'tags', 'sort' ].forEach( ( k ) => ( v[ k ] ? params.set( k, v[ k ] ) : params.delete( k ) ) );
+			const qs = params.toString();
+			history.replaceState( null, '', window.location.pathname + ( qs ? '?' + qs : '' ) );
+		};
+
+		$$( '[data-tag]', form ).forEach( ( chip ) => {
+			chip.addEventListener( 'click', () => {
+				const on = ! chip.classList.contains( 'is-active' );
+				chip.classList.toggle( 'is-active', on );
+				chip.setAttribute( 'aria-pressed', String( on ) );
+				tagsInput.value = $$( '[data-tag].is-active', form ).map( ( c ) => c.dataset.tag ).join( ',' );
+				apply();
+			} );
+		} );
+		form.addEventListener( 'change', apply );
+		form.addEventListener( 'submit', ( e ) => {
+			e.preventDefault();
+			apply();
+		} );
+	}
+
+	/* Room galleries: thumbnail strip swaps the main photo ---------------- */
+	function initGalleries() {
+		$$( '[data-gallery]' ).forEach( ( g ) => {
+			const main = $( '[data-gallery-main]', g );
+			const thumbs = $$( '.gp-room__thumb', g );
+			thumbs.forEach( ( t ) => {
+				t.addEventListener( 'click', () => {
+					thumbs.forEach( ( x ) => {
+						x.classList.toggle( 'is-active', x === t );
+						x.toggleAttribute( 'aria-current', x === t );
+					} );
+					main.src = t.dataset.full;
+				} );
+			} );
+		} );
+	}
+
+	/* Room page: gallery strip + arrows ---------------------------------- */
+	function initRoomGallery() {
+		const root = $( '[data-room-gallery]' );
+		if ( ! root ) return;
+		const main = $( '[data-room-gallery-main]', root );
+		const strip = $( '[data-room-gallery-strip]', root );
+		const thumbs = $$( '.gp-room-gallery__thumb', strip );
+		let index = Math.max( 0, thumbs.findIndex( ( t ) => t.classList.contains( 'is-active' ) ) );
+		let offset = 0;
+
+		const show = ( i ) => {
+			index = ( i + thumbs.length ) % thumbs.length;
+			thumbs.forEach( ( t, k ) => {
+				t.classList.toggle( 'is-active', k === index );
+				t.toggleAttribute( 'aria-current', k === index );
+			} );
+			// The mobile-only crop applies to the first photo only.
+			main.parentElement.querySelectorAll( 'source' ).forEach( ( s ) => s.remove() );
+			main.src = thumbs[ index ].dataset.full;
+			// Keep the active thumbnail inside the visible area (clear of the arrows).
+			const view = root.getBoundingClientRect();
+			const r = thumbs[ index ].getBoundingClientRect();
+			const pad = Math.min( 220, view.width * 0.2 );
+			if ( r.left < view.left + pad ) offset += view.left + pad - r.left;
+			else if ( r.right > view.right - pad ) offset -= r.right - ( view.right - pad );
+			strip.style.transform = offset ? `translateX(${ offset }px)` : '';
+		};
+
+		thumbs.forEach( ( t, k ) => t.addEventListener( 'click', () => show( k ) ) );
+		$( '[data-room-gallery-prev]', root ).addEventListener( 'click', () => show( index - 1 ) );
+		$( '[data-room-gallery-next]', root ).addEventListener( 'click', () => show( index + 1 ) );
+	}
+
+	/* Room page: nights counter updates the estimate --------------------- */
+	function initBookingCard() {
+		const card = $( '[data-booking]' );
+		if ( ! card ) return;
+		const price = parseFloat( card.dataset.price ) || 0;
+		const fmt = ( n ) => '$' + Math.round( n ).toLocaleString( 'en-US' );
+		let nights = parseInt( $( '[data-nights]', card ).textContent, 10 ) || 1;
+		const render = () => {
+			$$( '[data-nights]', card ).forEach( ( el ) => ( el.textContent = nights ) );
+			$( '[data-subtotal]', card ).textContent = fmt( price * nights );
+			$( '[data-total]', card ).textContent = fmt( price * nights );
+			$( '[data-nights-step="-1"]', card ).disabled = nights <= 1;
+		};
+		$$( '[data-nights-step]', card ).forEach( ( b ) => b.addEventListener( 'click', () => {
+			nights = Math.min( 30, Math.max( 1, nights + parseInt( b.dataset.nightsStep, 10 ) ) );
+			render();
+		} ) );
+		render();
+	}
+
 	document.addEventListener( 'DOMContentLoaded', () => {
 		initHeader();
 		initSearch();
@@ -295,5 +474,10 @@
 		initBenefits();
 		initJournal();
 		initCurrency();
+		initDropdowns();
+		initRoomFilters();
+		initGalleries();
+		initRoomGallery();
+		initBookingCard();
 	} );
 }() );

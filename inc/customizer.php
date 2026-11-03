@@ -17,6 +17,7 @@ add_action( 'customize_register', function ( WP_Customize_Manager $wp_customize 
 		'reviews'      => __( 'Home — Guest Stories', 'gp-house' ),
 		'journal'      => __( 'Home — Journal', 'gp-house' ),
 		'cta'          => __( 'Home — Call to action', 'gp-house' ),
+		'stays_page'   => __( 'Stays page', 'gp-house' ),
 		'footer'       => __( 'Footer', 'gp-house' ),
 	);
 

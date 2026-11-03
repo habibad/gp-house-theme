@@ -57,7 +57,10 @@ $points        = apply_filters( 'gp_house_header_points', is_user_logged_in() ? 
 				<?php echo esc_html( number_format_i18n( $points ) ); ?> P
 			</a>
 			<?php if ( is_user_logged_in() ) : ?>
-				<a class="gp-btn gp-btn--outline gp-btn--sm" href="<?php echo esc_url( home_url( '/profile/' ) ); ?>"><?php esc_html_e( 'My Account', 'gp-house' ); ?></a>
+				<a class="gp-account-btn" href="<?php echo esc_url( home_url( '/profile/' ) ); ?>" aria-label="<?php esc_attr_e( 'My account', 'gp-house' ); ?>">
+					<?php gp_icon( 'menu', 24 ); ?>
+					<?php gp_icon( 'user-circle', 24 ); ?>
+				</a>
 			<?php else : ?>
 				<a class="gp-btn gp-btn--outline gp-btn--sm" href="<?php echo esc_url( wp_login_url( home_url( '/profile/' ) ) ); ?>"><?php esc_html_e( 'Sign In', 'gp-house' ); ?></a>
 			<?php endif; ?>

@@ -78,6 +78,7 @@ p { margin: 0; }
 /* Figma sets text-case "Capitalize" on the marketing UI. */
 .gp-header,
 .gp-home,
+.gp-stays-page,
 .gp-footer-area { text-transform: capitalize; }
 
 .gp-container {
@@ -125,3 +126,5 @@ p { margin: 0; }
 	.gp-story { position: relative; top: 0; transform: none !important; }
 }
 .gp-anim-in { animation: gp-fade .3s ease; }
+.gp-no-caps,
+.gp-btn.gp-no-caps { text-transform: none; }

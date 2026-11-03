@@ -50,10 +50,15 @@ Each component matches a component on the Figma **Component** page. Render one w
 | `dest-card` | Card 1 (destination) | `dest` |
 | `story-card` | Journal wide card | `story, index` |
 | `testimonial-card` | Review card | `testimonial` |
+| `page-hero` | Hero /Destinations (inner pages) | `image, image_mobile, kicker, title, text` |
+| `room-card` | Stays row: gallery + card (320:1388) | `room, hidden` |
+| `gp_dropdown()` | Location tab / Room / Bed / Short by | `name, label, options, value, show_value, class, align` |
 
 When a new page reuses something from another page, move it into `components/` and `components.css`. Don't copy it.
 
 ## Data flow
+
+Pages built so far: Home (`front-page.php`) and Stays (`archive-gp_stay.php`, /stays/, lists `gp_room` posts with filters).
 
 Templates never query WordPress directly. They call the getters in `inc/content.php`, and every getter returns the same array shape whether the data comes from:
 
@@ -73,6 +78,6 @@ To load the demo content into wp-admin, go to **Tools → GP House Demo**.
 
 Colours: `--gp-primary #FFC646`, `--gp-navy #011041`, `--gp-black #1A1A1A`, `--gp-text #6B6B6B`, `--gp-stroke #E4E4E4`, `--gp-sand #E1E0DD`.
 
-Fonts: **Plus Jakarta Sans** for headings, **DM Sans** for body text (opsz 14).
+Fonts: **Plus Jakarta Sans** for headings, **DM Sans** for body text (opsz 14). Both are self-hosted in `assets/fonts/` (`assets/css/fonts.css`).
 
 Reference frame widths: 1440px desktop and 402px mobile. The content column is 1128px.

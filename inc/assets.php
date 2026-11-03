@@ -18,6 +18,8 @@ function gp_current_page_key() {
 	$key = '';
 	if ( is_front_page() ) {
 		$key = 'home';
+	} elseif ( is_singular( 'gp_room' ) ) {
+		$key = 'room';
 	} elseif ( is_post_type_archive( 'gp_stay' ) || is_singular( 'gp_stay' ) ) {
 		$key = 'stays';
 	} elseif ( is_tax( 'gp_destination' ) ) {
@@ -31,12 +33,7 @@ function gp_current_page_key() {
 }
 
 add_action( 'wp_enqueue_scripts', function () {
-	wp_enqueue_style(
-		'gp-house-fonts',
-		'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap',
-		array(),
-		null
-	);
+	wp_enqueue_style( 'gp-house-fonts', GP_HOUSE_URI . '/assets/css/fonts.css', array(), gp_asset_version( 'assets/css/fonts.css' ) );
 
 	$deps = array( 'gp-house-fonts' );
 	foreach ( array( 'base', 'components', 'layout' ) as $sheet ) {
@@ -52,17 +49,16 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_script( 'gp-house', GP_HOUSE_URI . '/assets/js/main.js', array(), gp_asset_version( 'assets/js/main.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 } );
 
-add_filter( 'wp_resource_hints', function ( $urls, $relation ) {
-	if ( 'preconnect' === $relation ) {
-		$urls[] = 'https://fonts.googleapis.com';
-		$urls[] = array( 'href' => 'https://fonts.gstatic.com', 'crossorigin' );
+/** Preload the two Latin font files used above the fold. */
+add_action( 'wp_head', function () {
+	foreach ( array( 'dm-sans-latin', 'plus-jakarta-sans-latin' ) as $font ) {
+		printf( "<link rel=\"preload\" href=\"%s\" as=\"font\" type=\"font/woff2\" crossorigin>\n", esc_url( GP_HOUSE_URI . "/assets/fonts/{$font}.woff2" ) );
 	}
-	return $urls;
-}, 10, 2 );
+}, 1 );
 
 /** Drop block-library CSS on templates that render no block content. */
 add_action( 'wp_enqueue_scripts', function () {
-	if ( is_front_page() || is_post_type_archive() || is_page_template() ) {
+	if ( is_front_page() || is_post_type_archive() || is_singular( 'gp_room' ) || is_page_template() ) {
 		wp_dequeue_style( 'wp-block-library' );
 		wp_dequeue_style( 'global-styles' );
 		wp_dequeue_style( 'classic-theme-styles' );

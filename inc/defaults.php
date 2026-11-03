@@ -20,6 +20,12 @@ function gp_option_defaults() {
 		'hero_badge'       => array( 'section' => 'hero', 'label' => 'Badge above search', 'default' => 'Become a Member & Get 10% Discount' ),
 		'hero_promo'       => array( 'section' => 'hero', 'label' => 'Default promo code', 'default' => 'FIRSTBOOK20' ),
 		'hero_image'       => array( 'section' => 'hero', 'label' => 'Background image', 'default' => '', 'type' => 'image' ),
+		// Stays page.
+		'stays_hero_kicker' => array( 'section' => 'stays_page', 'label' => 'Kicker', 'default' => 'Sanctuaries & Suites' ),
+		'stays_hero_title'  => array( 'section' => 'stays_page', 'label' => 'Title', 'default' => 'Find Your Stay' ),
+		'stays_hero_text'   => array( 'section' => 'stays_page', 'label' => 'Intro', 'default' => 'Discover tailored villas and pavilions with organic teak, private plunge pools, and uninterrupted natural views.', 'type' => 'textarea' ),
+		'stays_hero_image'  => array( 'section' => 'stays_page', 'label' => 'Hero image (1440 × 562)', 'default' => '', 'type' => 'image' ),
+		'room_booking_note' => array( 'section' => 'stays_page', 'label' => 'Room page booking note', 'default' => 'Instant confirmation • Pay upon check-in • Free cancellation 48 hrs prior' ),
 		// Explore destinations.
 		'dest_kicker'      => array( 'section' => 'destinations', 'label' => 'Kicker', 'default' => 'Region Discovery' ),
 		'dest_title'       => array( 'section' => 'destinations', 'label' => 'Title', 'default' => 'Explore Destinations' ),
@@ -197,6 +203,9 @@ function gp_demo_content() {
 /** Let the GP House Core plugin import the demo content. */
 add_filter( 'gp_house_demo_content', function () {
 	$content         = gp_demo_content();
-	$content['base'] = GP_HOUSE_DIR . '/assets/img/';
+	$content['base']  = GP_HOUSE_DIR . '/assets/img/';
+	$content['rooms'] = function_exists( 'gp_demo_rooms' ) ? array_map( function ( $r ) {
+		return $r + gp_demo_room_details( $r );
+	}, gp_demo_rooms() ) : array();
 	return $content;
 } );
