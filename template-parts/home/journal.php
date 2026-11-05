@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$stories = gp_get_journal( 3 );
+$stories = gp_get_journal( 3, array( 'home' => true ) );
 if ( ! $stories ) {
 	return;
 }

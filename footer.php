@@ -19,19 +19,32 @@ $socials = array(
 	'x'         => 'X',
 	'linkedin'  => 'LinkedIn',
 );
+
+// Pages can swap the call-to-action copy and buttons (e.g. the Club page "Your Siamese Sanctuary Awaits").
+$cta = apply_filters( 'gp_house_footer_cta', array(
+	'kicker'  => gp_opt( 'cta_kicker' ),
+	'title'   => gp_opt( 'cta_title' ),
+	'text'    => gp_opt( 'cta_text' ),
+	'class'   => '',
+	'buttons' => array(
+		array( 'label' => __( 'Book Your Stay', 'gp-house' ), 'url' => home_url( '/stays/' ), 'size' => 'tab' ),
+		array( 'label' => __( 'Browse All Rooms', 'gp-house' ), 'url' => home_url( '/stays/' ), 'size' => 'tab', 'variant' => 'outline', 'text' => 'navy' ),
+	),
+) );
 ?>
 <section class="gp-footer-area">
 	<div class="gp-container">
 		<?php if ( apply_filters( 'gp_house_show_footer_cta', true ) ) : ?>
-			<div class="gp-cta">
+			<div class="gp-cta<?php echo $cta['class'] ? ' ' . esc_attr( $cta['class'] ) : ''; ?>">
 				<div class="gp-cta__text">
-					<?php gp_component( 'section-head', array( 'kicker' => gp_opt( 'cta_kicker' ), 'title' => gp_opt( 'cta_title' ), 'kicker_class' => 'gp-kicker--dark' ) ); ?>
-					<p class="gp-cta__lead"><?php echo esc_html( gp_opt( 'cta_text' ) ); ?></p>
+					<?php gp_component( 'section-head', array( 'kicker' => $cta['kicker'], 'title' => $cta['title'], 'kicker_class' => 'gp-kicker--dark' ) ); ?>
+					<p class="gp-cta__lead"><?php echo esc_html( $cta['text'] ); ?></p>
 				</div>
 				<div class="gp-cta__actions">
 					<?php
-					gp_button( array( 'label' => __( 'Book Your Stay', 'gp-house' ), 'url' => home_url( '/stays/' ), 'size' => 'tab' ) );
-					gp_button( array( 'label' => __( 'Browse All Rooms', 'gp-house' ), 'url' => home_url( '/stays/' ), 'size' => 'tab', 'variant' => 'outline', 'text' => 'navy' ) );
+					foreach ( $cta['buttons'] as $button ) {
+						gp_button( $button );
+					}
 					?>
 				</div>
 			</div>

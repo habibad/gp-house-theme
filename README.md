@@ -52,13 +52,18 @@ Each component matches a component on the Figma **Component** page. Render one w
 | `testimonial-card` | Review card | `testimonial` |
 | `page-hero` | Hero /Destinations (inner pages) | `image, image_mobile, kicker, title, text` |
 | `room-card` | Stays row: gallery + card (320:1388) | `room, hidden` |
+| `offer-card` | Offers page card (554 × 703) | `offer` |
+| `promo-band` | Navy full-width promo (Offers guarantee) | `title, text, button, image, image_mobile` |
+| `stay-map` | Explore Destinations map | `stays, active, attrs` |
+| `article-card` | Destination page journal card | `story` |
+| `faq` | FAQ accordion | `items, kicker, title` |
 | `gp_dropdown()` | Location tab / Room / Bed / Short by | `name, label, options, value, show_value, class, align` |
 
 When a new page reuses something from another page, move it into `components/` and `components.css`. Don't copy it.
 
 ## Data flow
 
-Pages built so far: Home (`front-page.php`) and Stays (`archive-gp_stay.php`, /stays/, lists `gp_room` posts with filters).
+Pages built so far: Home (`front-page.php`), Stays (`archive-gp_stay.php`), room page (`single-gp_room.php`), Destinations (`page-destinations.php`), destination page (`taxonomy-gp_destination.php`) and Offers (`page-offers.php`). Every page gets a `gp-page-<key>` body class.
 
 Templates never query WordPress directly. They call the getters in `inc/content.php`, and every getter returns the same array shape whether the data comes from:
 
@@ -73,6 +78,10 @@ To load the demo content into wp-admin, go to **Tools → GP House Demo**.
 2. Write the template: `page-<slug>.php`, an archive template, or a single template. Put its sections in `template-parts/<slug>/`.
 3. Write the styles in `assets/css/pages/<slug>.css`. Use tokens from `base.css` and existing components first.
 4. Screenshot the page at 1440px and 402px with headless Chrome and compare it with Figma, section by section.
+
+## Figma reference without the MCP
+
+`/figma-export/frames/` (blocked from the web) holds an exact 1× PNG of every Figma page frame (`frames.json` is the index). Use these to measure when the Figma MCP is rate-limited.
 
 ## Design tokens
 

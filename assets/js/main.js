@@ -58,8 +58,12 @@
 
 	/* Explore destinations: map/grid views, pins, cards, zoom ------------- */
 	function initExplore() {
-		const section = $( '.gp-explore' );
-		if ( ! section ) return;
+		$$( '[data-view-root]' ).forEach( initViewRoot );
+		$$( '.gp-map' ).forEach( initMap );
+	}
+
+	/* Grid / map view toggle inside any [data-view-root] */
+	function initViewRoot( section ) {
 
 		$$( '[data-view-btn]', section ).forEach( ( btn ) => {
 			btn.addEventListener( 'click', () => {
@@ -77,8 +81,10 @@
 			} );
 		} );
 
-		const map = $( '.gp-map', section );
-		if ( ! map ) return;
+	}
+
+	/* Stay map component: pins, cards, region tabs, zoom */
+	function initMap( map ) {
 
 		const pins = $$( '.gp-pin', map );
 		const cards = $$( '[data-stay-card]', map );
@@ -127,6 +133,7 @@
 			const track = $( '[data-carousel-track]', root );
 			const prev = $( '[data-carousel-prev]', root );
 			const next = $( '[data-carousel-next]', root );
+			const bar = $( '[data-carousel-progress]', root );
 			if ( ! track ) return;
 			const items = Array.from( track.children );
 			let index = 0;
@@ -142,6 +149,10 @@
 				track.style.transform = `translateX(${ -index * step() }px)`;
 				if ( prev ) prev.disabled = index === 0;
 				if ( next ) next.disabled = index >= max();
+				if ( bar ) {
+					const room = bar.parentElement.clientWidth - bar.offsetWidth;
+					bar.style.left = `${ max() ? ( index / max() ) * room : 0 }px`;
+				}
 			};
 
 			prev && prev.addEventListener( 'click', () => {
@@ -465,6 +476,124 @@
 		render();
 	}
 
+	/* Destinations page: region chips filter the cards and focus the map --- */
+	function initRegionTabs() {
+		$$( '[data-region-tabs]' ).forEach( ( group ) => {
+			const root = group.closest( '[data-view-root]' ) || document;
+			const chips = $$( '[data-region-filter]', group );
+			chips.forEach( ( chip ) => {
+				chip.addEventListener( 'click', () => {
+					chips.forEach( ( c ) => {
+						c.classList.toggle( 'is-active', c === chip );
+						c.setAttribute( 'aria-pressed', String( c === chip ) );
+					} );
+					const slug = chip.dataset.regionFilter;
+					$$( '[data-region-items] [data-location]', root ).forEach( ( card ) => {
+						card.hidden = !! slug && card.dataset.location !== slug;
+					} );
+					const tab = chip.dataset.regionName && $( `.gp-map [data-region="${ chip.dataset.regionName }"]`, root );
+					if ( tab ) tab.click();
+				} );
+			} );
+		} );
+	}
+
+	/* FAQ accordion ------------------------------------------------------ */
+	function initAccordions() {
+		$$( '[data-accordion]' ).forEach( ( list ) => {
+			$$( '.gp-faq__q button', list ).forEach( ( btn ) => {
+				btn.addEventListener( 'click', () => {
+					const item = btn.closest( '.gp-faq__item' );
+					const open = ! item.classList.contains( 'is-open' );
+					item.classList.toggle( 'is-open', open );
+					btn.setAttribute( 'aria-expanded', String( open ) );
+					document.getElementById( btn.getAttribute( 'aria-controls' ) ).hidden = ! open;
+				} );
+			} );
+		} );
+	}
+
+	/* Insider secrets / benefit-style lists: highlight hovered item ------- */
+	function initHoverLists() {
+		[ '.gp-insider__item' ].forEach( ( sel ) => {
+			const items = $$( sel );
+			items.forEach( ( item ) => {
+				const on = () => items.forEach( ( i ) => i.classList.toggle( 'is-active', i === item ) );
+				item.addEventListener( 'mouseenter', on );
+				item.addEventListener( 'focus', on );
+			} );
+		} );
+	}
+
+	/* Club points calculator: nights × nightly price × points-per-$ ------- */
+	function initClubCalc() {
+		$$( '[data-calc]' ).forEach( ( calc ) => {
+			const rate = parseFloat( calc.dataset.rate ) || 1;
+			const range = $( '[data-calc-range]', calc );
+			const dests = $$( '[data-calc-dest]', calc );
+			const out = {
+				nights: $( '[data-calc-nights]', calc ),
+				total: $( '[data-calc-total]', calc ),
+				ctaNights: $( '[data-calc-cta-nights]', calc ),
+				ctaDest: $( '[data-calc-cta-dest]', calc ),
+				cta: $( '[data-calc-cta]', calc ),
+			};
+			const rewards = $$( '[data-calc-reward]', calc );
+			const fmt = new Intl.NumberFormat( 'en-US' );
+			let dest = dests.find( ( d ) => d.classList.contains( 'is-active' ) ) || dests[ 0 ];
+
+			const render = () => {
+				const nights = parseInt( range.value, 10 ) || 1;
+				const price = dest ? parseFloat( dest.dataset.price ) || 0 : 0;
+				const points = Math.round( nights * price * rate );
+				const pct = ( ( nights - range.min ) / ( range.max - range.min ) ) * 100;
+				range.style.setProperty( '--pct', `${ pct }%` );
+				out.nights.textContent = nights;
+				out.total.textContent = fmt.format( points );
+				out.ctaNights.textContent = nights;
+				if ( dest ) {
+					out.ctaDest.textContent = dest.dataset.name;
+					const url = new URL( out.cta.href, window.location.href );
+					url.searchParams.set( 'location', dest.dataset.calcDest );
+					url.searchParams.set( 'nights', nights );
+					out.cta.href = url.toString();
+				}
+				rewards.forEach( ( r ) => r.classList.toggle( 'is-reached', points >= parseInt( r.dataset.calcReward, 10 ) ) );
+			};
+
+			range.addEventListener( 'input', render );
+			dests.forEach( ( d ) => d.addEventListener( 'click', () => {
+				dest = d;
+				dests.forEach( ( x ) => {
+					x.classList.toggle( 'is-active', x === d );
+					x.setAttribute( 'aria-checked', String( x === d ) );
+				} );
+				render();
+			} ) );
+			render();
+		} );
+	}
+
+	/* Share buttons: native share sheet, else copy the link ---------------- */
+	function initShare() {
+		$$( '[data-share]' ).forEach( ( btn ) => {
+			btn.addEventListener( 'click', async () => {
+				const data = { title: btn.dataset.shareTitle || document.title, url: btn.dataset.shareUrl || window.location.href };
+				try {
+					if ( navigator.share ) {
+						await navigator.share( data );
+					} else if ( navigator.clipboard ) {
+						await navigator.clipboard.writeText( data.url );
+						btn.classList.add( 'is-copied' );
+						setTimeout( () => btn.classList.remove( 'is-copied' ), 1600 );
+					}
+				} catch ( e ) {
+					// Share sheet dismissed — nothing to do.
+				}
+			} );
+		} );
+	}
+
 	document.addEventListener( 'DOMContentLoaded', () => {
 		initHeader();
 		initSearch();
@@ -479,5 +608,10 @@
 		initGalleries();
 		initRoomGallery();
 		initBookingCard();
+		initRegionTabs();
+		initAccordions();
+		initHoverLists();
+		initClubCalc();
+		initShare();
 	} );
 }() );

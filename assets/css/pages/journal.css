@@ -1,0 +1,182 @@
+/* GP House — The GP Journal: listing (Figma 1148:8205 / 1148:8356) and story page (1148:8455) */
+
+.gp-journal-page,
+.gp-story-page { text-transform: capitalize; }
+.gp-page-hero--journal .gp-page-hero__heading,
+.gp-page-hero--story .gp-page-hero__heading { width: auto; }
+.gp-page-hero--journal .gp-page-hero__text { width: 282px; }
+.gp-page-hero--story .gp-page-hero__text { width: 278px; }
+
+/* Listing --------------------------------------------------------------- */
+.gp-journal-list { padding: 150px 0; background: #fff; }
+.gp-journal-list__head { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.gp-journal-list__intro { max-width: 440px; margin-top: 24px; color: var(--gp-text); font-size: 16px; line-height: 24px; }
+.gp-journal-list__head .gp-pills { margin-top: 40px; }
+.gp-journal-list__stories { display: flex; flex-direction: column; gap: 48px; margin-top: 72px; }
+
+/* Light topic pills (navy when active). */
+.gp-pills--light .gp-pills__tab { padding: 11px 19px; border: 1px solid var(--gp-stroke); background: #fff; color: var(--gp-text); }
+.gp-pills--light .gp-pills__tab:hover { background: var(--gp-sand-light); color: var(--gp-navy); }
+.gp-pills--light .gp-pills__tab.is-active { border-color: var(--gp-navy); background: var(--gp-navy); color: #fff; }
+
+/* Story cards as a plain list (the Home section stacks them). */
+.gp-story--flat { position: relative; top: auto; transform: none !important; will-change: auto; }
+.gp-journal-list .gp-story__text p { width: 257px; max-width: 100%; }
+
+/* Empty topic. */
+.gp-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.gp-empty__icon { display: flex; align-items: center; justify-content: center; width: 102px; height: 102px; border-radius: 16px; background: #fff; }
+.gp-empty__title { margin: 16px 0 0; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 600; font-size: 20px; line-height: 1.4; font-variation-settings: normal; }
+.gp-empty__text { max-width: 330px; margin-top: 8px; color: var(--gp-text); font-size: 16px; line-height: 24px; }
+.gp-journal-list__empty { height: 420px; margin-top: 72px; border: 1px solid var(--gp-stroke); border-radius: 16px; background: var(--gp-sand-light); }
+
+/* Newsletter band ("Receive The GP House Gazette"). */
+.gp-newsletter { display: flex; align-items: flex-start; height: 590px; padding-top: 170px; background: var(--gp-navy) var(--bg) center / cover no-repeat; color: #fff; }
+.gp-newsletter__inner { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.gp-newsletter .gp-title { color: #fff; }
+.gp-newsletter .gp-heading { gap: 7px; }
+.gp-newsletter__text { max-width: 600px; margin-top: 26px; color: rgba(255, 255, 255, .7); font-size: 16px; line-height: 24px; }
+.gp-newsletter__form { display: flex; gap: 14px; margin-top: 40px; }
+.gp-newsletter__input { width: 352px; height: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: #fff; color: var(--gp-navy); font: inherit; font-size: 14px; }
+.gp-newsletter__input::placeholder { color: var(--gp-text); }
+.gp-newsletter__input:focus-visible { outline: 2px solid var(--gp-primary); outline-offset: 2px; }
+.gp-newsletter__button { height: 44px; padding: 0 20px; border: 0; font-size: 16px; }
+.gp-journal-page + .gp-footer-area { padding-top: 83px; }
+
+/* Story page ------------------------------------------------------------- */
+.gp-story-page { padding-bottom: 114px; }
+.gp-cta--story .gp-cta__text { width: 920px; }
+.gp-cta--story .gp-cta__lead { max-width: 600px; }
+.gp-story-page__bar { display: flex; align-items: center; justify-content: space-between; padding: 174px 0 24px; border-bottom: 1px solid var(--gp-stroke); }
+.gp-back-link { display: inline-flex; align-items: center; gap: 16px; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 500; font-size: 25px; line-height: 1.4; font-variation-settings: normal; }
+.gp-back-link__icon { display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; background: var(--gp-sand-light); transition: background-color .2s; }
+.gp-back-link:hover .gp-back-link__icon { background: var(--gp-sand); }
+.gp-topic-chip { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px 12px 21px; border: 1px solid var(--gp-stroke); border-radius: 8px; color: var(--gp-navy); font-size: 16px; line-height: 20px; transition: background-color .2s; }
+.gp-topic-chip:hover { background: var(--gp-sand-light); }
+
+.gp-story-page__layout { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 61px; align-items: start; margin-top: 72px; }
+
+.gp-author-card { position: sticky; top: 120px; display: flex; flex-direction: column; align-items: center; padding: 60px 24px; border-radius: 24px; background: var(--gp-sand-light); text-align: center; }
+.gp-author-card__photo { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; }
+.gp-author-card__name { margin: 33px 0 0; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 500; font-size: 25px; line-height: 1.4; font-variation-settings: normal; }
+.gp-author-card__role { margin-top: 12px; color: var(--gp-text); font-size: 16px; line-height: 20px; }
+.gp-author-card__follow { margin-top: 170px; color: var(--gp-text); font-size: 16px; line-height: 20px; }
+.gp-author-card__socials { display: flex; gap: 16px; margin: 24px 0 0; padding: 0; list-style: none; }
+.gp-author-card__socials a { display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; background: #fff; transition: transform .2s; }
+.gp-author-card__socials a:hover { transform: translateY(-2px); }
+
+.gp-story-article__meta { display: flex; gap: 8px; }
+.gp-story-article__title { margin: 13px 0 0; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 600; font-size: 39px; line-height: 1.2; font-variation-settings: normal; }
+.gp-story-article__lead { margin-top: 16px; color: var(--gp-text); font-size: 18px; line-height: 27px; }
+.gp-story-article__media { position: relative; height: 434px; margin: 31px 0 0; overflow: hidden; border-radius: 24px; }
+.gp-story-article__media img { width: 100%; height: 100%; object-fit: cover; }
+.gp-story-article__media .gp-chip { top: 20px; left: 20px; }
+
+/* Story body (block editor content). */
+.gp-prose { color: var(--gp-text); font-size: 18px; line-height: 27px; }
+.gp-prose > * { margin: 32px 0 0; }
+.gp-prose > :first-child { margin-top: 41px; }
+.gp-prose p { margin-bottom: 0; }
+.gp-prose blockquote { margin-left: 0; margin-right: 0; padding: 0 0 0 14px; border-left: 1px solid var(--gp-stroke); }
+.gp-prose blockquote p { max-width: 676px; color: var(--gp-navy); font-style: italic; }
+.gp-prose h2,
+.gp-prose h3 { color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 500; font-variation-settings: normal; }
+.gp-prose h2 { font-size: 39px; line-height: 1.2; }
+.gp-prose h3 { margin-top: 31px; font-size: 31px; line-height: 40px; }
+.gp-prose h3 + * { margin-top: 16px; }
+.gp-prose figure { margin-left: 0; margin-right: 0; }
+.gp-prose img { display: block; width: 100%; height: auto; border-radius: 24px; }
+.gp-prose .wp-block-image { margin-top: 86px; }
+.gp-prose .wp-block-image + h3 { margin-top: 33px; }
+.gp-prose a { color: var(--gp-navy); text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 1180px) {
+	.gp-story-page__layout { grid-template-columns: 300px minmax(0, 1fr); gap: 40px; }
+}
+@media (max-width: 860px) {
+	.gp-story-page__layout { grid-template-columns: 1fr; }
+	.gp-author-card { position: static; }
+}
+
+/* Mobile — Figma "Journal" 402px (1423:10191, 1436:7321, 1436:7675) ------------ */
+@media (max-width: 600px) {
+	.gp-page-hero--journal .gp-page-hero__content,
+	.gp-page-hero--story .gp-page-hero__content { top: auto; bottom: 39px; gap: 17px; }
+	.gp-page-hero--journal .gp-page-hero__heading,
+	.gp-page-hero--story .gp-page-hero__heading { gap: 11px; }
+	.gp-page-hero--journal .gp-page-hero__kicker,
+	.gp-page-hero--story .gp-page-hero__kicker { font-size: 14px; }
+	.gp-page-hero--journal .gp-page-hero__title,
+	.gp-page-hero--story .gp-page-hero__title { line-height: 43px; }
+	.gp-page-hero--journal .gp-page-hero__text,
+	.gp-page-hero--story .gp-page-hero__text { width: 310px; line-height: 22px; }
+
+	/* Listing */
+	.gp-journal-list { padding: 31px 0 32px; }
+	.gp-journal-list__intro { max-width: 288px; margin-top: 15px; }
+	.gp-journal-list__head .gp-pills { flex-wrap: nowrap; justify-content: flex-start; align-self: stretch; margin: 24px -20px 0; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
+	.gp-journal-list__head .gp-pills::-webkit-scrollbar { display: none; }
+	.gp-journal-list__head .gp-pills__tab { flex: none; }
+	.gp-journal-list__stories { gap: 16px; margin-top: 32px; }
+	.gp-journal-list .gp-story__text p { width: auto; font-size: 12px; line-height: 19.2px; }
+	.gp-journal-list .gp-story__main { gap: 14px; }
+	.gp-journal-list .gp-story__text { gap: 14px; }
+	.gp-journal-list .gp-story__text h3 { font-size: 16px; line-height: 22px; }
+	.gp-journal-list__empty { height: 352px; margin-top: 32px; padding: 0 20px; }
+	.gp-empty__icon { width: 64px; height: 64px; border-radius: 12px; }
+	.gp-empty__icon img { width: 40px; height: 40px; }
+	.gp-empty__title { margin-top: 18px; font-size: 18px; }
+	.gp-empty__text { max-width: 250px; margin-top: 7px; font-size: 14px; line-height: 22px; }
+
+	/* Newsletter band */
+	.gp-newsletter { height: auto; padding: 41px 0 40px; }
+	.gp-newsletter .gp-heading { gap: 8px; }
+	.gp-newsletter .gp-title { font-size: 26px; line-height: 31px; }
+	.gp-newsletter__text { max-width: 330px; margin-top: 16px; font-size: 14px; line-height: 22px; }
+	.gp-newsletter__form { flex-direction: column; gap: 7px; align-self: stretch; margin-top: 39px; }
+	.gp-newsletter__input { width: 100%; height: 46px; border: 1px solid #fff; background: #364061; color: #fff; }
+	.gp-newsletter__input::placeholder { color: #afb3c0; }
+	.gp-newsletter__button { width: 100%; }
+	.gp-journal-page + .gp-footer-area { padding-top: 33px; }
+	.gp-journal-page + .gp-footer-area .gp-cta .gp-heading { gap: 9px; }
+	.gp-journal-page + .gp-footer-area .gp-cta__text { gap: 18px; }
+}
+
+/* Story page app bar: mobile only. */
+.gp-app-bar { display: none; }
+
+@media (max-width: 600px) {
+	.single-post .gp-header { display: none; }
+	.gp-app-bar { position: absolute; top: 17px; left: 21px; right: 21px; z-index: 20; display: flex; align-items: center; justify-content: space-between; }
+	.gp-app-bar__btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 10px; background: #fff; color: var(--gp-navy); }
+	.gp-app-bar__title { color: #fff; font-weight: 500; font-size: 18px; line-height: 24px; }
+
+	.gp-story-page { padding-bottom: 0; }
+	.gp-story-page + .gp-footer-area { padding-top: 65px; }
+	.gp-story-page__bar { display: none; }
+	.gp-story-page__layout { display: flex; flex-direction: column; gap: 64px; margin-top: 31px; }
+	.gp-author-card { order: 2; align-self: stretch; padding: 39px 24px 40px; }
+	.gp-author-card__name { margin-top: 31px; }
+	.gp-author-card__follow { margin-top: 86px; }
+
+	.gp-story-article__title { margin-top: 13px; font-size: 28px; line-height: 35px; }
+	.gp-story-article__lead { max-width: 340px; margin-top: 16px; font-size: 16px; line-height: 24px; }
+	.gp-story-article__media { height: 222px; margin-top: 32px; border-radius: 16px; }
+	.gp-story-article__media .gp-chip { top: 12px; left: 12px; }
+
+	.gp-prose { font-size: 16px; line-height: 24px; }
+	.gp-prose > :first-child { margin-top: 36px; }
+	.gp-prose blockquote { padding-left: 12px; }
+	.gp-prose blockquote p { max-width: 335px; }
+	.gp-prose p { max-width: 344px; }
+	.gp-prose h3 { max-width: 345px; margin-top: 34px; font-size: 26px; line-height: 34px; text-wrap: balance; }
+	.gp-prose h3 br { display: none; }
+	.gp-prose h3 + * { margin-top: 16px; }
+	.gp-prose img { border-radius: 16px; }
+	.gp-prose .wp-block-image { margin-top: 58px; }
+	.gp-prose .wp-block-image + h3 { margin-top: 33px; }
+
+	.gp-cta--story .gp-cta__text { width: auto; }
+	.gp-cta--story .gp-cta__lead { max-width: none; }
+	.gp-cta--story .gp-title { max-width: 300px; line-height: 36px; }
+}

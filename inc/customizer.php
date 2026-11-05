@@ -18,6 +18,10 @@ add_action( 'customize_register', function ( WP_Customize_Manager $wp_customize 
 		'journal'      => __( 'Home — Journal', 'gp-house' ),
 		'cta'          => __( 'Home — Call to action', 'gp-house' ),
 		'stays_page'   => __( 'Stays page', 'gp-house' ),
+		'dest_page'    => __( 'Destinations page', 'gp-house' ),
+		'offers_page'  => __( 'Offers page', 'gp-house' ),
+		'club_page'    => __( 'Club page', 'gp-house' ),
+		'journal_page' => __( 'Journal page', 'gp-house' ),
 		'footer'       => __( 'Footer', 'gp-house' ),
 	);
 

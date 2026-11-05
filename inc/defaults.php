@@ -26,6 +26,68 @@ function gp_option_defaults() {
 		'stays_hero_text'   => array( 'section' => 'stays_page', 'label' => 'Intro', 'default' => 'Discover tailored villas and pavilions with organic teak, private plunge pools, and uninterrupted natural views.', 'type' => 'textarea' ),
 		'stays_hero_image'  => array( 'section' => 'stays_page', 'label' => 'Hero image (1440 × 562)', 'default' => '', 'type' => 'image' ),
 		'room_booking_note' => array( 'section' => 'stays_page', 'label' => 'Room page booking note', 'default' => 'Instant confirmation • Pay upon check-in • Free cancellation 48 hrs prior' ),
+		// Destinations page.
+		'dpage_kicker'      => array( 'section' => 'dest_page', 'label' => 'Hero kicker', 'default' => 'Kingdom of Thailand' ),
+		'dpage_title'       => array( 'section' => 'dest_page', 'label' => 'Hero title', 'default' => 'Explore Thailand' ),
+		'dpage_text'        => array( 'section' => 'dest_page', 'label' => 'Hero text', 'default' => 'Explore our beautiful boutique sanctuaries across Thailand through an interactive map.', 'type' => 'textarea' ),
+		'dpage_hero'        => array( 'section' => 'dest_page', 'label' => 'Hero image (1440 × 562)', 'default' => '', 'type' => 'image' ),
+		'dpage_grid_kicker' => array( 'section' => 'dest_page', 'label' => 'Grid view kicker', 'default' => 'Destination Curations' ),
+		'dpage_grid_title'  => array( 'section' => 'dest_page', 'label' => 'Grid view title', 'default' => 'Regional Guides & Cultural Highlights' ),
+		'dpage_map_kicker'  => array( 'section' => 'dest_page', 'label' => 'Map view kicker', 'default' => 'Visual Map Interface' ),
+		'dpage_map_title'   => array( 'section' => 'dest_page', 'label' => 'Map view title', 'default' => 'Thailand Property Map & Sanctuaries' ),
+		// Offers page.
+		'offers_kicker'      => array( 'section' => 'offers_page', 'label' => 'Hero kicker', 'default' => 'Privileged Rates & Curated Escapes' ),
+		'offers_title'       => array( 'section' => 'offers_page', 'label' => 'Hero title', 'default' => 'Stay & Discover More' ),
+		'offers_text'        => array( 'section' => 'offers_page', 'label' => 'Hero text', 'default' => 'Exclusive packages for extended stays, early savings, and wellness retreats across Phuket, Krabi, and Bangkok.', 'type' => 'textarea' ),
+		'offers_hero_image'  => array( 'section' => 'offers_page', 'label' => 'Hero image (1440 × 562)', 'default' => '', 'type' => 'image' ),
+		'offers_band_title'  => array( 'section' => 'offers_page', 'label' => 'Guarantee band title', 'default' => 'GP House Direct Booking Guarantee' ),
+		'offers_band_text'   => array( 'section' => 'offers_page', 'label' => 'Guarantee band text', 'default' => 'Direct booking perks: best price guarantee, free upgrades when available, flexible cancellation, and instant GP House Club points.', 'type' => 'textarea' ),
+		'offers_band_button' => array( 'section' => 'offers_page', 'label' => 'Guarantee band button', 'default' => 'Reserve Direct' ),
+		'offers_band_image'  => array( 'section' => 'offers_page', 'label' => 'Guarantee band background', 'default' => '', 'type' => 'image' ),
+		// Club page.
+		'club_kicker' => array( 'section' => 'club_page', 'label' => 'Hero kicker', 'default' => 'GP House Club Privileges' ),
+		'club_title' => array( 'section' => 'club_page', 'label' => 'Hero title', 'default' => 'Extraordinary Thai Hospitality' ),
+		'club_text' => array( 'section' => 'club_page', 'label' => 'Hero text', 'default' => 'Exclusive benefits for discerning travelers, with preferred rates, upgrades, transfers, and rewards across Bangkok, Phuket, Krabi.', 'type' => 'textarea' ),
+		'club_hero_image' => array( 'section' => 'club_page', 'label' => 'Hero image (1440 × 562)', 'default' => '', 'type' => 'image' ),
+		'club_steps_kicker' => array( 'section' => 'club_page', 'label' => 'Steps kicker', 'default' => 'How It Works' ),
+		'club_steps_title' => array( 'section' => 'club_page', 'label' => 'Steps title', 'default' => 'Four Steps To Exclusive Thai Club Privileges' ),
+		'club_benefits_kicker' => array( 'section' => 'club_page', 'label' => 'Benefits kicker', 'default' => 'Direct Privileges' ),
+		'club_benefits_title' => array( 'section' => 'club_page', 'label' => 'Benefits title', 'default' => 'Why Book As A GP House Club Member?' ),
+		'club_tiers_kicker' => array( 'section' => 'club_page', 'label' => 'Tiers kicker', 'default' => 'Direct Privileges' ),
+		'club_tiers_title' => array( 'section' => 'club_page', 'label' => 'Tiers title', 'default' => 'Why Book As A GP House Club Member?' ),
+		'club_tiers_text' => array( 'section' => 'club_page', 'label' => 'Tiers intro', 'default' => 'As your GP House journey unfolds, unlock higher earning multiples, suite upgrades, and personal sanctuary hosts.', 'type' => 'textarea' ),
+		'club_calc_kicker' => array( 'section' => 'club_page', 'label' => 'Calculator kicker', 'default' => 'Interactive Calculator' ),
+		'club_calc_title' => array( 'section' => 'club_page', 'label' => 'Calculator title', 'default' => 'Calculate Your Next Stay’s Rewards' ),
+		'club_calc_text' => array( 'section' => 'club_page', 'label' => 'Calculator intro', 'default' => 'Select your sanctuary destination and planned length of stay to view projected points accrued and immediate redemption opportunities.', 'type' => 'textarea' ),
+		'club_redeem_kicker' => array( 'section' => 'club_page', 'label' => 'Redemptions kicker', 'default' => 'Points Catalog' ),
+		'club_redeem_title' => array( 'section' => 'club_page', 'label' => 'Redemptions title', 'default' => 'Signature Club Redemptions' ),
+		'club_faq_kicker' => array( 'section' => 'club_page', 'label' => 'FAQ kicker', 'default' => 'Club Knowledge' ),
+		'club_faq_title' => array( 'section' => 'club_page', 'label' => 'FAQ title', 'default' => 'Frequently Asked Questions' ),
+		'club_cta_kicker' => array( 'section' => 'club_page', 'label' => 'Footer CTA kicker', 'default' => 'Member Privilege' ),
+		'club_cta_title' => array( 'section' => 'club_page', 'label' => 'Footer CTA title', 'default' => 'Your Siamese Sanctuary Awaits' ),
+		'club_cta_text' => array( 'section' => 'club_page', 'label' => 'Footer CTA text', 'default' => 'Book directly today with promo code MEMBERDIRECT for an instant 10% discount and direct VIP privileges.', 'type' => 'textarea' ),
+		// Journal page (Figma "Journal", 1148:8205) and story page (1148:8455).
+		'jp_kicker'        => array( 'section' => 'journal_page', 'label' => 'Hero kicker', 'default' => 'Chronicles Of Thai Hospitality' ),
+		'jp_title'         => array( 'section' => 'journal_page', 'label' => 'Hero title', 'default' => 'The GP Journal' ),
+		'jp_text'          => array( 'section' => 'journal_page', 'label' => 'Hero text', 'default' => 'Discover local architecture, healing traditions, and authentic regional cuisine with our cultural hosts.', 'type' => 'textarea' ),
+		'jp_hero_image'    => array( 'section' => 'journal_page', 'label' => 'Hero image', 'default' => '', 'type' => 'image' ),
+		'jp_list_kicker'   => array( 'section' => 'journal_page', 'label' => 'Stories kicker', 'default' => 'The GP Journal' ),
+		'jp_list_title'    => array( 'section' => 'journal_page', 'label' => 'Stories title', 'default' => 'All Stories & Chronicles' ),
+		'jp_list_text'     => array( 'section' => 'journal_page', 'label' => 'Stories intro', 'default' => 'Explore Thai hospitality, local traditions, architecture, and authentic regional gastronomy.', 'type' => 'textarea' ),
+		'jp_empty_title'   => array( 'section' => 'journal_page', 'label' => 'Empty topic title', 'default' => 'Nothing Here Yet' ),
+		'jp_empty_text'    => array( 'section' => 'journal_page', 'label' => 'Empty topic text', 'default' => 'No stories in this category yet. Check back soon for new journal entries.', 'type' => 'textarea' ),
+		'news_kicker'      => array( 'section' => 'journal_page', 'label' => 'Newsletter kicker', 'default' => 'Curated Dispatch' ),
+		'news_title'       => array( 'section' => 'journal_page', 'label' => 'Newsletter title', 'default' => 'Receive The GP House Gazette' ),
+		'news_text'        => array( 'section' => 'journal_page', 'label' => 'Newsletter text', 'default' => 'Quarterly essays on architectural heritage, seasonal culinary menus, and early invitations to private island retreats across Thailand.', 'type' => 'textarea' ),
+		'news_placeholder' => array( 'section' => 'journal_page', 'label' => 'Newsletter placeholder', 'default' => 'Enter Your Email Address..' ),
+		'news_button'      => array( 'section' => 'journal_page', 'label' => 'Newsletter button', 'default' => 'Subscribe' ),
+		'story_kicker'     => array( 'section' => 'journal_page', 'label' => 'Story page hero kicker', 'default' => 'The GP Journal' ),
+		'story_title'      => array( 'section' => 'journal_page', 'label' => 'Story page hero title', 'default' => 'Thai Hospitality Stories' ),
+		'story_text'       => array( 'section' => 'journal_page', 'label' => 'Story page hero text', 'default' => 'Discover Thai culture, traditions, and inspiring stories behind every unforgettable stay.', 'type' => 'textarea' ),
+		'story_hero_image' => array( 'section' => 'journal_page', 'label' => 'Story page hero image', 'default' => '', 'type' => 'image' ),
+		'story_cta_kicker' => array( 'section' => 'journal_page', 'label' => 'Story footer CTA kicker', 'default' => 'Experience It In Person' ),
+		'story_cta_title'  => array( 'section' => 'journal_page', 'label' => 'Story footer CTA title', 'default' => 'Ready To Immerse Yourself In Thailand?' ),
+		'story_cta_text'   => array( 'section' => 'journal_page', 'label' => 'Story footer CTA text', 'default' => 'Reserve directly with GP House for guaranteed lowest rates, bespoke arrival amenities, and member points.', 'type' => 'textarea' ),
 		// Explore destinations.
 		'dest_kicker'      => array( 'section' => 'destinations', 'label' => 'Kicker', 'default' => 'Region Discovery' ),
 		'dest_title'       => array( 'section' => 'destinations', 'label' => 'Title', 'default' => 'Explore Destinations' ),
@@ -168,9 +230,16 @@ function gp_demo_content() {
 				'read_time'     => '6 min read',
 				'excerpt'       => 'Far from crowded resort strips, a string of quiet coves preserves the wild, untamed spirit of Old Phuket with sea turtles, granite rocks, and hidden fishermen stalls.',
 				'image'         => 'photos/journal-phuket.jpg',
+				'card_image'    => 'destinations/phuket-article-1.jpg',
 				'author_name'   => 'Napat Sirisena',
 				'author_role'   => 'Local Guides',
 				'author_avatar' => 'photos/author-1.png',
+				'author_photo'  => 'journal/author-napat.jpg',
+				'story_image'   => 'journal/story-phuket-beach.jpg',
+				'topic'         => 'travel-guide',
+				'sticky'        => true,
+				'content'       => gp_demo_story_content( 'silent-shores' ),
+				'home'          => true,
 			),
 			array(
 				'slug'          => 'thai-massage-treatments-explained',
@@ -183,6 +252,9 @@ function gp_demo_content() {
 				'author_name'   => 'Dr. Araya Wongsuwan',
 				'author_role'   => 'Wellness',
 				'author_avatar' => 'photos/author-2.png',
+				'topic'         => 'culture',
+				'sticky'        => true,
+				'home'          => true,
 			),
 			array(
 				'slug'          => 'exploring-krabi-caves-hot-springs',
@@ -195,6 +267,37 @@ function gp_demo_content() {
 				'author_name'   => 'Chatchai Boonsoong',
 				'author_role'   => 'Wellness',
 				'author_avatar' => 'photos/author-3.png',
+				'topic'         => 'travel-guide',
+				'sticky'        => true,
+				'home'          => true,
+			),
+			array(
+				'slug'          => 'secret-beaches-of-phuket',
+				'title'         => 'The Secret Beaches of Phuket: Beyond the Crowds',
+				'destination'   => 'phuket',
+				'date'          => '2026-09-12 09:00:00',
+				'read_time'     => '4 min read',
+				'excerpt'       => 'Discover secluded coves, hidden viewpoints, and quiet coastal paths where Phuket’s wild beauty still waits to be found.',
+				'image'         => 'destinations/phuket-hero.jpg',
+				'card_image'    => 'destinations/phuket-article-2.jpg',
+				'topic'         => 'travel-guide',
+				'author_name'   => 'Napat Sirisena',
+				'author_role'   => 'Local Guides',
+				'author_avatar' => 'photos/author-1.png',
+			),
+			array(
+				'slug'          => 'old-phuket-town-living-heritage',
+				'title'         => 'Old Phuket Town: A Morning Through Living Heritage',
+				'destination'   => 'phuket',
+				'date'          => '2026-09-18 09:00:00',
+				'read_time'     => '5 min read',
+				'excerpt'       => 'Wander historic streets, colorful Sino-Portuguese shophouses, local coffee stalls, and the timeless rhythm of Old Phuket Town.',
+				'image'         => 'destinations/hero-thailand.jpg',
+				'card_image'    => 'destinations/phuket-article-3.jpg',
+				'topic'         => 'architecture',
+				'author_name'   => 'Napat Sirisena',
+				'author_role'   => 'Local Guides',
+				'author_avatar' => 'photos/author-1.png',
 			),
 		),
 	);
@@ -204,8 +307,71 @@ function gp_demo_content() {
 add_filter( 'gp_house_demo_content', function () {
 	$content         = gp_demo_content();
 	$content['base']  = GP_HOUSE_DIR . '/assets/img/';
+	$content['regions'] = function_exists( 'gp_demo_regions' ) ? gp_demo_regions() : array();
+	$content['destination_pages'] = function_exists( 'gp_demo_destination_pages' ) ? gp_demo_destination_pages() : array();
+	$content['pages']   = array( 'destinations' => 'Destinations', 'offers' => 'Offers', 'club' => 'Club', 'journal' => 'Journal' );
+	$content['journal_topics'] = gp_journal_default_topics();
+	$content['offers']  = function_exists( 'gp_demo_offers' ) ? gp_demo_offers() : array();
 	$content['rooms'] = function_exists( 'gp_demo_rooms' ) ? array_map( function ( $r ) {
 		return $r + gp_demo_room_details( $r );
 	}, gp_demo_rooms() ) : array();
 	return $content;
 } );
+
+/** Journal topics (WordPress categories) in Figma tab order. */
+function gp_journal_default_topics() {
+	return array(
+		'architecture' => 'Architecture',
+		'wellness'     => 'Wellness',
+		'culture'      => 'Culture',
+		'culinary'     => 'Culinary',
+		'travel-guide' => 'Travel Guide',
+	);
+}
+
+/**
+ * Demo story bodies (Figma "Journal / Overview"). {{img:path}} is replaced
+ * with the imported image URL by the GP House Core importer.
+ */
+function gp_demo_story_content( $key ) {
+	$stories = array(
+		'silent-shores' => <<<'HTML'
+<!-- wp:quote -->
+<blockquote class="wp-block-quote"><p>To know Phuket is to understand its duality: the energetic rhythm of its western beaches and the meditative stillness of its protected coastal reserves where the Andaman whispers against untouched granite rocks.</p></blockquote>
+<!-- /wp:quote -->
+
+<!-- wp:paragraph -->
+<p>Before the advent of international tourism, Phuket was an island of tin barons, rubber plantations, and coconut groves. The northwest corner remains an acoustic haven where coastal pine trees shade secluded sandy beaches that shelter nesting sea turtles during the quiet monsoon months.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>At GP House Phuket Sanctuary, mornings begin not with engines, but with the cadence of Andaman breakers against the sea wall and the calls of crested serpent eagles soaring above the forested ridge.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Wandering just twenty minutes by foot along the coastal headland reveals a series of tidal pools cut into ancient volcanic stone. Here, local fishermen still cast hand-thrown nets at low tide, harvesting wild sea bream and blue swimmer crabs.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">The Ancient Granite Formations<br>of Cherngtalay</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Geologists estimate these cliff formations to be over 120 million years old. At twilight, the porous stone absorbs the setting sun, glowing in hues of deep amber and terracotta against the deep navy ocean.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image -->
+<figure class="wp-block-image"><img src="{{img:journal/story-pier.jpg}}" alt="Wooden pier over turquoise water"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">A Table for Two at Water’s Edge</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>When dusk settles, our culinary team sources wild Andaman snapper directly from the morning catch, charcoal-grilled simply over dried coconut husks and seasoned with sea salt crystals dried in traditional salt pans.</p>
+<!-- /wp:paragraph -->
+HTML,
+	);
+	return $stories[ $key ] ?? '';
+}

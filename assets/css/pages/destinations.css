@@ -1,0 +1,143 @@
+/* GP House — Destinations page (Figma 1148:6972 grid view, 1148:7060 map view) */
+
+.gp-destinations-page { text-transform: capitalize; }
+.gp-destinations { padding-top: 160px; background: #fff; }
+.gp-destinations__bar { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.gp-region-tabs { display: flex; gap: 12px; }
+
+.gp-destinations__panel { padding-top: 48px; }
+.gp-destinations__panel[hidden] { display: none; }
+/* Figma: 100px below the cards / 160px below the map, then the CTA starts 82px into its section (the shared footer area uses 120px). */
+.gp-destinations__panel--grid { padding-bottom: 62px; }
+.gp-destinations__panel--map { padding-bottom: 122px; }
+.gp-destinations__cards { display: flex; gap: 24px; margin-top: 40px; }
+.gp-destinations__panel--map .gp-map { margin-top: 48px; }
+
+@media (max-width: 1180px) {
+	.gp-destinations { padding-top: 80px; }
+	.gp-destinations__bar { flex-wrap: wrap; }
+	.gp-destinations__cards { overflow-x: auto; scrollbar-width: none; }
+	.gp-destinations__cards .gp-stay-card { flex: 0 0 360px; }
+}
+
+/* Mobile — Figma 1435:7062 (grid) / 1435:7770 (map), 402px */
+@media (max-width: 600px) {
+	.gp-destinations { padding-top: 40px; }
+	.gp-destinations__bar { flex-direction: column; align-items: stretch; gap: 24px; }
+	.gp-destinations__bar .gp-tabs { order: -1; align-self: flex-start; }
+	.gp-region-tabs { margin-right: -20px; padding-right: 20px; overflow-x: auto; scrollbar-width: none; }
+	.gp-region-tabs::-webkit-scrollbar { display: none; }
+	.gp-region-tabs .gp-filter-chip { flex: none; }
+	.gp-destinations__panel { padding-top: 32px; }
+	.gp-destinations__panel--grid,
+	.gp-destinations__panel--map { padding-bottom: 0; }
+	.gp-destinations__cards { flex-direction: column; gap: 12px; margin-top: 24px; overflow: visible; }
+	.gp-destinations__cards .gp-stay-card { flex: none; width: 100%; max-width: none; }
+	.gp-destinations__panel--map .gp-map { margin-top: 24px; }
+	.gp-destinations__panel--map .gp-map__regions { display: none; }
+}
+
+@media (max-width: 600px) {
+	.gp-destinations-page .gp-page-hero__content { top: 244px; }
+	.gp-destinations__panel .gp-title { font-size: 28px; }
+	.gp-page-hero--narrow-text .gp-page-hero__text { width: auto; }
+	.gp-stay-card--region .gp-stay-card__title { font-size: 25px; -webkit-line-clamp: 2; }
+	.gp-stay-card--region .gp-btn { min-height: 40px; padding: 10px 16px; }
+	.gp-stay-card--region .gp-stay-card__foot { padding-top: 24px; }
+	.gp-destinations__cards { gap: 16px; }
+}
+
+/* Destination page (Figma 1148:10747) */
+.gp-destination-page { text-transform: capitalize; }
+.gp-dest-rooms { padding: 80px 0; background: #fff; }
+.gp-dest-rooms__grid,
+.gp-dest-articles__grid { display: flex; gap: 24px; margin-top: 57px; }
+
+.gp-insider { padding: 97px 0 80px; background: #fff; }
+.gp-insider__inner { display: flex; align-items: center; gap: 62px; }
+.gp-insider__image { flex: none; width: 552px; height: 647px; border-radius: 16px; object-fit: cover; }
+.gp-insider__content { flex: 1; min-width: 0; }
+@media (min-width: 1181px) { .gp-insider__content { padding-top: 4px; } }
+.gp-insider__list { display: flex; flex-direction: column; gap: 17px; margin: 47px 0 0; padding: 0; list-style: none; }
+.gp-insider__item { display: flex; align-items: flex-start; gap: 20px; padding: 16px; border-radius: 12px; transition: background-color .25s; outline-offset: -2px; }
+.gp-insider__item.is-active { background: var(--gp-sand-light); }
+.gp-insider__icon { display: flex; flex: none; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 8px; background: #fff; }
+.gp-insider__item:not(.is-active) .gp-insider__icon { background: var(--gp-sand-light); }
+.gp-insider__text { display: flex; flex-direction: column; gap: 4px; max-width: 390px; }
+.gp-insider__text strong { color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 500; font-size: 20px; line-height: 1.4; font-variation-settings: normal; }
+.gp-insider__text span { color: var(--gp-text); font-size: 14px; line-height: 1.6; }
+
+.gp-dest-articles { padding: 100px 0 80px; background: #fff; }
+
+/* Destination page — tablet */
+@media (max-width: 1180px) {
+	.gp-dest-rooms__grid,
+	.gp-dest-articles__grid { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+	.gp-dest-rooms__grid > *,
+	.gp-dest-articles__grid > * { flex: 0 0 360px; scroll-snap-align: start; }
+	.gp-insider__inner { flex-direction: column; align-items: stretch; gap: 40px; }
+	.gp-insider__image { width: 100%; height: auto; aspect-ratio: 552 / 647; max-height: 560px; }
+}
+.gp-dest-rooms__views { display: none; }
+/* Figma shows the second (Map View) tab in the white style. */
+.gp-dest-rooms__views .gp-tabs__tab.is-active { background: transparent; }
+.gp-dest-rooms__views .gp-tabs__tab:last-child { background: #fff; }
+.gp-insider__picture { display: contents; }
+.gp-insider__picture > source { display: none; } /* keep <source> out of the flex row (it would add a 62px gap) */
+
+/* Destination page — mobile (Figma "All Thailand Destinations/ overview" 402px, 1435:8694) */
+@media (max-width: 600px) {
+	.gp-page-hero--tabs { height: 414px; }
+	.gp-page-hero--tabs .gp-page-hero__content { top: 154px; gap: 17px; }
+	.gp-page-hero--tabs .gp-page-hero__heading { gap: 6px; }
+	.gp-page-hero--tabs .gp-page-hero__kicker { font-size: 16px; line-height: 1.5; }
+	.gp-page-hero--tabs .gp-page-hero__title { font-size: 39px; line-height: 1.2; }
+	.gp-page-hero--tabs .gp-page-hero__text { width: auto; font-size: 13px; line-height: 22px; }
+	.gp-hero-tabs { width: 293px; margin-top: 16px; padding: 3px; }
+	.gp-hero-tabs__tab { flex: 1 1 0; justify-content: center; height: 38px; padding: 0; font-size: 14px; }
+
+	.gp-dest-rooms { padding: 40px 0 0; }
+	.gp-dest-rooms__views { display: inline-flex; margin-bottom: 28px; }
+	.gp-dest-rooms__views .gp-tabs__tab { padding: 12px 20px; font-size: 16px; }
+	.gp-dest-rooms__grid,
+	.gp-dest-articles__grid { flex-direction: column; gap: 12px; margin-top: 20px; overflow: visible; }
+	.gp-dest-rooms__grid > *,
+	.gp-dest-articles__grid > * { flex: none; width: 100%; max-width: none; }
+	.gp-dest-rooms__grid { gap: 16px; }
+	.gp-dest-rooms .gp-stay-card { gap: 16px; padding: 14px; }
+	.gp-dest-rooms .gp-stay-card__media { height: 240px; }
+	.gp-dest-rooms .gp-stay-card__text { height: 130px; }
+	.gp-dest-rooms .gp-stay-card__title { font-size: 20px; line-height: 28px; -webkit-line-clamp: 2; }
+	.gp-dest-rooms .gp-stay-card__desc { width: auto; font-size: 16px; line-height: 24px; }
+	.gp-dest-rooms .gp-stay-card__foot { padding-top: 24px; }
+	.gp-dest-rooms .gp-stay-card .gp-btn { min-height: 0; padding: 9px 16px; line-height: 18px; }
+
+	.gp-insider { padding: 43px 0 26px; }
+	.gp-insider__inner { gap: 25px; }
+	.gp-insider__image { aspect-ratio: auto; height: 250px; max-height: none; border-radius: 16px; }
+	.gp-insider__list { gap: 8px; margin-top: 24px; }
+	.gp-insider__item { gap: 12px; padding: 12px; }
+	.gp-insider__icon { width: 42px; height: 42px; border-radius: 8px; }
+	.gp-insider__icon .gp-icon { width: 16px; height: 16px; }
+	.gp-insider__text strong { font-size: 16px; line-height: 1.5; }
+	.gp-insider__text span { font-size: 12px; line-height: 19px; }
+
+	.gp-dest-articles { padding: 40px 0; }
+	.gp-dest-articles .gp-section-head { align-items: flex-start; gap: 12px; }
+	.gp-dest-articles .gp-heading { max-width: 225px; }
+	.gp-dest-articles .gp-section-head__actions { margin-top: 38px; }
+	.gp-dest-articles .gp-section-head__actions .gp-btn--navy { padding-bottom: 6px; }
+
+	.gp-faq { padding: 18px 0 0; }
+	.gp-faq .gp-heading { gap: 16px; }
+	.gp-destination-page .gp-faq__list { margin-top: 23px; }
+	.gp-destination-page .gp-faq__a { padding-bottom: 12px; }
+	.gp-dest-articles__grid { gap: 15px; margin-top: 25px; }
+	.gp-article-card__body { padding-top: 18px; }
+
+	/* Footer CTA spacing on this page (Figma 1435:8694) */
+	.gp-destination-page + .gp-footer-area { padding-top: 58px; }
+	.gp-destination-page + .gp-footer-area .gp-cta { gap: 24px; margin-bottom: 38px; }
+	.gp-destination-page + .gp-footer-area .gp-cta__text { gap: 19px; }
+	.gp-destination-page + .gp-footer-area .gp-cta__actions .gp-btn { padding-top: 14px; padding-bottom: 14px; }
+}

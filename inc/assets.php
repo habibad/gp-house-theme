@@ -26,6 +26,8 @@ function gp_current_page_key() {
 		$key = 'destinations';
 	} elseif ( is_home() || is_singular( 'post' ) || is_category() ) {
 		$key = 'journal';
+	} elseif ( is_page( 'destinations' ) ) {
+		$key = 'destinations';
 	} elseif ( is_page() ) {
 		$key = get_post_field( 'post_name', get_queried_object_id() );
 	}
@@ -58,9 +60,18 @@ add_action( 'wp_head', function () {
 
 /** Drop block-library CSS on templates that render no block content. */
 add_action( 'wp_enqueue_scripts', function () {
-	if ( is_front_page() || is_post_type_archive() || is_singular( 'gp_room' ) || is_page_template() ) {
+	if ( is_front_page() || is_post_type_archive() || is_singular( 'gp_room' ) || is_tax( 'gp_destination' ) || is_singular( 'post' ) || ( is_page() && locate_template( 'page-' . get_post_field( 'post_name', get_queried_object_id() ) . '.php' ) ) || is_page_template() ) {
 		wp_dequeue_style( 'wp-block-library' );
 		wp_dequeue_style( 'global-styles' );
 		wp_dequeue_style( 'classic-theme-styles' );
 	}
 }, 100 );
+
+/** Body class per design page (gp-page-<key>) so page CSS can adjust shared areas such as the footer CTA. */
+add_filter( 'body_class', function ( $classes ) {
+	$key = sanitize_html_class( gp_current_page_key() );
+	if ( $key ) {
+		$classes[] = 'gp-page-' . $key;
+	}
+	return $classes;
+} );

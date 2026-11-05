@@ -19,6 +19,7 @@
 .gp-btn--lg { padding: 16px 28px; }
 .gp-btn--xs { padding: 10px 16px; font-size: 14px; }
 .gp-btn--tab { padding: 12px 20px; }
+.gp-btn--card { width: 100%; padding: 10px 16px; font-size: 14px; }
 
 .gp-btn--primary { background: var(--gp-primary); color: var(--gp-black); }
 .gp-btn--primary:hover { background: var(--gp-primary-hover); }
@@ -508,6 +509,291 @@
 .gp-btn--room.gp-btn--outline { padding: 0 21px; }
 
 .gp-room { display: flex; align-items: stretch; gap: 8px; min-height: 432px; }
+/* Stay map (Figma "Explore Destinations/ map") ----------------------------- */
+.gp-map {
+	position: relative;
+	height: 768px;
+	margin-top: 72px;
+	overflow: hidden;
+}
+.gp-map[hidden] { display: none; }
+.gp-map__image {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transform-origin: 30% 55%;
+	transition: transform .4s ease;
+}
+.gp-map__regions { position: absolute; top: 30px; left: 32px; z-index: 2; }
+.gp-map__zoom {
+	position: absolute;
+	top: 642px;
+	left: 32px;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	width: 48px;
+	border-radius: 100px;
+	background: #fff;
+}
+.gp-map__zoom button { display: flex; padding: 12px; border: 0; border-radius: 100px; background: #fff; }
+.gp-map__zoom button:hover { background: var(--gp-b20); }
+.gp-map__area { position: absolute; top: 158px; left: 44px; width: 506.45px; height: 547.154px; pointer-events: none; }
+.gp-pin {
+	position: absolute;
+	left: var(--x);
+	top: var(--y);
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 0;
+	border: 0;
+	background: none;
+	text-align: left;
+	transform: translateX(-50%);
+	transition: transform .2s;
+}
+.gp-pin:hover,
+.gp-pin.is-active { z-index: 2; }
+.gp-pin:hover { transform: translateX(-50%) translateY(-2px); }
+.gp-pin__label {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 6px 12px 6px 6px;
+	border-radius: 12px;
+	background: #fff;
+}
+.gp-pin__label img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
+.gp-pin__label > span { display: flex; flex-direction: column; line-height: normal; white-space: nowrap; }
+.gp-pin__name { color: var(--gp-navy); font-size: 12px; }
+.gp-pin__price { color: var(--gp-text); font-size: 10px; }
+.gp-pin__tail { width: 18px; height: 8.515px; margin-bottom: 1.485px; }
+.gp-pin__num {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 70px;
+	background: var(--gp-navy);
+	color: #fff;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 1;
+}
+.gp-map__panel {
+	position: absolute;
+	top: 50%;
+	right: 32px;
+	z-index: 3;
+	display: flex;
+	gap: 16px;
+	width: 789px;
+	padding: 16px;
+	border-radius: 24px;
+	background: #fff;
+	transform: translateY(-50%);
+	filter: var(--gp-shadow-float);
+}
+.gp-map-card {
+	display: flex;
+	flex: none;
+	flex-direction: column;
+	width: 546px;
+	padding: 2px;
+	border: 1px solid var(--gp-stroke);
+	border-radius: 24px;
+	background: #fff;
+}
+.gp-map-card[hidden] { display: none; }
+.gp-map-card__media { position: relative; height: 331px; overflow: hidden; border-radius: 20px; }
+.gp-map-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.gp-map-card__media .gp-chip { top: 12px; left: 12px; }
+.gp-map-card__body { display: flex; flex-direction: column; gap: 33px; padding: 16px; }
+.gp-map-card__main { display: flex; flex-direction: column; gap: 24px; }
+.gp-map-card__info { display: flex; flex-direction: column; gap: 16px; }
+.gp-map-card__top { display: flex; align-items: center; justify-content: space-between; }
+.gp-map-card__tagline { color: var(--gp-text); font-size: 14px; line-height: 1.6; }
+.gp-map-card__titles { display: flex; flex-direction: column; gap: 12px; }
+.gp-map-card__title {
+	margin: 0;
+	color: var(--gp-navy);
+	font-family: var(--gp-font-head);
+	font-weight: 600;
+	font-size: 20px;
+	line-height: 1.4;
+	font-variation-settings: normal;
+}
+.gp-amenities {
+	display: grid;
+	grid-template-columns: 158px 168px;
+	justify-content: space-between;
+	row-gap: 10px;
+	width: 411px;
+	max-width: 100%;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.gp-amenities li {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: var(--gp-text);
+	font-size: 12px;
+	line-height: 1.6;
+	white-space: nowrap;
+}
+.gp-map-card__desc { width: 504px; max-width: 100%; color: var(--gp-text); font-size: 14px; line-height: 1.6; }
+.gp-map-card__foot { display: flex; align-items: center; justify-content: space-between; }
+.gp-map-card__price { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.gp-map-card__price span { color: var(--gp-text); font-size: 12px; line-height: 1.6; }
+.gp-map-card__price strong {
+	color: var(--gp-navy);
+	font-family: var(--gp-font-head);
+	font-weight: 500;
+	font-size: 20px;
+	line-height: 1.4;
+	font-variation-settings: normal;
+}
+.gp-map-card__cta { width: 148.5px; }
+.gp-map__list { display: flex; flex-direction: column; gap: 16px; width: 195px; }
+.gp-mini-card {
+	display: flex;
+	flex: 1 0 0;
+	flex-direction: column;
+	min-height: 0;
+	padding: 0;
+	overflow: hidden;
+	border: 1px solid var(--gp-stroke);
+	border-radius: 20px;
+	background: #fff;
+	text-align: left;
+	transition: border-color .2s;
+}
+.gp-mini-card:hover { border-color: #b9bdca; }
+.gp-mini-card.is-active { border-color: var(--gp-navy); }
+.gp-mini-card img { width: 100%; height: 120px; flex: none; object-fit: cover; }
+.gp-mini-card__body { display: flex; flex-direction: column; gap: 12px; padding: 12px; }
+.gp-mini-card__price { color: var(--gp-black); font-size: 18px; line-height: normal; text-transform: none; }
+.gp-mini-card__location { display: none; }
+.gp-mini-card__name { color: var(--gp-black); font-size: 12px; line-height: 1.5; white-space: nowrap; }
+
+.gp-title--h3 { font-size: 39px; }
+.gp-page-hero--narrow-text .gp-page-hero__text { width: 253px; }
+.gp-stay-card--region .gp-stay-card__title { width: auto; }
+.gp-stay-card--region .gp-stay-card__title,
+.gp-stay-card--region .gp-stay-card__price { color: var(--gp-navy); }
+.gp-stay-card[hidden] { display: none; }
+
+/* Hero pill switcher (destination page hero) -------------------------------- */
+.gp-page-hero--tabs .gp-page-hero__content { top: 386px; }
+.gp-page-hero--tabs .gp-page-hero__heading { width: auto; }
+.gp-hero-tabs {
+	display: inline-flex;
+	align-self: flex-start;
+	gap: 0;
+	margin-top: 11px;
+	padding: 4px;
+	border: 1px solid rgba(255, 255, 255, .3);
+	border-radius: 40px;
+	background: rgba(255, 255, 255, .12);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+}
+.gp-hero-tabs__tab { display: flex; align-items: center; height: 42px; padding: 0 28px; border-radius: 40px; color: #fff; font-weight: 500; font-size: 16px; line-height: 1.25; transition: background-color .2s, color .2s; }
+.gp-hero-tabs__tab:hover { background: rgba(255, 255, 255, .15); }
+.gp-hero-tabs__tab.is-active { background: #fff; color: var(--gp-navy); }
+
+/* Article card (destination page "Articles & Journal") ---------------------- */
+.gp-article-card { display: flex; flex: 0 0 360px; flex-direction: column; padding: 14px; border: 1px solid var(--gp-stroke); border-radius: 24px; background: #fff; }
+.gp-article-card__media { position: relative; display: block; height: 240px; overflow: hidden; border-radius: 16px; }
+.gp-article-card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.gp-article-card:hover .gp-article-card__media img { transform: scale(1.04); }
+.gp-article-card__media .gp-chip { font-size: 14px; }
+.gp-article-card__body { display: flex; flex-direction: column; gap: 12px; padding: 16px 0 12px; border-bottom: 1px solid var(--gp-stroke); }
+.gp-article-card__date { display: flex; align-items: center; gap: 8px; color: var(--gp-text); font-size: 14px; line-height: 18px; }
+.gp-article-card__title { margin: -4px 0 0; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 600; font-size: 20px; line-height: 1.4; font-variation-settings: normal; }
+.gp-article-card__title a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.gp-article-card__excerpt { color: var(--gp-text); font-size: 13px; line-height: 22px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.gp-article-card__link { margin-top: 22px; margin-bottom: 3px; }
+
+/* FAQ accordion (Figma "FAQs") --------------------------------------------- */
+.gp-faq { padding: 78px 0 44px; background: #fff; }
+.gp-faq__list { width: min(1000px, 100%); margin: 44px auto 0; }
+.gp-faq__item { border-bottom: 1px solid var(--gp-stroke); }
+.gp-faq__q { margin: 0; }
+.gp-faq__q button {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 24px;
+	width: 100%;
+	padding: 26px 0;
+	border: 0;
+	background: none;
+	color: var(--gp-navy);
+	font-family: var(--gp-font-head);
+	font-weight: 400;
+	font-size: 31px;
+	line-height: 1.4;
+	font-variation-settings: normal;
+	text-align: left;
+	text-transform: capitalize;
+}
+.gp-faq__item.is-open .gp-faq__q button { padding-bottom: 9px; }
+.gp-faq__icon {
+	position: relative;
+	flex: none;
+	width: 28px;
+	height: 28px;
+	margin-top: 8px;
+	border: 1px solid var(--gp-stroke);
+	border-radius: 50%;
+	transition: transform .25s ease;
+}
+.gp-faq__icon::before,
+.gp-faq__icon::after { content: ""; position: absolute; top: 50%; left: 50%; width: 10px; height: 1.5px; border-radius: 1px; background: var(--gp-navy); transform: translate(-50%, -50%); }
+.gp-faq__icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.gp-faq__item.is-open .gp-faq__icon { transform: rotate(45deg); }
+.gp-faq__a { padding-bottom: 28px; }
+.gp-faq__a[hidden] { display: none; }
+.gp-faq__a p { max-width: 840px; color: var(--gp-text); font-size: 20px; line-height: 28px; }
+
+/* Hero whose image already contains the Figma shade */
+.gp-page-hero--shaded .gp-page-hero__shade { display: none; }
+
+/* Offer card (Figma: Offers "Card", 554 × 703) ------------------------------ */
+.gp-offer-card { display: flex; flex-direction: column; min-height: 703px; padding: 16px 16px 15px; border: 1px solid var(--gp-stroke); border-radius: 24px; background: #fff; }
+.gp-offer-card[hidden] { display: none; }
+.gp-offer-card__media { position: relative; flex: none; height: 300px; overflow: hidden; border-radius: 16px; background: var(--gp-stroke); }
+.gp-offer-card__media picture,
+.gp-offer-card__media picture img { display: block; width: 100%; height: 100%; }
+.gp-offer-card__media picture img { object-fit: cover; transition: transform .6s ease; }
+.gp-offer-card:hover .gp-offer-card__media picture img { transform: scale(1.03); }
+.gp-offer-card__code { position: absolute; top: 12px; left: 12px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 8px; background: #fff; color: var(--gp-navy); font-size: 14px; line-height: 18px; text-transform: uppercase; white-space: nowrap; }
+.gp-offer-card__body { display: flex; flex: 1; flex-direction: column; }
+.gp-offer-card__intro { display: flex; flex-direction: column; padding: 16px 0 15px; border-bottom: 1px solid var(--gp-stroke); }
+.gp-offer-card__type { color: var(--gp-text); font-size: 14px; line-height: 22px; }
+.gp-offer-card__title { margin: 5px 0 0; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 600; font-size: 25px; line-height: 1.4; font-variation-settings: normal; }
+.gp-offer-card__desc { margin-top: 12px; color: var(--gp-text); font-size: 16px; line-height: 24px; }
+.gp-offer-card__list { display: flex; flex: 1; flex-direction: column; gap: 8px; min-height: 155px; margin: 0; padding: 17px 0 14px; border-bottom: 1px solid var(--gp-stroke); list-style: none; }
+.gp-offer-card__list li { display: flex; align-items: center; gap: 8px; color: var(--gp-navy); font-size: 14px; line-height: 18px; }
+.gp-offer-card__foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 25px; }
+.gp-offer-card__foot .gp-btn { padding: 9px 16px; line-height: 18px; }
+.gp-offer-card__save { color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 600; font-size: 20px; line-height: 1.4; font-variation-settings: normal; }
+
+/* Promo band (Figma: Offers "GP House Direct Booking Guarantee", 1440 × 590) */
+.gp-promo-band { display: flex; justify-content: center; min-height: 590px; padding: 163px 24px 0; background: var(--gp-navy) var(--bg, none) center / cover no-repeat; color: #fff; text-align: center; }
+.gp-promo-band__inner { display: flex; flex-direction: column; align-items: center; width: min(560px, 100%); }
+.gp-promo-band__title { width: 500px; max-width: 100%; margin: 0; font-family: var(--gp-font-head); font-weight: 600; font-size: 49px; line-height: 1.2; font-variation-settings: normal; }
+.gp-promo-band__text { margin-top: 25px; color: rgba(255, 255, 255, .7); font-size: 16px; line-height: 1.6; }
+.gp-promo-band__btn { margin-top: 24px; padding: 12px 22px; }
+
 @media (min-width: 1181px) { .gp-room__card { height: 432px; } }
 .gp-room[hidden] { display: none; }
 .gp-room__media { position: relative; flex: 0 0 560px; overflow: hidden; border-radius: 20px; background: var(--gp-stroke); }
@@ -625,7 +911,7 @@
 @media (max-width: 600px) {
 	.gp-container { width: calc(100% - 40px); }
 	.gp-kicker { font-size: 14px; line-height: 1.5; }
-	.gp-title { font-size: 28.6px; line-height: 1.2; }
+	.gp-title { font-size: 28px; line-height: 1.2; }
 
 	.gp-section-head { flex-direction: row; align-items: flex-end; gap: 16px; }
 	.gp-section-head:has(.gp-tabs) { flex-direction: column; align-items: stretch; gap: 15px; }
@@ -697,4 +983,118 @@
 	.gp-room__spec-col { flex: 0 0 calc(50% - 2px); min-width: 0; }
 	.gp-room__foot { flex-direction: column; align-items: stretch; gap: 12px; }
 	.gp-room__actions { width: 100%; }
+}
+
+@media (max-width: 1280px) {
+	.gp-map { height: auto; overflow: visible; }
+	.gp-map__image,
+	.gp-map__area,
+	.gp-pin,
+	.gp-map__regions,
+	.gp-map__zoom { display: none; }
+	.gp-map__panel {
+		position: static;
+		width: min(var(--gp-container), 100% - 48px);
+		margin-inline: auto;
+		transform: none;
+		filter: none;
+		border: 1px solid var(--gp-stroke);
+	}
+	.gp-map-card { flex: 1 1 auto; width: auto; min-width: 0; }
+}
+
+@media (max-width: 860px) {
+	.gp-map__panel { flex-direction: column; }
+	.gp-map__list { flex-direction: row; width: 100%; overflow-x: auto; }
+	.gp-mini-card { flex: 0 0 195px; }
+	.gp-map-card__media { height: 240px; }
+}
+
+@media (max-width: 600px) {
+	.gp-map__panel { width: calc(100% - 32px); }
+	.gp-amenities { grid-template-columns: 1fr; }
+	.gp-map-card__foot { flex-direction: column; align-items: stretch; gap: 16px; }
+	.gp-map-card__cta { width: 100%; }
+	.gp-map {
+		position: relative;
+		display: block;
+		width: calc(100% - 40px);
+		height: auto;
+		margin: 96px auto 0;
+		padding-top: 370px;
+		overflow: visible;
+	}
+	.gp-map__image { display: block; top: 0; left: 0; width: 100%; height: 370px; border-radius: 16px; }
+	.gp-map__area { display: block; top: 38px; left: 35px; width: 275px; height: 297px; }
+	.gp-map__zoom { display: none; }
+	.gp-map__regions {
+		top: -72px;
+		left: 0;
+		right: 0;
+		display: flex;
+		background: var(--gp-sand-light);
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+	.gp-map__regions .gp-tabs__tab { flex: 1 0 119px; }
+	.gp-pin { display: flex; left: var(--mx); top: var(--my); }
+	.gp-map__panel {
+		position: static;
+		flex-direction: column;
+		gap: 16px;
+		width: 100%;
+		margin: 16px 0 0;
+		padding: 0;
+		border: 0;
+		background: none;
+		transform: none;
+		filter: none;
+	}
+	.gp-map-card { width: 100%; padding: 12px; border-radius: 20px; }
+	.gp-map-card__media { height: 250px; border-radius: 16px; }
+	.gp-map-card__body { gap: 24px; padding: 10px 0 0; }
+	.gp-map-card .gp-chip { padding: 4px 10px; font-size: 14px; }
+	.gp-map-card__titles { gap: 16px; }
+	.gp-amenities { grid-template-columns: 1fr; row-gap: 8px; width: 100%; }
+	.gp-map-card__desc { width: auto; }
+	.gp-map-card__foot { flex-direction: column; align-items: stretch; gap: 16px; }
+	.gp-map-card__cta { width: 100%; }
+	.gp-map__list { flex-direction: column; gap: 10px; width: 100%; overflow: visible; }
+	.gp-mini-card { flex: none; flex-direction: row; align-items: center; gap: 12px; height: 104px; padding: 12px; border-radius: 16px; }
+	.gp-mini-card img { width: 88px; height: 80px; border-radius: 8px; }
+	.gp-mini-card__body { gap: 4px; padding: 0; }
+	.gp-mini-card__location { display: block; order: 1; color: var(--gp-text); font-size: 12px; line-height: 1.5; }
+	.gp-mini-card__name { order: 2; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 600; font-size: 16px; line-height: 1.4; font-variation-settings: normal; }
+	.gp-mini-card__price { order: 3; font-size: 14px; line-height: 1.5; }
+}
+
+/* Mobile — offer card & promo band (Figma "Hero /Offers" 402px, 1438:10794) */
+@media (max-width: 600px) {
+	.gp-offer-card { min-height: 0; padding: 12px; border-radius: 20px; }
+	.gp-offer-card__media { height: 260px; border-radius: 12px; }
+	.gp-offer-card__title { font-size: 20px; }
+	.gp-offer-card__desc { margin-top: 12px; font-size: 14px; line-height: 22px; }
+	.gp-offer-card__list { min-height: 147px; padding: 8px 0 12px; }
+	.gp-offer-card__list li { font-size: 12px; line-height: 16px; }
+	.gp-offer-card__foot { padding-top: 24px; }
+	.gp-offer-card__foot .gp-btn { padding: 10px 16px; }
+
+	.gp-promo-band { min-height: 380px; padding: 84px 20px 0; background-image: var(--bg-m, var(--bg, none)); }
+	.gp-promo-band__inner { width: 100%; }
+	.gp-promo-band__title { width: auto; font-size: 28px; }
+	.gp-promo-band__text { max-width: 310px; margin-top: 14px; font-size: 13px; line-height: 22px; }
+	.gp-promo-band__btn { align-self: stretch; margin-top: 23px; }
+}
+
+/* FAQ accordion — mobile (Figma 402px: Phuket 1435:8694, Club 1455:14304) */
+@media (max-width: 600px) {
+	.gp-faq__list { margin-top: 20px; }
+	.gp-faq__q button { align-items: center; gap: 6px; padding: 14px 0; font-size: 16px; font-weight: 500; line-height: 24px; letter-spacing: -.25px; }
+	.gp-faq__item.is-open .gp-faq__q button { align-items: flex-start; }
+	.gp-faq__item.is-open .gp-faq__q button { padding-bottom: 14px; }
+	.gp-faq__icon { width: 34px; height: 34px; margin-top: 2px; }
+	.gp-faq__q button .gp-faq__icon { margin-top: 0; }
+	.gp-faq__item.is-open .gp-faq__icon { margin-top: 2px; }
+	.gp-faq__a { padding-bottom: 14px; }
+	.gp-faq__a p { max-width: 330px; font-size: 14px; line-height: 22px; }
 }

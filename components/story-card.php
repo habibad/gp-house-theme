@@ -3,7 +3,7 @@
  * Journal story card — wide image with floating article card
  * (Figma: The GP Journal / Frame 432, 1128 × 420).
  *
- * @var array $args { story: array (gp_get_journal() shape), index?: int }
+ * @var array $args { story: array (gp_get_journal() shape), index?: int, class?: string ('gp-story--flat' for plain lists) }
  *
  * @package GP_House
  */
@@ -12,8 +12,9 @@ defined( 'ABSPATH' ) || exit;
 
 $story = $args['story'];
 $index = (int) ( $args['index'] ?? 0 );
+$class = trim( 'gp-story ' . ( $args['class'] ?? '' ) );
 ?>
-<article class="gp-story" data-location="<?php echo esc_attr( $story['location_slug'] ); ?>" style="--i:<?php echo (int) $index; ?>">
+<article class="<?php echo esc_attr( $class ); ?>" data-location="<?php echo esc_attr( $story['location_slug'] ); ?>" style="--i:<?php echo (int) $index; ?>">
 	<img class="gp-story__image" src="<?php echo esc_url( $story['image'] ); ?>" alt="" loading="lazy">
 	<span class="gp-story__word" aria-hidden="true"><?php echo esc_html( $story['location'] ); ?></span>
 	<?php gp_chip( $story['location'], 'story' ); ?>
