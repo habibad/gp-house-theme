@@ -14,11 +14,6 @@
 .gp-journal-list__head .gp-pills { margin-top: 40px; }
 .gp-journal-list__stories { display: flex; flex-direction: column; gap: 48px; margin-top: 72px; }
 
-/* Light topic pills (navy when active). */
-.gp-pills--light .gp-pills__tab { padding: 11px 19px; border: 1px solid var(--gp-stroke); background: #fff; color: var(--gp-text); }
-.gp-pills--light .gp-pills__tab:hover { background: var(--gp-sand-light); color: var(--gp-navy); }
-.gp-pills--light .gp-pills__tab.is-active { border-color: var(--gp-navy); background: var(--gp-navy); color: #fff; }
-
 /* Story cards as a plain list (the Home section stacks them). */
 .gp-story--flat { position: relative; top: auto; transform: none !important; will-change: auto; }
 .gp-journal-list .gp-story__text p { width: 257px; max-width: 100%; }

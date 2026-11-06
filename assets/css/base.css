@@ -132,3 +132,13 @@ p { margin: 0; }
 /* Visually hidden, still read by screen readers (WordPress convention). */
 .screen-reader-text { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); border: 0; white-space: nowrap; }
 .screen-reader-text:focus { width: auto; height: auto; margin: 0; clip: auto; clip-path: none; }
+
+/* Copy that differs between desktop and mobile frames. */
+.gp-only-m,
+.gp-cta__text.gp-only-m { display: none; }
+@media (max-width: 600px) {
+	.gp-only-d { display: none !important; }
+	.gp-only-m { display: block; }
+	.gp-cta__text.gp-only-m { display: flex; }
+	.gp-cta__text.gp-only-d { display: none !important; }
+}

@@ -36,10 +36,19 @@ $cta = apply_filters( 'gp_house_footer_cta', array(
 	<div class="gp-container">
 		<?php if ( apply_filters( 'gp_house_show_footer_cta', true ) ) : ?>
 			<div class="gp-cta<?php echo $cta['class'] ? ' ' . esc_attr( $cta['class'] ) : ''; ?>">
-				<div class="gp-cta__text">
-					<?php gp_component( 'section-head', array( 'kicker' => $cta['kicker'], 'title' => $cta['title'], 'kicker_class' => 'gp-kicker--dark' ) ); ?>
-					<p class="gp-cta__lead"><?php echo esc_html( $cta['text'] ); ?></p>
+				<?php
+				// Some pages (About) show different copy on mobile: 'mobile' => array( kicker?, title, text ).
+				$variants = array( 'desktop' => $cta );
+				if ( ! empty( $cta['mobile'] ) ) {
+					$variants['mobile'] = $cta['mobile'] + $cta;
+				}
+				foreach ( $variants as $which => $copy ) :
+					?>
+				<div class="gp-cta__text<?php echo count( $variants ) > 1 ? ( 'mobile' === $which ? ' gp-only-m' : ' gp-only-d' ) : ''; ?>">
+					<?php gp_component( 'section-head', array( 'kicker' => $copy['kicker'], 'title' => $copy['title'], 'kicker_class' => 'gp-kicker--dark' ) ); ?>
+					<p class="gp-cta__lead"><?php echo esc_html( $copy['text'] ); ?></p>
 				</div>
+				<?php endforeach; ?>
 				<div class="gp-cta__actions">
 					<?php
 					foreach ( $cta['buttons'] as $button ) {

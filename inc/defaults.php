@@ -66,6 +66,48 @@ function gp_option_defaults() {
 		'club_cta_kicker' => array( 'section' => 'club_page', 'label' => 'Footer CTA kicker', 'default' => 'Member Privilege' ),
 		'club_cta_title' => array( 'section' => 'club_page', 'label' => 'Footer CTA title', 'default' => 'Your Siamese Sanctuary Awaits' ),
 		'club_cta_text' => array( 'section' => 'club_page', 'label' => 'Footer CTA text', 'default' => 'Book directly today with promo code MEMBERDIRECT for an instant 10% discount and direct VIP privileges.', 'type' => 'textarea' ),
+		'about_kicker' => array( 'section' => 'about_page', 'label' => 'Hero kicker', 'default' => 'Heritage & Craft' ),
+		'about_title' => array( 'section' => 'about_page', 'label' => 'Hero title', 'default' => 'Our Story' ),
+		'about_text' => array( 'section' => 'about_page', 'label' => 'Hero text', 'default' => 'GP House celebrates Thai hospitality through intimate sanctuaries rooted in community, landscape, and heritage.', 'type' => 'textarea' ),
+		'about_hero_image' => array( 'section' => 'about_page', 'label' => 'Hero image', 'default' => '', 'type' => 'image' ),
+		'about_ethos_kicker' => array( 'section' => 'about_page', 'label' => 'Ethos kicker', 'default' => 'Our Ethos' ),
+		'about_ethos_title' => array( 'section' => 'about_page', 'label' => 'Ethos title', 'default' => 'Boutique Hospitality Rooted in Respect' ),
+		'about_diff_kicker' => array( 'section' => 'about_page', 'label' => 'Difference kicker', 'default' => 'Pillars of Difference' ),
+		'about_diff_title' => array( 'section' => 'about_page', 'label' => 'Difference title', 'default' => 'The GP House Difference' ),
+		'about_diff_text' => array( 'section' => 'about_page', 'label' => 'Difference intro', 'default' => 'How our intentional boutique model compares to conventional commercial chain resorts.', 'type' => 'textarea' ),
+		'about_map_kicker' => array( 'section' => 'about_page', 'label' => 'Map kicker', 'default' => 'Geographic Presence' ),
+		'about_map_title' => array( 'section' => 'about_page', 'label' => 'Map title', 'default' => 'Our Footprint Across Thailand' ),
+		'about_map_text' => array( 'section' => 'about_page', 'label' => 'Map text', 'default' => 'Select any sanctuary pin below to explore property details, photography, and available suites.', 'type' => 'textarea' ),
+		'about_team_kicker' => array( 'section' => 'about_page', 'label' => 'Team kicker', 'default' => 'Our Profile' ),
+		'about_team_title' => array( 'section' => 'about_page', 'label' => 'Team title', 'default' => 'Stewards of the Sanctuary' ),
+		'about_team_text' => array( 'section' => 'about_page', 'label' => 'Team intro', 'default' => 'Meet the friendly faces who will welcome you, assist you, and make your stay exceptional at each of our locations. Our local teams are here to ensure you feel at home.', 'type' => 'textarea' ),
+		'about_phone' => array( 'section' => 'about_page', 'label' => 'Team phone', 'default' => '+6620000000' ),
+		'about_email' => array( 'section' => 'about_page', 'label' => 'Team email', 'default' => 'hello@gphouse.com' ),
+		'about_cta_kicker' => array( 'section' => 'about_page', 'label' => 'Footer CTA kicker', 'default' => 'Your Thai Journey Begins Here' ),
+		'about_cta_title' => array( 'section' => 'about_page', 'label' => 'Footer CTA title', 'default' => 'Begin Your Thai Chapter With Us' ),
+		'about_cta_text' => array( 'section' => 'about_page', 'label' => 'Footer CTA text', 'default' => 'Reserve your stay directly with GP House and experience authentic boutique hospitality firsthand.', 'type' => 'textarea' ),
+		'about_cta_title_m' => array( 'section' => 'about_page', 'label' => 'Footer CTA title (mobile)', 'default' => 'Discover Thailand, The GP House Way' ),
+		'about_cta_text_m' => array( 'section' => 'about_page', 'label' => 'Footer CTA text (mobile)', 'default' => 'Book directly with GP House to enjoy authentic Thai hospitality, thoughtfully curated stays, and a more personal travel experience.', 'type' => 'textarea' ),
+		'about_team_title_m' => array( 'section' => 'about_page', 'label' => 'Team title (mobile)', 'default' => 'The People Behind Your Stay' ),
+		'about_team_text_m' => array( 'section' => 'about_page', 'label' => 'Team intro (mobile)', 'default' => 'Meet the welcoming faces behind GP House. Our dedicated local teams bring Thai hospitality to life, ensuring every guest feels at home through thoughtful service and genuine care.', 'type' => 'textarea' ),
+		'ir_kicker' => array( 'section' => 'ir_page', 'label' => 'Hero kicker', 'default' => 'Hotel Owner Partnerships' ),
+		'ir_title' => array( 'section' => 'ir_page', 'label' => 'Hero title', 'default' => 'Elevate Hotels. Maximize Profitability.' ),
+		'ir_text' => array( 'section' => 'ir_page', 'label' => 'Hero text', 'default' => 'GPHM transforms independent hotels through Thai design, stronger direct bookings, and smarter management.', 'type' => 'textarea' ),
+		'ir_hero_image' => array( 'section' => 'ir_page', 'label' => 'Hero image', 'default' => '', 'type' => 'image' ),
+		'ir_adv_kicker' => array( 'section' => 'ir_page', 'label' => 'Advantage kicker', 'default' => 'The GPHM Advantage' ),
+		'ir_adv_title' => array( 'section' => 'ir_page', 'label' => 'Advantage title', 'default' => 'Why Hotel Owners Entrust Their Assets To Us' ),
+		'ir_adv_text' => array( 'section' => 'ir_page', 'label' => 'Advantage text', 'default' => 'GPHM preserves your property’s unique identity while delivering expert revenue management and global sales.', 'type' => 'textarea' ),
+		'ir_models_kicker' => array( 'section' => 'ir_page', 'label' => 'Models kicker', 'default' => 'Flexible Engagement' ),
+		'ir_models_title' => array( 'section' => 'ir_page', 'label' => 'Models title', 'default' => 'Three Partnership Models' ),
+		'ir_sim_kicker' => array( 'section' => 'ir_page', 'label' => 'Simulator kicker', 'default' => 'Owner Financial Simulator' ),
+		'ir_sim_title' => array( 'section' => 'ir_page', 'label' => 'Simulator title', 'default' => 'Estimate Your Asset\'s Revenue Uplift Under GPHM' ),
+		'ir_sim_text' => array( 'section' => 'ir_page', 'label' => 'Simulator text', 'default' => 'Model GPHM’s ADR, occupancy, and booking savings to estimate your room revenue uplift.', 'type' => 'textarea' ),
+		'sc_kicker' => array( 'section' => 'sc_page', 'label' => 'Hero kicker', 'default' => 'Late-Night Arrival (11 PM–6 AM)' ),
+		'sc_title' => array( 'section' => 'sc_page', 'label' => 'Hero title', 'default' => 'Late Night Self Check-In' ),
+		'sc_text' => array( 'section' => 'sc_page', 'label' => 'Hero text', 'default' => 'Arriving Late? Enter Your Booking ID To Access Your Room Number, Door PIN, And Private Gate Directions.', 'type' => 'textarea' ),
+		'sc_hero_image' => array( 'section' => 'sc_page', 'label' => 'Hero image', 'default' => '', 'type' => 'image' ),
+		'sc_lookup_title' => array( 'section' => 'sc_page', 'label' => 'Look-up title', 'default' => 'Look Up Your Reservation' ),
+		'sc_lookup_text' => array( 'section' => 'sc_page', 'label' => 'Look-up text', 'default' => 'Enter The Booking Confirmation ID Provided In Your Reservation Confirmation Email Or Member Itinerary.', 'type' => 'textarea' ),
 		// Journal page (Figma "Journal", 1148:8205) and story page (1148:8455).
 		'jp_kicker'        => array( 'section' => 'journal_page', 'label' => 'Hero kicker', 'default' => 'Chronicles Of Thai Hospitality' ),
 		'jp_title'         => array( 'section' => 'journal_page', 'label' => 'Hero title', 'default' => 'The GP Journal' ),
@@ -309,7 +351,7 @@ add_filter( 'gp_house_demo_content', function () {
 	$content['base']  = GP_HOUSE_DIR . '/assets/img/';
 	$content['regions'] = function_exists( 'gp_demo_regions' ) ? gp_demo_regions() : array();
 	$content['destination_pages'] = function_exists( 'gp_demo_destination_pages' ) ? gp_demo_destination_pages() : array();
-	$content['pages']   = array( 'destinations' => 'Destinations', 'offers' => 'Offers', 'club' => 'Club', 'journal' => 'Journal' );
+	$content['pages']   = array( 'destinations' => 'Destinations', 'offers' => 'Offers', 'club' => 'Club', 'journal' => 'Journal', 'about' => 'About', 'investor-relations' => 'Investor Relations', 'self-check-in' => 'Late Night Self Check-In' );
 	$content['journal_topics'] = gp_journal_default_topics();
 	$content['offers']  = function_exists( 'gp_demo_offers' ) ? gp_demo_offers() : array();
 	$content['rooms'] = function_exists( 'gp_demo_rooms' ) ? array_map( function ( $r ) {

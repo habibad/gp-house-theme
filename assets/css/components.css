@@ -1098,3 +1098,17 @@
 	.gp-faq__a { padding-bottom: 14px; }
 	.gp-faq__a p { max-width: 330px; font-size: 14px; line-height: 22px; }
 }
+
+/* Light topic pills (navy when active). */
+.gp-pills--light .gp-pills__tab { padding: 11px 19px; border: 1px solid var(--gp-stroke); background: #fff; color: var(--gp-text); }
+.gp-pills--light .gp-pills__tab:hover { background: var(--gp-sand-light); color: var(--gp-navy); }
+.gp-pills--light .gp-pills__tab.is-active { border-color: var(--gp-navy); background: var(--gp-navy); color: #fff; }
+
+/* Range slider (Club calculator, Investor simulator) */
+.gp-range { display: block; width: 100%; height: 18px; margin: 8px 0 0; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; --pct: 21.4%; }
+.gp-range:focus-visible { outline: 2px solid var(--gp-navy); outline-offset: 4px; border-radius: 10px; }
+.gp-range::-webkit-slider-runnable-track { height: 10px; border-radius: 10px; background: linear-gradient(to right, var(--gp-primary) var(--pct), #fff var(--pct)); }
+.gp-range::-moz-range-track { height: 10px; border-radius: 10px; background: #fff; }
+.gp-range::-moz-range-progress { height: 10px; border-radius: 10px; background: var(--gp-primary); }
+.gp-range::-webkit-slider-thumb { width: 18px; height: 18px; margin-top: -4px; border: 0; border-radius: 50%; background: var(--gp-primary); -webkit-appearance: none; appearance: none; }
+.gp-range::-moz-range-thumb { width: 18px; height: 18px; border: 0; border-radius: 50%; background: var(--gp-primary); }

@@ -515,7 +515,7 @@
 
 	/* Insider secrets / benefit-style lists: highlight hovered item ------- */
 	function initHoverLists() {
-		[ '.gp-insider__item' ].forEach( ( sel ) => {
+		[ '.gp-insider__item', '.gp-model' ].forEach( ( sel ) => {
 			const items = $$( sel );
 			items.forEach( ( item ) => {
 				const on = () => items.forEach( ( i ) => i.classList.toggle( 'is-active', i === item ) );
@@ -574,6 +574,59 @@
 		} );
 	}
 
+	/* Tabbed panels (About team): [data-team] with [data-team-tab] / [data-team-panel] */
+	function initTeamTabs() {
+		$$( '[data-team]' ).forEach( ( root ) => {
+			const tabs = $$( '[data-team-tab]', root );
+			const panels = $$( '[data-team-panel]', root );
+			tabs.forEach( ( tab ) => tab.addEventListener( 'click', () => {
+				tabs.forEach( ( t ) => {
+					t.classList.toggle( 'is-active', t === tab );
+					t.setAttribute( 'aria-selected', String( t === tab ) );
+				} );
+				panels.forEach( ( p ) => ( p.hidden = p.dataset.teamPanel !== tab.dataset.teamTab ) );
+			} ) );
+		} );
+	}
+
+	/* Owner revenue simulator (Investor Relations) -------------------------- */
+	function initOwnerSim() {
+		$$( '[data-sim]' ).forEach( ( root ) => {
+			const adrLift = parseFloat( root.dataset.adrLift ) || 0;
+			const occLift = parseFloat( root.dataset.occLift ) || 0;
+			const ota = parseFloat( root.dataset.ota ) || 0;
+			const inputs = {};
+			$$( '[data-sim-in]', root ).forEach( ( i ) => ( inputs[ i.dataset.simIn ] = i ) );
+			const fmt = ( n ) => new Intl.NumberFormat( 'en-US', { maximumFractionDigits: 0 } ).format( Math.round( n ) );
+			const compact = ( n ) => ( n >= 1e6 ? ( n / 1e6 ).toFixed( 2 ) + 'M' : n >= 1e3 ? ( n / 1e3 ).toFixed( 1 ) + 'K' : fmt( n ) );
+			const set = ( key, text ) => $$( `[data-sim-${ key }]`, root ).forEach( ( el ) => ( el.textContent = text ) );
+
+			const render = () => {
+				const keys = +inputs.keys.value;
+				const adr = +inputs.adr.value;
+				const occ = +inputs.occ.value;
+				const cur = keys * 365 * adr * ( occ / 100 );
+				const newAdr = Math.round( adr * ( 1 + adrLift ) );
+				const newOcc = Math.min( 100, occ + occLift );
+				const proj = keys * 365 * newAdr * ( newOcc / 100 );
+				Object.keys( inputs ).forEach( ( k ) => {
+					const i = inputs[ k ];
+					i.style.setProperty( '--pct', `${ ( ( i.value - i.min ) / ( i.max - i.min ) ) * 100 }%` );
+					const out = $( `[data-sim-out="${ k }"]`, root );
+					if ( out ) out.textContent = out.dataset.format.replace( '%s', i.value ).replace( '%%', '%' );
+				} );
+				set( 'total', fmt( proj - cur ) );
+				set( 'proj', fmt( proj ) );
+				set( 'cur', fmt( cur ) );
+				set( 'adr', fmt( newAdr ) );
+				set( 'occ', fmt( newOcc ) );
+				set( 'ota', compact( proj * ota ) );
+			};
+			Object.values( inputs ).forEach( ( i ) => i.addEventListener( 'input', render ) );
+			render();
+		} );
+	}
+
 	/* Share buttons: native share sheet, else copy the link ---------------- */
 	function initShare() {
 		$$( '[data-share]' ).forEach( ( btn ) => {
@@ -592,6 +645,24 @@
 				}
 			} );
 		} );
+	}
+
+	/* Self check-in: copy buttons, NFC unlock + arrival confirmation --------- */
+	function initCheckin() {
+		$$( '[data-copy]' ).forEach( ( btn ) => btn.addEventListener( 'click', async () => {
+			try {
+				await navigator.clipboard.writeText( btn.dataset.copy );
+				btn.classList.add( 'is-copied' );
+				setTimeout( () => btn.classList.remove( 'is-copied' ), 1400 );
+			} catch ( e ) {
+				// Clipboard blocked — nothing to do.
+			}
+		} ) );
+		[ '[data-unlock]', '[data-arrived]' ].forEach( ( sel ) => $$( sel ).forEach( ( btn ) => btn.addEventListener( 'click', () => {
+			btn.textContent = btn.dataset.done;
+			btn.classList.add( 'is-done' );
+			btn.disabled = true;
+		} ) ) );
 	}
 
 	document.addEventListener( 'DOMContentLoaded', () => {
@@ -613,5 +684,8 @@
 		initHoverLists();
 		initClubCalc();
 		initShare();
+		initTeamTabs();
+		initOwnerSim();
+		initCheckin();
 	} );
 }() );

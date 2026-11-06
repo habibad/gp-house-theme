@@ -22,6 +22,9 @@ add_action( 'customize_register', function ( WP_Customize_Manager $wp_customize 
 		'offers_page'  => __( 'Offers page', 'gp-house' ),
 		'club_page'    => __( 'Club page', 'gp-house' ),
 		'journal_page' => __( 'Journal page', 'gp-house' ),
+		'about_page'   => __( 'About page', 'gp-house' ),
+		'ir_page'      => __( 'Investor Relations page', 'gp-house' ),
+		'sc_page'      => __( 'Self Check-In page', 'gp-house' ),
 		'footer'       => __( 'Footer', 'gp-house' ),
 	);
 

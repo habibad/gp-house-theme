@@ -17,7 +17,7 @@ define( 'GP_HOUSE_VERSION', '1.0.0' );
 define( 'GP_HOUSE_DIR', get_template_directory() );
 define( 'GP_HOUSE_URI', get_template_directory_uri() );
 
-foreach ( array( 'helpers', 'setup', 'assets', 'components', 'defaults', 'content', 'rooms', 'destinations', 'offers', 'club', 'journal', 'customizer', 'menus' ) as $gp_module ) {
+foreach ( array( 'helpers', 'setup', 'assets', 'components', 'defaults', 'content', 'rooms', 'destinations', 'offers', 'club', 'journal', 'about', 'investors', 'checkin', 'customizer', 'menus' ) as $gp_module ) {
 	require GP_HOUSE_DIR . '/inc/' . $gp_module . '.php';
 }
 unset( $gp_module );
