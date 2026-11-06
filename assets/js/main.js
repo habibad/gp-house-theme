@@ -884,6 +884,7 @@
 		$$( '[data-auth]' ).forEach( ( a ) => a.addEventListener( 'click', ( e ) => {
 			if ( modal && openModal( a.dataset.auth ) ) {
 				e.preventDefault();
+				modal.dataset.redirect = a.dataset.redirect || '';
 				const mm = $( '#gp-mobile-menu' );
 				if ( mm && ! mm.hidden ) $( '[data-menu-close]', mm ).click();
 			}
@@ -922,7 +923,7 @@
 			const resendBtn = $( '[data-auth-resend]', form );
 			if ( resendBtn ) resendBtn.hidden = true;
 			const data = Object.fromEntries( new FormData( form ).entries() );
-			if ( action === 'login' && modal && modal.contains( form ) ) data.redirect_to = window.location.href;
+			if ( action === 'login' && modal && modal.contains( form ) ) data.redirect_to = modal.dataset.redirect || window.location.href;
 			const label = submit.textContent;
 			submit.disabled = true;
 			submit.textContent = gpAuth.i18n.sending;
@@ -963,6 +964,37 @@
 				btn.hidden = true;
 			}
 		} );
+	}
+
+	/* Review form: character counter + photo preview ------------------------- */
+	function initReviewForm() {
+		const form = $( '[data-review-form]' );
+		if ( ! form ) return;
+		const text = $( '[data-review-text]', form );
+		const count = $( '[data-review-count]', form );
+		const update = () => ( count.textContent = String( text.value.length ) );
+		text.addEventListener( 'input', update );
+		update();
+		const photo = $( '[data-review-photo]', form );
+		const avatar = $( '[data-review-avatar]', form );
+		if ( photo && avatar ) {
+			photo.addEventListener( 'change', () => {
+				const file = photo.files && photo.files[ 0 ];
+				if ( ! file ) return;
+				if ( file.size > 2 * 1024 * 1024 ) {
+					photo.value = '';
+					alert( 'Please choose an image up to 2 MB.' );
+					return;
+				}
+				avatar.innerHTML = '';
+				const img = document.createElement( 'img' );
+				img.width = 56;
+				img.height = 56;
+				img.alt = '';
+				img.src = URL.createObjectURL( file );
+				avatar.append( img );
+			} );
+		}
 	}
 
 	/* Header pop-overs (account menu, language / currency) ------------------- */
@@ -1044,6 +1076,7 @@
 	document.addEventListener( 'DOMContentLoaded', () => {
 		initPopovers();
 		initAuth();
+		initReviewForm();
 		initHeroSearch();
 		initProfile();
 		initHeader();

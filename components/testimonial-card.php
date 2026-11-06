@@ -13,7 +13,11 @@ $t = $args['testimonial'];
 ?>
 <figure class="gp-testimonial">
 	<figcaption class="gp-testimonial__who">
-		<img src="<?php echo esc_url( $t['avatar'] ); ?>" width="44" height="44" alt="" loading="lazy">
+		<?php if ( ! empty( $t['avatar'] ) ) : ?>
+			<img src="<?php echo esc_url( $t['avatar'] ); ?>" width="44" height="44" alt="" loading="lazy">
+		<?php else : ?>
+			<span class="gp-testimonial__initial" aria-hidden="true"><?php echo esc_html( mb_strtoupper( mb_substr( $t['name'], 0, 1 ) ) ); ?></span>
+		<?php endif; ?>
 		<span>
 			<strong><?php echo esc_html( $t['name'] ); ?></strong>
 			<span><?php echo esc_html( $t['location'] ); ?></span>

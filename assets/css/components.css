@@ -1143,3 +1143,11 @@
 	.gp-dest-articles__grid > * { flex: 1 1 0; min-width: 0; }
 	.gp-offers__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* Review cards without a photo + the review form */
+.gp-testimonial__initial { display: flex; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--gp-navy); color: #fff; font-family: var(--gp-font-head); font-weight: 500; font-size: 18px; line-height: 1; font-variation-settings: normal; }
+@media (max-width: 600px) {
+	.gp-inquiry { padding: 16px; border-radius: 16px; }
+	.gp-inquiry__grid { grid-template-columns: 1fr; row-gap: 16px; }
+	.gp-inquiry__submit { width: 100%; margin-top: 24px; }
+}

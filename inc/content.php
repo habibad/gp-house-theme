@@ -142,7 +142,7 @@ function gp_get_stays( $args = array() ) {
 /** Guest testimonials. */
 function gp_get_testimonials( $limit = 9 ) {
 	if ( gp_has_posts( 'gp_testimonial' ) ) {
-		$posts = get_posts( array( 'post_type' => 'gp_testimonial', 'posts_per_page' => $limit, 'orderby' => array( 'menu_order' => 'ASC', 'date' => 'ASC' ) ) );
+		$posts = get_posts( array( 'post_type' => 'gp_testimonial', 'posts_per_page' => $limit, 'orderby' => array( 'menu_order' => 'ASC', 'date' => 'DESC' ) ) );
 		return array_map( function ( $p ) {
 			return array(
 				'name'     => get_the_title( $p ),

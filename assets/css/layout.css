@@ -385,3 +385,26 @@ html.gp-menu-open { overflow: hidden; }
 	.gp-sitemap__grid { grid-template-columns: 1fr; }
 	.gp-doc + .gp-footer-area { padding-top: 72px; }
 }
+
+/* Review form (/write-a-review/) */
+.gp-review__form { margin-top: 40px; }
+.gp-review__who { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; padding: 14px 16px; border-radius: 16px; background: #fff; }
+.gp-review__avatar { display: flex; flex: none; align-items: center; justify-content: center; width: 56px; height: 56px; overflow: hidden; border-radius: 50%; background: var(--gp-navy); color: #fff; font-family: var(--gp-font-head); font-weight: 500; font-size: 22px; }
+.gp-review__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.gp-review__name { margin: 0; color: var(--gp-navy); font-weight: 600; font-size: 18px; line-height: 24px; text-transform: none; }
+.gp-review__mail { margin: 0; color: var(--gp-text); font-size: 14px; line-height: 20px; text-transform: none; }
+.gp-review__hint { margin: 0 0 0 auto; padding: 4px 10px; border-radius: 6px; background: var(--gp-sand-light); color: var(--gp-text); font-size: 12px; line-height: 16px; }
+.gp-review__form select { width: 100%; height: 42px; padding: 0 13px; border: 1px solid transparent; border-radius: 12px; background: #fff; color: var(--gp-navy); font: inherit; font-size: 14px; }
+.gp-review__form input[type="file"] { height: auto; padding: 10px 13px; font-size: 14px; }
+.gp-review__form small { color: var(--gp-text); font-size: 12px; line-height: 16px; text-transform: none; }
+.gp-review__count { align-self: flex-end; }
+.gp-review__consent { flex-direction: row !important; align-items: flex-start; gap: 10px !important; }
+.gp-review__consent input { width: 18px !important; height: 18px !important; margin-top: 2px; accent-color: var(--gp-navy); }
+.gp-review__consent span { color: var(--gp-text) !important; font-weight: 400 !important; text-transform: none; }
+.gp-review__done { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; max-width: 620px; margin-top: 40px; padding: 32px; border-radius: 24px; background: var(--gp-sand-light); }
+.gp-review__done h2 { margin: 0; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 600; font-size: 28px; line-height: 36px; font-variation-settings: normal; }
+.gp-review__done p { margin: 0 0 8px; color: var(--gp-text); font-size: 16px; line-height: 24px; }
+@media (max-width: 600px) {
+	.gp-review__who { flex-wrap: wrap; }
+	.gp-review__hint { margin-left: 0; }
+}

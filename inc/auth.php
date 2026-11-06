@@ -32,6 +32,17 @@ function gp_is_auth_page() {
 	return is_page() && isset( gp_auth_pages()[ get_post_field( 'post_name', get_queried_object_id() ) ] );
 }
 
+/** The review form needs an account: guests sign in first and come straight back. */
+add_action( 'template_redirect', function () {
+	if ( is_page( 'write-a-review' ) ) {
+		nocache_headers();
+		if ( ! is_user_logged_in() ) {
+			wp_safe_redirect( gp_auth_url( 'signin', array( 'redirect_to' => rawurlencode( get_permalink() ) ) ) );
+			exit;
+		}
+	}
+} );
+
 /** Auth pages are for guests: members go straight to their area. */
 add_action( 'template_redirect', function () {
 	if ( gp_is_auth_page() && is_user_logged_in() && ! isset( $_GET['key'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
