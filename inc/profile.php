@@ -40,7 +40,8 @@ function gp_profile_section() {
 
 /** Whether the visitor sees the sample member instead of a real account. */
 function gp_profile_is_demo() {
-	return ! is_user_logged_in() && (bool) apply_filters( 'gp_house_profile_demo', true );
+	// Real sign-in exists now; define( 'GP_HOUSE_PROFILE_DEMO', true ) in wp-config.php to preview the sample member.
+	return ! is_user_logged_in() && (bool) apply_filters( 'gp_house_profile_demo', defined( 'GP_HOUSE_PROFILE_DEMO' ) && GP_HOUSE_PROFILE_DEMO );
 }
 
 /** Signed in, or previewing the sample member on a profile page. */
@@ -51,7 +52,8 @@ function gp_profile_signed_in() {
 // Not signed in and no demo → login first.
 add_action( 'template_redirect', function () {
 	if ( is_page( 'profile' ) && ! is_user_logged_in() && ! gp_profile_is_demo() ) {
-		wp_safe_redirect( wp_login_url( home_url( add_query_arg( null, null ) ) ) );
+		$here = ( is_ssl() ? 'https://' : 'http://' ) . ( isset( $_SERVER['HTTP_HOST'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '' ) . ( isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '/' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		wp_safe_redirect( wp_login_url( $here ) );
 		exit;
 	}
 	if ( is_page( 'profile' ) ) {
@@ -213,7 +215,10 @@ function gp_profile_counts() {
 
 /** Log-out link (back to the home page). */
 function gp_profile_logout_url() {
-	return is_user_logged_in() ? wp_logout_url( home_url( '/' ) ) : home_url( '/' );
+	if ( ! is_user_logged_in() ) {
+		return home_url( '/' );
+	}
+	return function_exists( 'gp_core_logout_url' ) ? gp_core_logout_url( home_url( '/' ) ) : wp_logout_url( home_url( '/' ) );
 }
 
 /* Saving preferences ------------------------------------------------------- */

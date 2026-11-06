@@ -19,7 +19,7 @@ $map_regions = array_values( array_unique( wp_list_pluck( $stays, 'location' ) )
 	<div class="gp-map"<?php echo $args['attrs'] ?? ''; // phpcs:ignore -- trusted attribute string from templates. ?> data-active="<?php echo esc_attr( $active ); ?>">
 		<picture>
 			<source media="(max-width: 600px)" srcset="<?php echo esc_url( gp_img( 'photos/map-mobile.jpg' ) ); ?>">
-			<img class="gp-map__image" src="<?php echo esc_url( gp_img( 'photos/map.jpg' ) ); ?>" alt="" loading="lazy">
+			<img class="gp-map__image" src="<?php echo esc_url( gp_img( 'photos/destination-map.jpg' ) ); ?>" alt="" loading="lazy">
 		</picture>
 
 		<div class="gp-map__regions gp-tabs gp-tabs--white">

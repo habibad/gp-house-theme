@@ -806,6 +806,165 @@
 		syncGuests();
 		showStep( 0 );
 	}
+	/* Member auth: sign-in modal + forms (REST: /wp-json/gp/v1/auth/*) -------------- */
+	function initAuth() {
+		if ( typeof gpAuth === 'undefined' ) return;
+		const modal = $( '#gp-auth-modal' );
+
+		const post = async ( action, data ) => {
+			try {
+				const res = await fetch( gpAuth.rest + action, {
+					method: 'POST',
+					credentials: 'same-origin',
+					headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': gpAuth.nonce },
+					body: JSON.stringify( data ),
+				} );
+				const json = await res.json().catch( () => ( {} ) );
+				return { status: res.status, ...json };
+			} catch ( e ) {
+				return { ok: false, message: gpAuth.i18n.network };
+			}
+		};
+
+		const clearErrors = ( form ) => {
+			$$( '.gp-auth__field', form ).forEach( ( f ) => {
+				f.classList.remove( 'is-invalid' );
+				const err = $( '.gp-auth__error', f );
+				if ( err ) err.textContent = '';
+			} );
+			const alert = $( '[data-auth-alert]', form );
+			if ( alert ) alert.hidden = true;
+		};
+		const fieldError = ( form, name, message ) => {
+			const input = $( `[name="${ name }"]`, form );
+			const field = input ? input.closest( '.gp-auth__field' ) : null;
+			if ( ! field ) return false;
+			field.classList.add( 'is-invalid' );
+			$( '.gp-auth__error', field ).textContent = message;
+			input.focus();
+			return true;
+		};
+		const alertMsg = ( form, message ) => {
+			const alert = $( '[data-auth-alert]', form );
+			if ( ! alert ) return;
+			alert.textContent = message;
+			alert.hidden = false;
+		};
+		const showDone = ( form, message, resendEmail ) => {
+			$$( '.gp-auth__field, .gp-auth__submit, .gp-auth__forgot, [data-auth-alert]', form ).forEach( ( el ) => ( el.hidden = true ) );
+			const ok = document.createElement( 'p' );
+			ok.className = 'gp-auth__alert is-ok';
+			ok.setAttribute( 'role', 'status' );
+			ok.textContent = message;
+			form.prepend( ok );
+			if ( resendEmail ) {
+				const btn = document.createElement( 'button' );
+				btn.type = 'button';
+				btn.className = 'gp-auth__resend';
+				btn.dataset.authResend = '';
+				btn.dataset.email = resendEmail;
+				btn.textContent = gpAuth.i18n.resend;
+				form.append( btn );
+			}
+		};
+
+		const showView = ( name ) => {
+			$$( '[data-auth-card]', modal ).forEach( ( v ) => ( v.hidden = v.dataset.authCard !== name ) );
+			const first = $( '[data-auth-card]:not([hidden]) input:not([type="hidden"]):not([name="website"])', modal );
+			if ( first ) setTimeout( () => first.focus(), 30 );
+		};
+		const openModal = ( name ) => {
+			if ( ! modal ) return false;
+			showView( name );
+			if ( ! modal.open ) modal.showModal();
+			return true;
+		};
+
+		// Links that open the modal (header / mobile menu "Sign In").
+		$$( '[data-auth]' ).forEach( ( a ) => a.addEventListener( 'click', ( e ) => {
+			if ( modal && openModal( a.dataset.auth ) ) {
+				e.preventDefault();
+				const mm = $( '#gp-mobile-menu' );
+				if ( mm && ! mm.hidden ) $( '[data-menu-close]', mm ).click();
+			}
+		} ) );
+		if ( modal ) {
+			modal.addEventListener( 'click', ( e ) => {
+				if ( e.target === modal ) {
+					modal.close();
+					return;
+				}
+				const link = e.target.closest( '[data-auth-view]' );
+				if ( link ) {
+					e.preventDefault();
+					showView( link.dataset.authView );
+				}
+			} );
+			$$( '[data-auth-close]', modal ).forEach( ( b ) => b.addEventListener( 'click', () => modal.close() ) );
+		}
+
+		// Show / hide password.
+		document.addEventListener( 'click', ( e ) => {
+			const t = e.target.closest( '[data-toggle-password]' );
+			if ( ! t ) return;
+			const input = $( 'input', t.closest( '.gp-auth__input' ) );
+			const show = input.type === 'password';
+			input.type = show ? 'text' : 'password';
+			t.setAttribute( 'aria-pressed', String( show ) );
+		} );
+
+		// Forms.
+		$$( '[data-auth-form]' ).forEach( ( form ) => form.addEventListener( 'submit', async ( e ) => {
+			e.preventDefault();
+			const action = form.dataset.authForm;
+			const submit = $( '.gp-auth__submit', form );
+			clearErrors( form );
+			const resendBtn = $( '[data-auth-resend]', form );
+			if ( resendBtn ) resendBtn.hidden = true;
+			const data = Object.fromEntries( new FormData( form ).entries() );
+			if ( action === 'login' && modal && modal.contains( form ) ) data.redirect_to = window.location.href;
+			const label = submit.textContent;
+			submit.disabled = true;
+			submit.textContent = gpAuth.i18n.sending;
+			const res = await post( action, data );
+			submit.disabled = false;
+			submit.textContent = label;
+
+			if ( res.ok ) {
+				if ( res.redirect ) {
+					window.location.href = res.redirect;
+					return;
+				}
+				showDone( form, res.message, action === 'register' ? data.email : '' );
+				return;
+			}
+			if ( res.code === 'unverified' && resendBtn ) {
+				resendBtn.dataset.email = res.email || data.email;
+				resendBtn.hidden = false;
+			}
+			if ( ! ( res.field && fieldError( form, res.field, res.message ) ) ) alertMsg( form, res.message || gpAuth.i18n.network );
+		} ) );
+
+		// Resend the confirmation email.
+		document.addEventListener( 'click', async ( e ) => {
+			const btn = e.target.closest( '[data-auth-resend]' );
+			if ( ! btn ) return;
+			const form = btn.closest( 'form' );
+			const emailInput = form ? $( 'input[name="email"]', form ) : null;
+			const email = btn.dataset.email || ( emailInput ? emailInput.value : '' );
+			btn.disabled = true;
+			const res = await post( 'resend', { email } );
+			btn.disabled = false;
+			if ( form ) {
+				const msg = document.createElement( 'p' );
+				msg.className = 'gp-auth__alert ' + ( res.ok ? 'is-ok' : 'is-error' );
+				msg.textContent = res.message;
+				btn.before( msg );
+				btn.hidden = true;
+			}
+		} );
+	}
+
 	/* Header pop-overs (account menu, language / currency) ------------------- */
 	function initPopovers() {
 		const roots = $$( '[data-popover]' );
@@ -884,6 +1043,7 @@
 
 	document.addEventListener( 'DOMContentLoaded', () => {
 		initPopovers();
+		initAuth();
 		initHeroSearch();
 		initProfile();
 		initHeader();

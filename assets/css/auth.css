@@ -1,0 +1,53 @@
+/* GP House — Member auth screens (Figma auth modals: Sign In / Join GP House Club / Reset Your Password) */
+
+/* Card */
+.gp-auth { position: relative; width: 366px; max-width: calc(100vw - 32px); padding: 22px 24px 22px; border-radius: 28px; background: #fff; color: var(--gp-navy); text-align: center; text-transform: none; }
+.gp-auth[hidden] { display: none; }
+.gp-auth__logo { display: flex; align-items: center; justify-content: center; width: 68px; height: 68px; margin: 0 auto; border: 9px solid var(--gp-sand-light); border-radius: 50%; background: #fff; }
+.gp-auth__logo img { display: block; width: 22px; height: 24px; }
+.gp-auth__logo--ok img { width: 32px; height: 32px; }
+.gp-auth__title { margin: 13px 0 0; color: var(--gp-navy); font-family: var(--gp-font-body); font-weight: 600; font-size: 16px; line-height: 22px; }
+.gp-auth__sub { margin: 5px 0 0; color: var(--gp-text); font-size: 14px; line-height: 22px; }
+
+/* Form */
+.gp-auth__form { margin-top: 14px; padding-top: 24px; border-top: 1px dashed #dcdcdc; text-align: left; }
+.gp-auth__form--done { text-align: center; }
+.gp-auth__field { display: block; margin-bottom: 11px; }
+.gp-auth__label { display: block; margin-bottom: 3px; color: var(--gp-text); font-size: 14px; line-height: 20px; }
+.gp-auth__input { display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 12px; border: 1px solid var(--gp-stroke); border-radius: 12px; background: #fff; transition: border-color .2s; }
+.gp-auth__input:focus-within { border-color: var(--gp-navy); }
+.gp-auth__field.is-invalid .gp-auth__input { border-color: #d94a4a; }
+.gp-auth__input input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; color: var(--gp-navy); font: inherit; font-size: 14px; line-height: 20px; }
+.gp-auth__input input::placeholder { color: #9a9ca8; }
+.gp-auth__eye { display: flex; padding: 0; border: 0; background: none; cursor: pointer; }
+.gp-auth__eye-on, .gp-auth__eye[aria-pressed="true"] .gp-auth__eye-off { display: none; }
+.gp-auth__eye[aria-pressed="true"] .gp-auth__eye-on { display: block; }
+.gp-auth__error { display: block; margin-top: 3px; color: #c13a3a; font-style: normal; font-size: 12px; line-height: 16px; }
+.gp-auth__error:empty { display: none; }
+.gp-auth__forgot { display: block; margin: -10px 0 9px; color: var(--gp-text); font-size: 14px; line-height: 20px; text-align: right; }
+.gp-auth__forgot:hover { color: var(--gp-navy); }
+.gp-auth__submit { width: 100%; height: 40px; margin-top: 7px; padding: 0; border: 0; border-radius: 8px; font-size: 16px; font-weight: 500; line-height: 24px; cursor: pointer; }
+.gp-auth__submit:disabled { opacity: .65; cursor: wait; }
+.gp-auth__switch { margin: 23px 0 0; color: var(--gp-text); font-size: 14px; line-height: 20px; }
+.gp-auth__switch a { color: var(--gp-navy); text-decoration: underline; }
+.gp-auth__resend { display: block; margin: 14px auto 0; padding: 0; border: 0; background: none; color: var(--gp-navy); font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; }
+.gp-auth__resend[hidden] { display: none; }
+.gp-auth__trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.gp-auth__alert { margin: 0 0 14px; padding: 10px 12px; border-radius: 10px; font-size: 13px; line-height: 18px; text-align: left; }
+.gp-auth__alert[hidden] { display: none; }
+.gp-auth__alert.is-error { background: #fdf1f1; color: #a12a2a; }
+.gp-auth__alert.is-ok { background: #ebf7ed; color: #1f7a38; }
+
+/* Full-page version */
+.gp-auth-page { position: relative; display: grid; place-items: center; min-height: max(100vh, 860px); padding: 110px 16px 60px; overflow: hidden; background: var(--gp-navy); }
+.gp-auth-page__bg { position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover; filter: blur(16px) saturate(1.05); }
+.gp-auth-page__veil { position: absolute; inset: 0; background: rgba(1, 16, 65, .2); }
+.gp-auth-page .gp-auth { z-index: 1; }
+.gp-auth-screen .gp-footer-area { padding-top: 90px; }
+
+/* Modal version */
+.gp-auth-modal { width: fit-content; height: fit-content; max-width: none; max-height: calc(100vh - 24px); padding: 0; border: 0; background: transparent; overflow: visible; }
+.gp-auth-modal::backdrop { background: rgba(1, 16, 65, .28); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.gp-auth-modal__close { position: absolute; top: 12px; right: 12px; z-index: 2; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+.gp-auth-modal__close:hover { background: var(--gp-sand-light); }
