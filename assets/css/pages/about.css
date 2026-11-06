@@ -150,3 +150,14 @@
 	.gp-cta--about .gp-cta__text { width: auto; }
 	.gp-cta--about .gp-cta__lead { max-width: 300px; }
 }
+
+/* Wide layout: follow the 1280px container */
+@media (min-width: 1181px) {
+	.gp-ethos__inner { gap: 80px; }
+	.gp-ethos__media { width: 580px; }
+	.gp-ethos__image { height: 700px; }
+	.gp-ethos__copy p { max-width: 600px; }
+	.gp-diff__row { gap: 80px; }
+	.gp-diff__photo { flex: 1 1 0; width: auto; height: 560px; }
+	.gp-diff__list, .gp-diff__row--rev .gp-diff__list { flex: 1 1 0; width: auto; margin: 0; }
+}

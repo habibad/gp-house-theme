@@ -144,3 +144,11 @@
 	.gp-room-info__groups { grid-template-columns: 1fr; }
 }
 .gp-room-gallery__picture { display: block; width: 100%; }
+
+/* Wide layout: follow the 1280px container */
+@media (min-width: 1181px) {
+	.gp-room-gallery__inner { width: min(var(--gp-container), 100% - 48px); }
+	.gp-room-gallery__main { height: 480px; }
+	.gp-room-details { width: min(var(--gp-container), 100% - 48px); margin-inline: auto; justify-content: space-between; gap: 64px; }
+	.gp-room-info { flex: 1 1 0; width: auto; max-width: 760px; }
+}

@@ -206,3 +206,10 @@ a.gp-step-card__link:hover .gp-icon { transform: translateX(3px); }
 	.gp-cta--club .gp-cta__actions .gp-btn { padding-top: 12px; padding-bottom: 12px; }
 	.gp-cta--club .gp-cta__actions .gp-btn--outline { padding-top: 11px; padding-bottom: 11px; }
 }
+
+/* Wide layout: follow the 1280px container */
+@media (min-width: 1181px) {
+	.gp-club-benefits__grid { grid-template-columns: repeat(3, 1fr); width: 100%; }
+	.gp-calc__inputs { flex: 1 1 0; width: auto; max-width: 560px; }
+	.gp-calc__result { flex: 0 0 600px; }
+}

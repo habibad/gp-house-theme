@@ -246,3 +246,14 @@
 	.gp-ir-sim { padding-top: 34px; }
 }
 @media (max-width: 600px) { .gp-ir-sim { padding-top: 58px; } .gp-ir-models__inner { gap: 32px; } .gp-ir-form { padding-top: 60px; } }
+
+/* Wide layout: follow the 1280px container */
+@media (min-width: 1181px) {
+	.gp-ir-models__inner { justify-content: space-between; gap: 96px; }
+	.gp-ir-models__content { flex: 1 1 0; width: auto; max-width: 600px; }
+	.gp-ir-models__image { flex: 0 0 46%; width: auto; height: auto; aspect-ratio: 552 / 647; }
+	.gp-sim { grid-template-columns: 1fr 1fr; gap: 112px; }
+	.gp-sim__result { height: auto; min-height: 509px; padding-bottom: 52px; }
+	.gp-ir-form__image { width: 520px; height: auto; min-height: 631px; }
+}
+@media (min-width: 1181px) { .gp-ir-stats__list { padding-inline: 0; } }

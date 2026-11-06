@@ -22,7 +22,7 @@
 	--gp-font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 	--gp-font-head: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 
-	--gp-container: 1128px;
+	--gp-container: 1280px;
 	--gp-shadow-float: drop-shadow(0 82px 24.5px rgba(27, 27, 29, .05)) drop-shadow(0 9px 10px rgba(27, 27, 29, .1));
 	--gp-shadow-arrow: drop-shadow(0 2px 24.5px rgba(27, 27, 29, .05)) drop-shadow(0 4px 10px rgba(27, 27, 29, .1));
 	--gp-glass-box: linear-gradient(to bottom, #5a6898, rgba(23, 35, 73, .4));
@@ -141,4 +141,20 @@ p { margin: 0; }
 	.gp-only-m { display: block; }
 	.gp-cta__text.gp-only-m { display: flex; }
 	.gp-cta__text.gp-only-d { display: none !important; }
+}
+
+/* Polish ------------------------------------------------------------------- */
+::selection { background: var(--gp-primary); color: var(--gp-navy); }
+html { scroll-padding-top: 110px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+a, button { -webkit-tap-highlight-color: transparent; }
+/* Keyboard focus: navy on light surfaces, yellow on the dark navy ones. */
+:focus-visible { outline-color: var(--gp-navy); }
+.gp-footer :focus-visible, .gp-why :focus-visible, .gp-newsletter :focus-visible, .gp-hero :focus-visible, .gp-page-hero :focus-visible, .gp-sc-nfc :focus-visible { outline-color: var(--gp-primary); }
+
+/* Print (booking itinerary): just the open dialog / page content */
+@media print {
+	.gp-header, .gp-footer-area, .gp-pf__side, .gp-appbar, .gp-mobile-menu, .gp-auth-modal, .gp-chatbot { display: none !important; }
+	.gp-it { position: static; width: 100%; max-height: none; box-shadow: none; }
+	.gp-it__close, .gp-it__btn { display: none !important; }
 }

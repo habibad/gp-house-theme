@@ -29,7 +29,7 @@
 
 .gp-hero__inner {
 	position: relative;
-	width: min(1280px, 100% - 32px);
+	width: min(var(--gp-container), 100% - 48px);
 	height: 100%;
 	margin-inline: auto;
 }
@@ -194,7 +194,7 @@ input.gp-search__value { text-transform: none; cursor: text; }
 }
 .gp-why__head { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .gp-why__intro { width: 439px; color: rgba(255, 255, 255, .7); font-size: 16px; line-height: 1.5; }
-.gp-why__body { display: flex; align-items: center; gap: 18px; }
+.gp-why__body { display: flex; align-items: center; gap: 18px; justify-content: space-between;}
 .gp-why__art { flex: none; width: 541px; height: 415px; border-radius: 20px; }
 
 .gp-benefits { display: flex; flex-direction: column; gap: 16px; width: 519px; margin: 0; padding: 0; list-style: none; }

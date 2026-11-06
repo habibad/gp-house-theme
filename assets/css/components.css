@@ -724,7 +724,7 @@
 
 /* FAQ accordion (Figma "FAQs") --------------------------------------------- */
 .gp-faq { padding: 78px 0 44px; background: #fff; }
-.gp-faq__list { width: min(1000px, 100%); margin: 44px auto 0; }
+.gp-faq__list { width: 100%; margin: 44px auto 0; }
 .gp-faq__item { border-bottom: 1px solid var(--gp-stroke); }
 .gp-faq__q { margin: 0; }
 .gp-faq__q button {
@@ -1133,3 +1133,13 @@
 .gp-inquiry__wide { grid-column: 1 / -1; }
 .gp-select--field .gp-select__toggle { width: 100%; height: 42px; padding: 0 13px; border: 1px solid transparent; border-radius: 12px; background: #fff; color: var(--gp-navy); font-size: 14px; }
 .gp-inquiry__submit { margin-top: 61px; padding: 12px 22px; font-size: 16px; }
+
+/* Wide layout: grids follow the 1280px container (same edges as the header) ---- */
+@media (min-width: 1181px) {
+	.gp-room__media, .gp-room__card { flex: 1 1 0; }
+	.gp-dest-grid .gp-dest-card { flex: 1 1 0; min-width: 0; }
+	.gp-destinations__cards .gp-stay-card,
+	.gp-dest-rooms__grid > *,
+	.gp-dest-articles__grid > * { flex: 1 1 0; min-width: 0; }
+	.gp-offers__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
