@@ -28,11 +28,14 @@
 		const burger = $( '.gp-header__toggle' );
 		const menu = $( '#gp-mobile-menu' );
 		if ( burger && menu ) {
-			burger.addEventListener( 'click', () => {
-				const open = burger.getAttribute( 'aria-expanded' ) !== 'true';
+			const setMenu = ( open ) => {
 				burger.setAttribute( 'aria-expanded', String( open ) );
 				menu.hidden = ! open;
-			} );
+				document.documentElement.classList.toggle( 'gp-menu-open', open && window.matchMedia( '(max-width: 600px)' ).matches );
+			};
+			burger.addEventListener( 'click', () => setMenu( burger.getAttribute( 'aria-expanded' ) !== 'true' ) );
+			$$( '[data-menu-close]', menu ).forEach( ( b ) => b.addEventListener( 'click', () => setMenu( false ) ) );
+			document.addEventListener( 'keydown', ( e ) => e.key === 'Escape' && ! menu.hidden && setMenu( false ) );
 		}
 	}
 
@@ -42,6 +45,7 @@
 			const control = $( 'select, input[type="date"]', field );
 			if ( ! control ) return;
 			field.addEventListener( 'click', ( e ) => {
+				if ( window.matchMedia( '(max-width: 600px)' ).matches ) return; // phone: custom pop-ups (initHeroSearch)
 				if ( e.target === control && control.tagName === 'SELECT' ) return;
 				if ( typeof control.showPicker === 'function' ) {
 					try {
@@ -665,6 +669,143 @@
 		} ) ) );
 	}
 
+	/* Phone hero search: one field at a time, custom location list + calendar (Figma 1455:20139 … 1458:10990) */
+	function initHeroSearch() {
+		const form = $( '[data-hero-search]' );
+		if ( ! form ) return;
+		const phone = window.matchMedia( '(max-width: 600px)' );
+		const fields = $$( '[data-step-field]', form );
+		const select = $( 'select[name="destination"]', form );
+		const dateInput = $( 'input[name="checkin"]', form );
+		const guestSel = $( 'select[name="guests"]', form );
+		const dateLabel = $( '[data-date-label]', form );
+		const menu = $( '[data-search-menu]', form );
+		const cal = $( '[data-search-cal]', form );
+		const nav = $( '[data-search-nav]', form );
+		const stepper = $( '[data-stepper]', form );
+		const count = $( '[data-guest-count]', form );
+		const guestSteps = $$( 'option', guestSel ).map( ( o ) => o.value );
+		const NIGHTS = 4;
+		let step = 0;
+		let view = null; // first day of the month shown in the calendar
+
+		const pad = ( n ) => String( n ).padStart( 2, '0' );
+		const iso = ( d ) => `${ d.getFullYear() }-${ pad( d.getMonth() + 1 ) }-${ pad( d.getDate() ) }`;
+		const parse = ( s ) => { const [ y, m, d ] = s.split( '-' ).map( Number ); return new Date( y, m - 1, d ); };
+		const today = () => { const t = new Date(); return new Date( t.getFullYear(), t.getMonth(), t.getDate() ); };
+
+		const closePopups = () => { menu.hidden = true; cal.hidden = true; };
+		const showStep = ( n ) => {
+			step = Math.max( 0, Math.min( 3, n ) );
+			form.dataset.step = String( step );
+			fields.forEach( ( f, i ) => f.classList.toggle( 'is-current', i === step ) );
+			nav.hidden = ! phone.matches || step === 0;
+			stepper.hidden = ! phone.matches || step !== 2;
+			form.classList.toggle( 'is-last', step === 3 );
+			closePopups();
+		};
+		const syncDate = () => {
+			if ( ! dateInput.value ) return;
+			const d = parse( dateInput.value );
+			dateLabel.textContent = `${ pad( d.getDate() ) }/${ pad( d.getMonth() + 1 ) }/${ d.getFullYear() }`;
+		};
+		const syncGuests = () => {
+			const n = parseInt( guestSel.value, 10 ) || 1;
+			count.textContent = String( n );
+		};
+
+		// Location list
+		fields[ 0 ].addEventListener( 'click', ( e ) => {
+			if ( ! phone.matches ) return;
+			e.preventDefault();
+			cal.hidden = true;
+			menu.hidden = ! menu.hidden;
+		} );
+		$$( 'button', menu ).forEach( ( b ) => b.addEventListener( 'click', () => {
+			select.value = b.dataset.value;
+			showStep( 1 );
+		} ) );
+
+		// Calendar
+		const renderCal = () => {
+			const sel = dateInput.value ? parse( dateInput.value ) : null;
+			const end = sel ? new Date( sel.getFullYear(), sel.getMonth(), sel.getDate() + NIGHTS ) : null;
+			const first = new Date( view.getFullYear(), view.getMonth(), 1 );
+			const lead = first.getDay();
+			const days = new Date( view.getFullYear(), view.getMonth() + 1, 0 ).getDate();
+			const months = Array.from( { length: 12 }, ( _, i ) => new Date( 2000, i, 1 ).toLocaleString( 'en', { month: 'short' } ) );
+			const y0 = today().getFullYear();
+			let cells = '';
+			for ( let i = 0; i < 42; i++ ) {
+				const d = new Date( first.getFullYear(), first.getMonth(), 1 - lead + i );
+				if ( i >= 35 && d.getMonth() !== view.getMonth() ) break;
+				const out = d.getMonth() !== view.getMonth();
+				const past = d < today();
+				const on = sel && ( d.getTime() === sel.getTime() || d.getTime() === end.getTime() );
+				const mid = sel && d > sel && d < end;
+				cells += `<button type="button" class="gp-cal__day${ out ? ' is-out' : '' }${ on ? ' is-on' : '' }${ mid ? ' is-mid' : '' }" data-day="${ iso( d ) }"${ past || out ? ' disabled' : '' }>${ d.getDate() }</button>`;
+			}
+			cal.innerHTML = `<div class="gp-cal"><div class="gp-cal__head"><button type="button" class="gp-cal__nav" data-cal-nav="-1" aria-label="Previous month">&lsaquo;</button>
+				<select class="gp-cal__select" data-cal-month aria-label="Month">${ months.map( ( m, i ) => `<option value="${ i }"${ i === view.getMonth() ? ' selected' : '' }>${ m }</option>` ).join( '' ) }</select>
+				<select class="gp-cal__select" data-cal-year aria-label="Year">${ [ 0, 1, 2 ].map( ( k ) => `<option value="${ y0 + k }"${ y0 + k === view.getFullYear() ? ' selected' : '' }>${ y0 + k }</option>` ).join( '' ) }</select>
+				<button type="button" class="gp-cal__nav" data-cal-nav="1" aria-label="Next month">&rsaquo;</button></div>
+				<div class="gp-cal__week">${ [ 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ].map( ( w ) => `<span>${ w }</span>` ).join( '' ) }</div>
+				<div class="gp-cal__grid">${ cells }</div></div>`;
+		};
+		fields[ 1 ].addEventListener( 'click', ( e ) => {
+			if ( ! phone.matches ) return;
+			e.preventDefault();
+			menu.hidden = true;
+			if ( cal.hidden ) {
+				const d = dateInput.value ? parse( dateInput.value ) : today();
+				view = new Date( d.getFullYear(), d.getMonth(), 1 );
+				renderCal();
+				cal.hidden = false;
+			} else {
+				cal.hidden = true;
+			}
+		} );
+		cal.addEventListener( 'click', ( e ) => {
+			e.stopPropagation();
+			const nav1 = e.target.closest( '[data-cal-nav]' );
+			const day = e.target.closest( '[data-day]' );
+			if ( nav1 ) {
+				const next = new Date( view.getFullYear(), view.getMonth() + parseInt( nav1.dataset.calNav, 10 ), 1 );
+				if ( next >= new Date( today().getFullYear(), today().getMonth(), 1 ) ) { view = next; renderCal(); }
+			} else if ( day ) {
+				dateInput.value = day.dataset.day;
+				syncDate();
+				cal.hidden = true;
+			}
+		} );
+		cal.addEventListener( 'change', ( e ) => {
+			if ( e.target.matches( '[data-cal-month], [data-cal-year]' ) ) {
+				view = new Date( parseInt( $( '[data-cal-year]', cal ).value, 10 ), parseInt( $( '[data-cal-month]', cal ).value, 10 ), 1 );
+				renderCal();
+			}
+		} );
+
+		// Guests stepper
+		$$( '[data-guests]', form ).forEach( ( b ) => b.addEventListener( 'click', () => {
+			const i = Math.max( 0, Math.min( guestSteps.length - 1, guestSteps.indexOf( guestSel.value ) + parseInt( b.dataset.guests, 10 ) ) );
+			guestSel.value = guestSteps[ i ];
+			syncGuests();
+		} ) );
+
+		// Prev / next
+		$( '[data-search-prev]', form ).addEventListener( 'click', () => showStep( step - 1 ) );
+		$( '[data-search-next]', form ).addEventListener( 'click', () => showStep( step + 1 ) );
+
+		// Outside click closes the pop-ups
+		document.addEventListener( 'click', ( e ) => {
+			if ( ! form.contains( e.target ) ) closePopups();
+		} );
+		const onResize = () => { showStep( phone.matches ? step : 0 ); };
+		if ( phone.addEventListener ) phone.addEventListener( 'change', onResize );
+		syncDate();
+		syncGuests();
+		showStep( 0 );
+	}
 	/* Header pop-overs (account menu, language / currency) ------------------- */
 	function initPopovers() {
 		const roots = $$( '[data-popover]' );
@@ -743,6 +884,7 @@
 
 	document.addEventListener( 'DOMContentLoaded', () => {
 		initPopovers();
+		initHeroSearch();
 		initProfile();
 		initHeader();
 		initSearch();

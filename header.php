@@ -90,7 +90,7 @@ $points        = apply_filters( 'gp_house_header_points', is_user_logged_in() ? 
 					</div>
 				</div>
 			<?php else : ?>
-				<a class="gp-btn gp-btn--outline gp-btn--sm" href="<?php echo esc_url( wp_login_url( home_url( '/profile/' ) ) ); ?>"><?php esc_html_e( 'Sign In', 'gp-house' ); ?></a>
+				<a class="gp-btn gp-btn--outline gp-btn--sm" href="<?php echo esc_url( wp_login_url( home_url( '/profile/' ) ) ); ?>" data-auth="signin"><?php esc_html_e( 'Sign In', 'gp-house' ); ?></a>
 			<?php endif; ?>
 			<a class="gp-btn gp-btn--primary gp-btn--sm" href="<?php echo esc_url( home_url( '/stays/' ) ); ?>"><?php esc_html_e( 'Book', 'gp-house' ); ?></a>
 		</div>
@@ -100,13 +100,34 @@ $points        = apply_filters( 'gp_house_header_points', is_user_logged_in() ? 
 		</button>
 	</div>
 
-	<div class="gp-mobile-menu" id="gp-mobile-menu" hidden>
-		<?php foreach ( array_merge( gp_menu_links( 'primary' ), $others ) as $link ) : ?>
-			<a class="gp-mobile-menu__link" href="<?php echo esc_url( $link['url'] ); ?>"><?php echo esc_html( $link['title'] ); ?></a>
-		<?php endforeach; ?>
-		<div class="gp-mobile-menu__actions">
-			<a class="gp-btn gp-btn--outline" href="<?php echo esc_url( wp_login_url( home_url( '/profile/' ) ) ); ?>"><?php esc_html_e( 'Sign In', 'gp-house' ); ?></a>
-			<a class="gp-btn gp-btn--primary" href="<?php echo esc_url( home_url( '/stays/' ) ); ?>"><?php esc_html_e( 'Book', 'gp-house' ); ?></a>
+	<div class="gp-mobile-menu" id="gp-mobile-menu" role="dialog" aria-label="<?php esc_attr_e( 'Menu', 'gp-house' ); ?>" hidden>
+		<div class="gp-mobile-menu__top">
+			<a class="gp-mobile-menu__logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"><img src="<?php echo esc_url( gp_img( 'logo.svg' ) ); ?>" width="145" height="33" alt=""></a>
+			<button class="gp-mobile-menu__close" type="button" data-menu-close aria-label="<?php esc_attr_e( 'Close menu', 'gp-house' ); ?>"><?php gp_icon( 'close-navy', 20 ); ?></button>
 		</div>
+		<?php if ( ! $signed_in ) : ?>
+			<a class="gp-btn gp-btn--outline gp-mobile-menu__signin" href="<?php echo esc_url( wp_login_url( home_url( '/profile/' ) ) ); ?>" data-auth="signin"><?php esc_html_e( 'Sign In', 'gp-house' ); ?></a>
+		<?php endif; ?>
+		<nav class="gp-mobile-menu__nav" aria-label="<?php esc_attr_e( 'Main', 'gp-house' ); ?>">
+			<?php foreach ( gp_menu_links( 'primary' ) as $link ) : ?>
+				<a class="gp-mobile-menu__link" href="<?php echo esc_url( $link['url'] ); ?>"><?php echo esc_html( $link['title'] ); ?></a>
+			<?php endforeach; ?>
+		</nav>
+		<?php if ( $others ) : ?>
+			<div class="gp-mobile-menu__group">
+				<p class="gp-mobile-menu__label"><?php esc_html_e( 'Others', 'gp-house' ); ?></p>
+				<?php foreach ( $others as $link ) : ?>
+					<a class="gp-mobile-menu__link gp-mobile-menu__link--sub" href="<?php echo esc_url( $link['url'] ); ?>"><?php echo esc_html( $link['title'] ); ?></a>
+				<?php endforeach; ?>
+			</div>
+		<?php endif; ?>
+		<div class="gp-mobile-menu__meta">
+			<span class="gp-mobile-menu__locale"><strong>En</strong><span class="gp-locale__currency">USD</span></span>
+			<a class="gp-points gp-points--menu" href="<?php echo esc_url( $signed_in ? home_url( '/profile/points/' ) : home_url( '/club/' ) ); ?>">
+				<?php gp_icon( 'sparkle-navy', 24 ); ?>
+				<?php echo esc_html( number_format_i18n( $points ) ); ?> P
+			</a>
+		</div>
+		<a class="gp-btn gp-btn--primary gp-mobile-menu__book" href="<?php echo esc_url( home_url( '/stays/' ) ); ?>"><?php esc_html_e( 'Book', 'gp-house' ); ?></a>
 	</div>
 </header>
