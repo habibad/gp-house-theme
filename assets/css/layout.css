@@ -144,7 +144,7 @@
 .gp-mobile-menu__actions .gp-btn { flex: 1; padding: 12px 20px; }
 
 /* CTA + footer ------------------------------------------------------------ */
-.gp-footer-area { padding: 120px 0 68px; background: #fff; }
+.gp-footer-area { padding: 120px 0 82px; background: #fff; }
 .gp-cta { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 78px; }
 .gp-cta__text { display: flex; flex-direction: column; gap: 24px; width: 630px; max-width: 100%; }
 .gp-cta__lead { color: var(--gp-text); font-size: 16px; line-height: 1.6; }
@@ -336,4 +336,52 @@ html.gp-menu-open { overflow: hidden; }
 	.gp-mobile-menu__nav::after { display: none; }
 	.gp-mobile-menu__group { padding-top: 6px; }
 	.gp-mobile-menu__link--sub { padding: 10px 14px; }
+}
+
+/* 404 */
+.gp-notfound { padding: 200px 0 0; background: #fff; text-align: center; }
+.gp-notfound__code { margin: 0; color: var(--gp-primary); font-family: var(--gp-font-head); font-weight: 600; font-size: 96px; line-height: 1; font-variation-settings: normal; }
+.gp-notfound__title { margin: 16px 0 0; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 600; font-size: 40px; line-height: 48px; font-variation-settings: normal; }
+.gp-notfound__text { max-width: 480px; margin: 16px auto 0; color: var(--gp-text); font-size: 16px; line-height: 24px; }
+.gp-notfound__actions { display: flex; justify-content: center; gap: 12px; margin-top: 32px; }
+@media (max-width: 600px) {
+	.gp-notfound { padding-top: 150px; }
+	.gp-notfound__code { font-size: 72px; }
+	.gp-notfound__title { font-size: 30px; line-height: 38px; }
+	.gp-notfound__actions { flex-direction: column; padding: 0 20px; }
+}
+
+/* Generic content pages: policies, terms, contact, sitemap */
+.gp-doc { padding: 170px 0 0; background: #fff; }
+.gp-doc__inner .gp-doc__content { max-width: 780px; }
+.gp-doc__title { margin: 12px 0 0; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 600; font-size: 48px; line-height: 60px; font-variation-settings: normal; }
+.gp-doc__lead { max-width: 640px; margin: 20px 0 0; color: var(--gp-text); font-size: 18px; line-height: 28px; }
+.gp-doc__content { margin-top: 32px; color: var(--gp-text); font-size: 16px; line-height: 26px; }
+.gp-doc__content h2 { margin: 36px 0 8px; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 500; font-size: 24px; line-height: 32px; font-variation-settings: normal; }
+.gp-doc__content p { margin: 0 0 14px; }
+.gp-doc__content ul { margin: 0 0 14px; padding-left: 22px; }
+.gp-doc__content a { color: var(--gp-navy); text-decoration: underline; }
+.gp-contact__grid { display: grid; grid-template-columns: 300px 1fr; gap: 32px; margin-top: 48px; align-items: start; }
+.gp-contact__details { display: flex; flex-direction: column; gap: 20px; margin: 0; padding: 0; list-style: none; }
+.gp-contact__details li { display: flex; align-items: center; gap: 14px; }
+.gp-contact__icon { display: flex; flex: none; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: var(--gp-sand-light); }
+.gp-contact__label { margin: 0; color: var(--gp-text); font-size: 13px; line-height: 18px; }
+.gp-contact__details a, .gp-contact__details p:not(.gp-contact__label) { margin: 0; color: var(--gp-navy); font-weight: 500; font-size: 16px; line-height: 24px; }
+.gp-contact__form .gp-inquiry__submit { margin-top: 28px; }
+.gp-sitemap__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 40px; }
+.gp-sitemap__grid h2 { margin: 0 0 12px; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 500; font-size: 20px; line-height: 28px; font-variation-settings: normal; }
+.gp-sitemap__grid ul { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.gp-sitemap__grid a { color: var(--gp-text); font-size: 16px; line-height: 24px; }
+.gp-sitemap__grid a:hover { color: var(--gp-navy); text-decoration: underline; }
+.gp-doc + .gp-footer-area { padding-top: 120px; }
+@media (max-width: 900px) {
+	.gp-contact__grid { grid-template-columns: 1fr; }
+	.gp-sitemap__grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+	.gp-doc { padding-top: 130px; }
+	.gp-doc__title { font-size: 32px; line-height: 40px; }
+	.gp-doc__lead { font-size: 16px; line-height: 24px; }
+	.gp-sitemap__grid { grid-template-columns: 1fr; }
+	.gp-doc + .gp-footer-area { padding-top: 72px; }
 }

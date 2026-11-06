@@ -101,6 +101,7 @@ function gp_render_auth_page( $view ) {
 	// phpcs:disable WordPress.Security.NonceVerification
 	$args = array(
 		'view'     => $view,
+		'page'     => true,
 		'redirect' => isset( $_GET['redirect_to'] ) ? esc_url_raw( rawurldecode( wp_unslash( $_GET['redirect_to'] ) ) ) : '',
 		'notice'   => isset( $_GET['notice'] ) ? sanitize_key( wp_unslash( $_GET['notice'] ) ) : '',
 		'key'      => isset( $_GET['key'] ) ? sanitize_text_field( wp_unslash( $_GET['key'] ) ) : '',

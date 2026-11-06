@@ -21,7 +21,7 @@ $avatars = array( 'photos/review-avatar-1.png', 'photos/review-avatar-2.png', 'p
 				<div class="gp-reviews__lead">
 					<?php gp_component( 'section-head', array( 'kicker' => gp_opt( 'reviews_kicker' ), 'title' => gp_opt( 'reviews_title' ), 'kicker_class' => 'gp-kicker--lhn', 'title_class' => 'gp-reviews__title' ) ); ?>
 					<p class="gp-text"><?php echo esc_html( gp_opt( 'reviews_text' ) ); ?></p>
-					<?php gp_button( array( 'label' => __( 'Write a Review', 'gp-house' ), 'url' => home_url( '/write-a-review/' ) ) ); ?>
+					<?php gp_button( array( 'label' => __( 'Write a Review', 'gp-house' ), 'url' => home_url( '/contact/?topic=review' ) ) ); ?>
 				</div>
 				<div class="gp-reviews__stats">
 					<div class="gp-avatars">

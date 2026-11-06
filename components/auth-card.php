@@ -19,6 +19,7 @@ defined( 'ABSPATH' ) || exit;
 
 $a    = wp_parse_args( $args, array( 'view' => 'signin', 'hidden' => false, 'redirect' => '', 'notice' => '', 'key' => '', 'login' => '', 'email' => '' ) );
 $view = $a['view'];
+$tag  = ! empty( $args['page'] ) ? 'h1' : 'h2';
 
 $notices = array(
 	'verified'      => array( 'ok', __( 'Email confirmed — welcome to GP House Club! Sign in to continue.', 'gp-house' ) ),
@@ -47,10 +48,10 @@ $field = static function ( $name, $label, $icon, $type = 'text', $extra = array(
 	<?php
 };
 
-$head = static function ( $title, $sub ) {
+$head = static function ( $title, $sub ) use ( $tag ) {
 	?>
 	<span class="gp-auth__logo"><img src="<?php echo esc_url( gp_img( 'logo-mark.svg' ) ); ?>" width="22" height="24" alt=""></span>
-	<h2 class="gp-auth__title"><?php echo esc_html( $title ); ?></h2>
+	<<?php echo esc_attr( $tag ); ?> class="gp-auth__title"><?php echo esc_html( $title ); ?></<?php echo esc_attr( $tag ); ?>>
 	<p class="gp-auth__sub"><?php echo esc_html( $sub ); ?></p>
 	<?php
 };

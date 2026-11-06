@@ -30,7 +30,7 @@ defined( 'ABSPATH' ) || exit;
 					</li>
 				<?php endforeach; ?>
 			</ul>
-			<img class="gp-why__art" src="<?php echo esc_url( gp_img( 'decor/why-card-illustration.png' ) ); ?>" width="541" height="415" alt="<?php esc_attr_e( 'GP House Club member card — 10% off applied instantly', 'gp-house' ); ?>" loading="lazy">
+			<img class="gp-why__art" src="<?php echo esc_url( gp_img( 'decor/why-card-illustration.webp' ) ); ?>" width="541" height="415" alt="<?php esc_attr_e( 'GP House Club member card — 10% off applied instantly', 'gp-house' ); ?>" loading="lazy">
 		</div>
 	</div>
 </section>
