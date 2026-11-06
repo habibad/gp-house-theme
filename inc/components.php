@@ -87,7 +87,7 @@ function gp_chip( $text, $modifier = '' ) {
  * }
  */
 function gp_dropdown( array $args ) {
-	$args = wp_parse_args( $args, array( 'name' => '', 'label' => '', 'options' => array(), 'value' => '', 'show_value' => false, 'class' => '', 'align' => 'left' ) );
+	$args = wp_parse_args( $args, array( 'name' => '', 'label' => '', 'options' => array(), 'value' => '', 'show_value' => false, 'class' => '', 'align' => 'left', 'icon' => '' ) );
 
 	$value   = isset( $args['options'][ $args['value'] ] ) ? (string) $args['value'] : (string) array_key_first( $args['options'] );
 	$current = $args['options'][ $value ] ?? '';
@@ -96,6 +96,7 @@ function gp_dropdown( array $args ) {
 	?>
 	<div class="gp-select<?php echo $args['class'] ? ' ' . esc_attr( $args['class'] ) : ''; ?><?php echo '' !== $args['value'] && ! $args['show_value'] ? ' is-set' : ''; ?>" data-dropdown>
 		<button class="gp-select__toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="<?php echo esc_attr( $id ); ?>" data-label="<?php echo esc_attr( $args['label'] ); ?>">
+			<?php if ( $args['icon'] ) { gp_icon( $args['icon'], 20 ); } ?>
 			<span class="gp-select__text"><?php echo esc_html( $text ); ?></span>
 			<?php gp_icon( 'chevron-down', 16 ); ?>
 		</button>

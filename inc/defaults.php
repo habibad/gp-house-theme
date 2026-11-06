@@ -351,7 +351,7 @@ add_filter( 'gp_house_demo_content', function () {
 	$content['base']  = GP_HOUSE_DIR . '/assets/img/';
 	$content['regions'] = function_exists( 'gp_demo_regions' ) ? gp_demo_regions() : array();
 	$content['destination_pages'] = function_exists( 'gp_demo_destination_pages' ) ? gp_demo_destination_pages() : array();
-	$content['pages']   = array( 'destinations' => 'Destinations', 'offers' => 'Offers', 'club' => 'Club', 'journal' => 'Journal', 'about' => 'About', 'investor-relations' => 'Investor Relations', 'self-check-in' => 'Late Night Self Check-In' );
+	$content['pages']   = array( 'destinations' => 'Destinations', 'offers' => 'Offers', 'club' => 'Club', 'journal' => 'Journal', 'about' => 'About', 'investor-relations' => 'Investor Relations', 'self-check-in' => 'Late Night Self Check-In', 'profile' => 'Profile' );
 	$content['journal_topics'] = gp_journal_default_topics();
 	$content['offers']  = function_exists( 'gp_demo_offers' ) ? gp_demo_offers() : array();
 	$content['rooms'] = function_exists( 'gp_demo_rooms' ) ? array_map( function ( $r ) {

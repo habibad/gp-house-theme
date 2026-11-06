@@ -9,6 +9,7 @@ defined( 'ABSPATH' ) || exit;
 
 $others        = gp_menu_links( 'others' );
 $others_active = (bool) wp_list_filter( $others, array( 'current' => true ) );
+$signed_in     = gp_profile_signed_in();
 $points        = apply_filters( 'gp_house_header_points', is_user_logged_in() ? (int) get_user_meta( get_current_user_id(), 'gp_points', true ) : 450 );
 ?><!doctype html>
 <html <?php language_attributes(); ?>>
@@ -48,19 +49,46 @@ $points        = apply_filters( 'gp_house_header_points', is_user_logged_in() ? 
 		</div>
 
 		<div class="gp-header__right">
-			<div class="gp-locale" role="group" aria-label="<?php esc_attr_e( 'Language and currency', 'gp-house' ); ?>">
-				<span class="gp-locale__lang">En</span>
-				<span class="gp-locale__currency">USD</span>
+			<div class="gp-popover gp-locale-wrap" data-popover>
+				<button class="gp-locale" type="button" aria-haspopup="true" aria-expanded="false" aria-label="<?php esc_attr_e( 'Language and currency', 'gp-house' ); ?>">
+					<span class="gp-locale__lang">En</span>
+					<span class="gp-locale__currency">USD</span>
+				</button>
+				<div class="gp-popover__panel gp-locale-menu" hidden>
+					<p class="gp-locale-menu__label"><?php esc_html_e( 'Language', 'gp-house' ); ?></p>
+					<div class="gp-locale-menu__row gp-locale-menu__row--lang">
+						<button type="button" data-lang="th">TH (ภาษาไทย)</button>
+						<button type="button" data-lang="en" class="is-active">EN (English)</button>
+					</div>
+					<p class="gp-locale-menu__label gp-locale-menu__label--cur"><?php esc_html_e( 'Currency', 'gp-house' ); ?></p>
+					<div class="gp-locale-menu__row">
+						<?php foreach ( array( 'USD', 'THB', 'EUR', 'GBP' ) as $code ) : ?>
+							<button type="button" data-currency="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $code ); ?></button>
+						<?php endforeach; ?>
+					</div>
+				</div>
 			</div>
 			<a class="gp-points" href="<?php echo esc_url( home_url( '/club/' ) ); ?>">
 				<span class="gp-points__icon"><?php gp_icon( 'points', 16 ); ?></span>
 				<?php echo esc_html( number_format_i18n( $points ) ); ?> P
 			</a>
-			<?php if ( is_user_logged_in() ) : ?>
-				<a class="gp-account-btn" href="<?php echo esc_url( home_url( '/profile/' ) ); ?>" aria-label="<?php esc_attr_e( 'My account', 'gp-house' ); ?>">
-					<?php gp_icon( 'menu', 24 ); ?>
-					<?php gp_icon( 'user-circle', 24 ); ?>
-				</a>
+			<?php if ( $signed_in ) : ?>
+				<div class="gp-popover gp-account" data-popover data-hover>
+					<button class="gp-account-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="<?php esc_attr_e( 'My account', 'gp-house' ); ?>">
+						<?php gp_icon( 'menu', 24 ); ?>
+						<?php gp_icon( 'user-circle', 24 ); ?>
+					</button>
+					<div class="gp-popover__panel gp-account__menu" hidden>
+						<?php gp_component( 'member-card', array( 'member' => gp_profile_user(), 'class' => 'gp-member--menu' ) ); ?>
+						<?php $gp_counts = gp_profile_counts(); ?>
+						<nav class="gp-account__nav" aria-label="<?php esc_attr_e( 'Account', 'gp-house' ); ?>">
+							<?php foreach ( gp_profile_sections() as $gp_key => $gp_item ) : ?>
+								<a href="<?php echo esc_url( $gp_item['url'] ); ?>"><?php gp_icon( $gp_item['icon'], 16 ); ?><?php echo esc_html( $gp_item['label'] . ( isset( $gp_counts[ $gp_key ] ) ? ' (' . $gp_counts[ $gp_key ] . ')' : '' ) ); ?></a>
+							<?php endforeach; ?>
+						</nav>
+						<a class="gp-account__logout" href="<?php echo esc_url( gp_profile_logout_url() ); ?>"><?php gp_icon( 'user-navy', 16 ); ?><?php esc_html_e( 'Log Out', 'gp-house' ); ?></a>
+					</div>
+				</div>
 			<?php else : ?>
 				<a class="gp-btn gp-btn--outline gp-btn--sm" href="<?php echo esc_url( wp_login_url( home_url( '/profile/' ) ) ); ?>"><?php esc_html_e( 'Sign In', 'gp-house' ); ?></a>
 			<?php endif; ?>

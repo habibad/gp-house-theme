@@ -665,7 +665,85 @@
 		} ) ) );
 	}
 
+	/* Header pop-overs (account menu, language / currency) ------------------- */
+	function initPopovers() {
+		const roots = $$( '[data-popover]' );
+		const close = ( root ) => {
+			const panel = $( '.gp-popover__panel', root );
+			const btn = $( 'button', root );
+			if ( panel ) panel.hidden = true;
+			if ( btn ) btn.setAttribute( 'aria-expanded', 'false' );
+		};
+		roots.forEach( ( root ) => {
+			const btn = $( 'button', root );
+			const panel = $( '.gp-popover__panel', root );
+			if ( ! btn || ! panel ) return;
+			const open = () => {
+				roots.forEach( ( r ) => r !== root && close( r ) );
+				panel.hidden = false;
+				btn.setAttribute( 'aria-expanded', 'true' );
+			};
+			btn.addEventListener( 'click', () => ( panel.hidden ? open() : close( root ) ) );
+			if ( root.hasAttribute( 'data-hover' ) && window.matchMedia( '(hover: hover)' ).matches ) {
+				let timer;
+				root.addEventListener( 'mouseenter', () => { clearTimeout( timer ); open(); } );
+				root.addEventListener( 'mouseleave', () => { timer = setTimeout( () => close( root ), 160 ); } );
+			}
+			$$( '[data-lang]', root ).forEach( ( b ) => b.addEventListener( 'click', () => {
+				$$( '[data-lang]', root ).forEach( ( x ) => x.classList.toggle( 'is-active', x === b ) );
+				const label = $( '.gp-locale__lang', root );
+				if ( label ) label.textContent = b.dataset.lang === 'th' ? 'Th' : 'En';
+				try { localStorage.setItem( 'gpHouseLang', b.dataset.lang ); } catch ( e ) {}
+			} ) );
+		} );
+		document.addEventListener( 'click', ( e ) => roots.forEach( ( r ) => ! r.contains( e.target ) && close( r ) ) );
+		document.addEventListener( 'keydown', ( e ) => e.key === 'Escape' && roots.forEach( close ) );
+	}
+
+	/* Member area: mobile account menu, booking filter, itinerary dialogs ---- */
+	function initProfile() {
+		const shell = $( '[data-pf]' );
+		const toggle = $( '[data-pf-toggle]' );
+		if ( shell && toggle ) {
+			toggle.addEventListener( 'click', () => {
+				const open = ! shell.classList.contains( 'is-menu' );
+				shell.classList.toggle( 'is-menu', open );
+				document.body.classList.toggle( 'gp-pf-menu', open );
+				toggle.setAttribute( 'aria-expanded', String( open ) );
+			} );
+		}
+		$$( '[data-bookings]' ).forEach( ( root ) => {
+			const filters = $$( '[data-filter]', root );
+			const items = $$( '.gp-bk', root );
+			const none = $( '.gp-bookings__none', root );
+			filters.forEach( ( f ) => f.addEventListener( 'click', () => {
+				filters.forEach( ( x ) => {
+					x.classList.toggle( 'is-active', x === f );
+					x.setAttribute( 'aria-selected', String( x === f ) );
+				} );
+				let shown = 0;
+				items.forEach( ( it ) => {
+					const show = f.dataset.filter === 'all' || it.dataset.status === f.dataset.filter;
+					it.hidden = ! show;
+					if ( show ) shown++;
+				} );
+				if ( none ) none.hidden = shown > 0;
+			} ) );
+		} );
+		$$( '[data-itinerary]' ).forEach( ( btn ) => btn.addEventListener( 'click', () => {
+			const dlg = document.getElementById( btn.dataset.itinerary );
+			if ( dlg && dlg.showModal ) dlg.showModal();
+		} ) );
+		$$( 'dialog.gp-it' ).forEach( ( dlg ) => {
+			dlg.addEventListener( 'click', ( e ) => e.target === dlg && dlg.close() );
+			$$( '[data-itinerary-close]', dlg ).forEach( ( b ) => b.addEventListener( 'click', () => dlg.close() ) );
+			$$( '[data-print]', dlg ).forEach( ( b ) => b.addEventListener( 'click', () => window.print() ) );
+		} );
+	}
+
 	document.addEventListener( 'DOMContentLoaded', () => {
+		initPopovers();
+		initProfile();
 		initHeader();
 		initSearch();
 		initExplore();
