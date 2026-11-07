@@ -1070,6 +1070,14 @@
 			dlg.addEventListener( 'click', ( e ) => e.target === dlg && dlg.close() );
 			$$( '[data-itinerary-close]', dlg ).forEach( ( b ) => b.addEventListener( 'click', () => dlg.close() ) );
 			$$( '[data-print]', dlg ).forEach( ( b ) => b.addEventListener( 'click', () => window.print() ) );
+			$$( '[data-cancel-request]', dlg ).forEach( ( b ) => b.addEventListener( 'click', async () => {
+				if ( ! window.confirm( 'Send a cancellation request for this reservation?' ) ) return;
+				b.disabled = true;
+				const res = await fetch( b.dataset.rest, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': b.dataset.nonce }, body: JSON.stringify( { booking_id: b.dataset.cancelRequest } ) } ).then( ( r ) => r.json() ).catch( () => ( {} ) );
+				window.alert( res.message || 'We could not send the request. Please try again.' );
+				if ( res.ok ) window.location.reload();
+				else b.disabled = false;
+			} ) );
 		} );
 	}
 

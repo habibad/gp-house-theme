@@ -42,7 +42,8 @@ $book   = apply_filters( 'gp_house_room_reserve_url', '', $room );
 		gp_button( array(
 			'label' => __( 'Reserve this Suite', 'gp-house' ),
 			'class' => 'gp-booking-card__cta gp-no-caps',
-			'url'   => $book ?: '#book',
+			'url'   => $book ?: '#reserve',
+			'attrs' => array( 'data-reserve-open' => '' ),
 			'size'  => 'card',
 		) );
 		?>

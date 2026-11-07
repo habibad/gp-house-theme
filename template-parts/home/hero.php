@@ -30,7 +30,7 @@ $checkin      = gmdate( 'Y-m-d', strtotime( '+1 day', current_time( 'timestamp' 
 			<div class="gp-hero__booking">
 				<a class="gp-hero__badge" href="<?php echo esc_url( home_url( '/club/' ) ); ?>"><?php echo esc_html( gp_opt( 'hero_badge' ) ); ?></a>
 
-				<form class="gp-search" action="<?php echo esc_url( apply_filters( 'gp_house_search_action', home_url( '/stays/' ) ) ); ?>" method="get" data-hero-search>
+				<form class="gp-search" action="<?php echo esc_url( home_url( '/stays/' ) ); ?>" method="get" data-hero-search>
 					<div class="gp-search__fields">
 						<label class="gp-search__field is-current" data-step-field="0">
 							<span class="gp-search__icon"><?php gp_icon( 'location', 24 ); ?></span>

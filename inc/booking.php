@@ -1,7 +1,7 @@
 <?php
 /**
- * Booking page (/book/) glue: the GP House Booking plugin does the work (eZee + PayPal); this file
- * feeds the page, loads its script and points the search / "Book" buttons at it.
+ * Room-page reservation glue: the GP House Booking plugin does the work (eZee + PayPal); this file
+ * loads the script and supplies the country list.
  *
  * @package GP_House
  */
@@ -21,11 +21,6 @@ function gp_booking_enabled() {
 	}
 	return false;
 }
-
-/** The hero search goes straight to the live booking page when it is available. */
-add_filter( 'gp_house_search_action', function ( $url ) {
-	return gp_booking_enabled() ? home_url( '/book/' ) : $url;
-} );
 
 /** Countries for the guest form (ISO code => name). */
 function gp_countries() {
@@ -47,21 +42,9 @@ function gp_countries() {
 	);
 }
 
-/** Resolve the property from the query string (property, destination or the room being booked). */
-function gp_booking_resolve_property() {
-	// phpcs:disable WordPress.Security.NonceVerification
-	$slug = isset( $_GET['property'] ) ? sanitize_key( wp_unslash( $_GET['property'] ) ) : '';
-	if ( $slug && gp_booking_property( $slug ) ) {
-		return $slug;
-	}
-	$dest = isset( $_GET['destination'] ) ? sanitize_key( wp_unslash( $_GET['destination'] ) ) : '';
-	// phpcs:enable
-	return gp_booking_property_for_destination( $dest );
-}
-
 /** Script + data for the booking page. */
 add_action( 'wp_enqueue_scripts', function () {
-	if ( ! is_page( 'book' ) || ! function_exists( 'gp_booking_properties' ) ) {
+	if ( ! is_singular( 'gp_room' ) || ! function_exists( 'gp_booking_properties' ) ) {
 		return;
 	}
 	wp_enqueue_script( 'gp-house-booking', GP_HOUSE_URI . '/assets/js/booking.js', array(), gp_asset_version( 'assets/js/booking.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
@@ -81,8 +64,7 @@ add_action( 'wp_enqueue_scripts', function () {
 			'phone' => (string) get_user_meta( $user->ID, 'gp_phone', true ),
 		),
 		'properties' => $props,
-		'selected'   => gp_booking_resolve_property(),
-		'cancelHrs'  => function_exists( 'gp_booking_option' ) ? (int) gp_booking_option( 'cancel_hours', 48 ) : 48,
+				'cancelHrs'  => function_exists( 'gp_booking_option' ) ? (int) gp_booking_option( 'cancel_hours', 48 ) : 48,
 		'i18n'       => array(
 			'searching' => __( 'Checking availability…', 'gp-house' ),
 			'none'      => __( 'No rooms are available for these dates. Try different dates or another property.', 'gp-house' ),
@@ -96,20 +78,10 @@ add_action( 'wp_enqueue_scripts', function () {
 			'pay'       => __( 'Continue to payment', 'gp-house' ),
 			'processing' => __( 'Please wait…', 'gp-house' ),
 			'cancelled' => __( 'Payment cancelled. You can try again below.', 'gp-house' ),
+			'linkText'  => __( 'Complete your booking on our secure booking page.', 'gp-house' ),
+			'linkButton' => __( 'Continue to booking page', 'gp-house' ),
 			'sdk'       => __( 'We could not load PayPal. Please refresh the page.', 'gp-house' ),
 		),
 	) );
 }, 30 );
 
-/** Body class + no caching for the booking page. */
-add_action( 'template_redirect', function () {
-	if ( is_page( 'book' ) ) {
-		nocache_headers();
-	}
-} );
-add_filter( 'wp_robots', function ( $robots ) {
-	if ( is_page( 'book' ) ) {
-		$robots['noindex'] = true;
-	}
-	return $robots;
-} );

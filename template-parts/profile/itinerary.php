@@ -45,7 +45,9 @@ $ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//GP House//Stay//EN\r\nBEGIN:
 						<?php foreach ( $b['perks'] as $perk ) : ?>
 							<li><?php gp_icon( 'check-circle-green', 16 ); ?><span><?php echo esc_html( $perk ); ?></span></li>
 						<?php endforeach; ?>
+						<?php if ( ! empty( $b['code'] ) ) : ?>
 						<li><?php gp_icon( 'check-circle-green', 16 ); ?><span><?php echo esc_html( sprintf( /* translators: %s: promo code */ __( 'Applied Promotional Benefit: Code %s Verified', 'gp-house' ), $b['code'] ) ); ?></span></li>
+						<?php endif; ?>
 					</ul>
 				</section>
 
@@ -74,6 +76,11 @@ $ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//GP House//Stay//EN\r\nBEGIN:
 					<p><?php esc_html_e( 'Save Or Print Your Itinerary Anytime.', 'gp-house' ); ?></p>
 					<a class="gp-it__btn" href="data:text/calendar;charset=utf-8,<?php echo esc_attr( rawurlencode( $ics ) ); ?>" download="<?php echo esc_attr( sanitize_file_name( $b['id'] ) ); ?>.ics"><?php esc_html_e( 'Add To Calendar (.Ics)', 'gp-house' ); ?></a>
 					<button class="gp-it__btn" type="button" data-print><?php esc_html_e( 'Print Itinerary', 'gp-house' ); ?></button>
+					<?php if ( 'can_request' === ( $b['cancel_state'] ?? '' ) ) : ?>
+						<button class="gp-it__btn gp-it__btn--danger" type="button" data-cancel-request="<?php echo (int) $b['booking_id']; ?>" data-rest="<?php echo esc_url( rest_url( 'gp/v1/booking/cancel-request' ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>"><?php echo esc_html( __( 'Request Cancellation', 'gp-house' ) ); ?></button>
+					<?php elseif ( 'requested' === ( $b['cancel_state'] ?? '' ) ) : ?>
+						<p class="gp-it__note"><?php esc_html_e( 'Cancellation requested — the team will confirm by email.', 'gp-house' ); ?></p>
+					<?php endif; ?>
 				</section>
 			</div>
 		</div>

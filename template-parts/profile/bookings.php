@@ -8,6 +8,10 @@
 defined( 'ABSPATH' ) || exit;
 
 $bookings = gp_profile_bookings();
+$booked   = isset( $_GET['booked'] ) ? sanitize_text_field( wp_unslash( $_GET['booked'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+if ( $booked ) {
+	echo '<p class="gp-bookings__notice" role="status">' . esc_html( sprintf( /* translators: %s: booking reference */ __( 'Thank you! Your reservation %s is confirmed. A confirmation email is on its way.', 'gp-house' ), $booked ) ) . '</p>';
+}
 $filters  = array(
 	'all'       => __( 'All', 'gp-house' ),
 	'confirmed' => __( 'Confirmed', 'gp-house' ),
@@ -41,7 +45,7 @@ if ( ! $bookings ) {
 		<?php foreach ( $bookings as $b ) : ?>
 			<article class="gp-bk" data-status="<?php echo esc_attr( $b['status'] ); ?>">
 				<button class="gp-bk__open" type="button" data-itinerary="gp-it-<?php echo esc_attr( sanitize_key( $b['id'] ) ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: hotel */ __( 'View itinerary for %s', 'gp-house' ), $b['title'] ) ); ?>"></button>
-				<img class="gp-bk__image" src="<?php echo esc_url( gp_img( $b['image'] ) ); ?>" width="111" height="113" alt="" loading="lazy">
+				<img class="gp-bk__image" src="<?php echo esc_url( ! empty( $b['image_url'] ) ? $b['image_url'] : gp_img( $b['image'] ) ); ?>" width="111" height="113" alt="" loading="lazy">
 				<div class="gp-bk__main">
 					<div class="gp-bk__head">
 						<h3><?php echo esc_html( $b['title'] ); ?></h3>
@@ -52,7 +56,7 @@ if ( ! $bookings ) {
 						<div><dt><?php esc_html_e( 'Dates', 'gp-house' ); ?></dt><dd><?php echo esc_html( $b['dates'] ); ?></dd></div>
 						<div><dt><?php esc_html_e( 'Total Paid', 'gp-house' ); ?></dt><dd><?php echo esc_html( $b['total'] ); ?></dd></div>
 						<div><dt><?php esc_html_e( 'Guests', 'gp-house' ); ?></dt><dd><?php echo esc_html( $b['guests'] ); ?></dd></div>
-						<div><dt><?php esc_html_e( 'Code', 'gp-house' ); ?></dt><dd><?php echo esc_html( $b['code'] ); ?></dd></div>
+						<div><dt><?php echo esc_html( ! empty( $b['code'] ) ? __( 'Code', 'gp-house' ) : __( 'Booking Ref', 'gp-house' ) ); ?></dt><dd><?php echo esc_html( ! empty( $b['code'] ) ? $b['code'] : $b['id'] ); ?></dd></div>
 					</dl>
 				</div>
 			</article>

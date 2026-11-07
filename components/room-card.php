@@ -70,7 +70,7 @@ $specs   = array(
 			<div class="gp-room__actions">
 				<?php
 				gp_button( array( 'label' => __( 'Details', 'gp-house' ), 'url' => $room['url'], 'variant' => 'outline', 'size' => 'room', 'text' => 'navy' ) );
-				gp_button( array( 'label' => __( 'Book', 'gp-house' ), 'url' => apply_filters( 'gp_house_room_book_url', $room['url'] . '#book', $room ), 'size' => 'room' ) );
+				gp_button( array( 'label' => __( 'Book', 'gp-house' ), 'url' => apply_filters( 'gp_house_room_book_url', $room['url'] . '#reserve', $room ), 'size' => 'room' ) );
 				?>
 			</div>
 		</div>

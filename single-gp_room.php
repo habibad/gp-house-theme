@@ -29,6 +29,7 @@ get_header();
 		<?php get_template_part( 'template-parts/room/details', null, array( 'room' => $room ) ); ?>
 		<?php get_template_part( 'template-parts/room/booking-card', null, array( 'room' => $room ) ); ?>
 	</section>
+	<?php get_template_part( 'template-parts/room/reserve', null, array( 'room' => $room ) ); ?>
 </main>
 <?php
 get_footer();

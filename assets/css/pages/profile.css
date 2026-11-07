@@ -303,3 +303,8 @@ a.gp-pf-card:hover { background: var(--gp-sand); }
 	.gp-pf.is-menu .gp-member__mail { font-size: 10px; }
 	.gp-pf-menu .gp-footer-area { display: none; }
 }
+
+/* Booking confirmation notice + cancel request */
+.gp-bookings__notice { margin: 0 0 16px; padding: 14px 18px; border-radius: 12px; background: #e6f4ea; color: #1d6b34; font-weight: 600; }
+.gp-it__btn--danger { color: #a12525; border-color: #a12525; }
+.gp-it__note { font-size: 13px; color: #6b6b6b; }

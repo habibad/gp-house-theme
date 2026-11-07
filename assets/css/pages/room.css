@@ -152,3 +152,81 @@
 	.gp-room-details { width: min(var(--gp-container), 100% - 48px); margin-inline: auto; justify-content: space-between; gap: 64px; }
 	.gp-room-info { flex: 1 1 0; width: auto; max-width: 760px; }
 }
+
+/* Reserve panel (opens from "Reserve this Suite") ----------------------------- */
+.gp-reserve { padding: 0 0 80px; background: #fff; scroll-margin-top: 96px; }
+.gp-reserve[hidden] { display: none; }
+.gp-reserve__inner { width: min(var(--gp-container), 100% - 48px); margin-inline: auto; padding: 32px; background: var(--gp-b20); border: 1px solid var(--gp-stroke); border-radius: 20px; }
+.gp-reserve__head h2 { margin: 0; font: 700 28px/1.2 var(--gp-font-head); color: var(--gp-navy); }
+.gp-reserve__head p { margin: 4px 0 20px; color: var(--gp-text); }
+.gp-reserve__stay { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+.gp-reserve__hint { margin: 8px 0 20px; font-size: 13px; color: var(--gp-text); }
+.gp-reserve .gp-book__field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.gp-reserve .gp-book__field > span { font-size: 13px; font-weight: 600; color: var(--gp-navy); }
+.gp-reserve input:not([type="radio"]):not([type="checkbox"]),
+.gp-reserve select,
+.gp-reserve textarea { width: 100%; height: 48px; padding: 0 12px; border: 1px solid var(--gp-stroke); border-radius: 10px; background: #fff; font: 400 16px var(--gp-font-body); color: var(--gp-black); }
+.gp-reserve textarea { height: auto; padding: 12px; resize: vertical; }
+.gp-reserve input[readonly] { background: var(--gp-b30); color: var(--gp-text); }
+.gp-reserve input:focus, .gp-reserve select:focus, .gp-reserve textarea:focus { outline: 2px solid var(--gp-primary); border-color: var(--gp-navy); }
+
+.gp-reserve .gp-book__status { margin-bottom: 14px; padding: 12px 16px; border-radius: 10px; background: #fff; border: 1px solid var(--gp-stroke); color: var(--gp-navy); }
+.gp-reserve .gp-book__status.is-error { border-color: #d64545; color: #a12525; }
+.gp-reserve [hidden] { display: none !important; }
+
+.gp-rate { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 16px 18px; margin-bottom: 10px; background: #fff; border: 1px solid var(--gp-stroke); border-radius: 14px; cursor: pointer; }
+.gp-rate.is-selected { border-color: var(--gp-navy); box-shadow: 0 0 0 2px var(--gp-navy); }
+.gp-rate input { width: 18px; height: 18px; accent-color: var(--gp-navy); }
+.gp-rate__body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.gp-rate__body strong { font: 700 17px/1.3 var(--gp-font-head); color: var(--gp-navy); }
+.gp-rate__body em { margin-left: 6px; padding: 2px 8px; border-radius: 99px; background: var(--gp-primary); color: var(--gp-navy); font-size: 12px; font-style: normal; }
+.gp-rate__meta { font-size: 14px; color: var(--gp-text); }
+.gp-rate__meta .is-ok { color: #1d6b34; }
+.gp-rate__meta .is-strict { color: #a12525; }
+.gp-rate__price { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+.gp-rate__price strong { font: 700 20px var(--gp-font-head); color: var(--gp-navy); }
+.gp-rate__price span { font-size: 13px; color: var(--gp-text); }
+
+.gp-reserve__checkout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; margin-top: 18px; }
+.gp-reserve__summary { order: 2; padding: 22px; background: #fff; border: 1px solid var(--gp-stroke); border-radius: 14px; }
+.gp-reserve__summary h3 { margin: 0 0 10px; font: 700 18px var(--gp-font-head); color: var(--gp-navy); }
+.gp-reserve__steps { order: 1; min-width: 0; }
+.gp-reserve .gp-book__panel { padding: 22px; margin-bottom: 14px; background: #fff; border: 1px solid var(--gp-stroke); border-radius: 14px; }
+.gp-reserve .gp-book__panel h2 { margin: 0 0 10px; font: 700 20px/1.3 var(--gp-font-head); color: var(--gp-navy); }
+.gp-reserve .gp-book__panel p { margin: 0 0 12px; color: var(--gp-text); line-height: 1.6; }
+.gp-reserve .gp-book__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+.gp-reserve .gp-book__field--full { grid-column: 1 / -1; }
+.gp-reserve .gp-book__terms { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 16px; font-size: 14px; color: var(--gp-text); }
+.gp-reserve .gp-book__terms input { width: 18px; height: 18px; margin-top: 2px; flex: none; }
+.gp-reserve .gp-book__terms a { color: var(--gp-navy); text-decoration: underline; }
+.gp-reserve .gp-book__alert { padding: 12px 14px; border-radius: 10px; background: #fdecec; color: #a12525 !important; font-size: 14px; }
+.gp-reserve .gp-book__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.gp-reserve .gp-book__hold strong { color: var(--gp-navy); font-variant-numeric: tabular-nums; }
+.gp-reserve .gp-book__paypal { max-width: 460px; min-height: 60px; }
+.gp-reserve .gp-book__paypal.is-busy { opacity: .5; pointer-events: none; }
+.gp-reserve .gp-book__fine { font-size: 13px !important; }
+.gp-reserve .gp-book__link { padding: 0; border: 0; background: none; color: var(--gp-navy); text-decoration: underline; cursor: pointer; font: 500 14px var(--gp-font-body); }
+.gp-sum__room { margin: 0 0 12px; font-weight: 700; color: var(--gp-navy); }
+.gp-reserve__summary dl { margin: 0 0 12px; }
+.gp-reserve__summary dl div { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--gp-stroke); font-size: 14px; }
+.gp-reserve__summary dt { color: var(--gp-text); }
+.gp-reserve__summary dd { margin: 0; color: var(--gp-navy); font-weight: 600; text-align: right; }
+.gp-sum__total { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 8px; color: var(--gp-navy); font-weight: 600; }
+.gp-sum__total strong { font: 700 22px var(--gp-font-head); }
+.gp-sum__note { margin: 0; font-size: 13px; color: var(--gp-text); line-height: 1.5; }
+
+@media (max-width: 1080px) {
+	.gp-reserve__stay { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+	.gp-reserve__checkout { grid-template-columns: minmax(0, 1fr); }
+	.gp-reserve__summary { order: 0; }
+}
+@media (max-width: 720px) {
+	.gp-reserve { padding-bottom: 48px; }
+	.gp-reserve__inner { width: calc(100% - 40px); padding: 20px 16px; }
+	.gp-reserve__head h2 { font-size: 22px; }
+	.gp-reserve__stay { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.gp-rate { grid-template-columns: auto minmax(0, 1fr); }
+	.gp-rate__price { grid-column: 2; align-items: flex-start; text-align: left; }
+	.gp-reserve .gp-book__grid { grid-template-columns: minmax(0, 1fr); }
+}
+
