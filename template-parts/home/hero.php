@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 $hero_image   = gp_opt( 'hero_image' ) ? wp_get_attachment_image_url( (int) gp_opt( 'hero_image' ), 'full' ) : gp_img( 'photos/hero-room.jpg' );
 $destinations = gp_get_destinations();
 // Longer labels for the phone destination list (Figma 1455:20139).
-$menu_labels  = apply_filters( 'gp_house_search_destination_labels', array( 'phuket' => 'Phuket (Andaman Sanctuary)', 'krabi' => 'Krabi (Karst Reserve)', 'bangkok' => 'Bangkok (Chao Phraya Riverside)' ) );
+$menu_labels  = apply_filters( 'gp_house_search_destination_labels', array( 'phuket' => 'Phuket (Andaman Sanctuary)', 'krabi' => 'Krabi (Karst Reserve)', 'bangkok' => 'Bangkok (Chao Phraya Riverside)', 'sukhumvit' => 'Express Sukhumvit 81 (Bangkok)' ) );
 $checkin      = gmdate( 'Y-m-d', strtotime( '+1 day', current_time( 'timestamp' ) ) );
 ?>
 <section class="gp-hero">

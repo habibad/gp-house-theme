@@ -41,10 +41,13 @@ $avatars = array( 'photos/review-avatar-1.png', 'photos/review-avatar-2.png', 'p
 				</div>
 			</div>
 
-			<div class="gp-photo-stack" aria-hidden="true">
-				<img class="gp-photo-stack__3" src="<?php echo esc_url( gp_img( 'photos/review-stack-3.jpg' ) ); ?>" alt="" loading="lazy">
-				<img class="gp-photo-stack__2" src="<?php echo esc_url( gp_img( 'photos/review-stack-2.jpg' ) ); ?>" alt="" loading="lazy">
-				<img class="gp-photo-stack__1" src="<?php echo esc_url( gp_img( 'photos/review-stack-1.jpg' ) ); ?>" alt="" loading="lazy">
+			<?php // Guest photo stack: click a photo behind to bring it to the front; clicking the front photo shows the next one. ?>
+			<div class="gp-photo-stack" role="group" aria-label="<?php esc_attr_e( 'Guest photos', 'gp-house' ); ?>" data-photo-stack>
+				<?php foreach ( array( 3, 2, 1 ) as $n ) : ?>
+					<button class="gp-photo-stack__item" type="button" data-pos="<?php echo (int) $n; ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: photo number */ __( 'Show guest photo %d', 'gp-house' ), 4 - $n ) ); ?>"<?php echo 1 === $n ? ' aria-pressed="true"' : ' aria-pressed="false"'; ?>>
+						<img src="<?php echo esc_url( gp_img( 'photos/review-stack-' . $n . '.jpg' ) ); ?>" alt="" loading="lazy">
+					</button>
+				<?php endforeach; ?>
 			</div>
 		</div>
 

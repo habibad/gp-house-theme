@@ -61,7 +61,27 @@ function gp_checkin_perks() {
 	) );
 }
 
-/** The simulation tabs. */
+/** The three progress steps above the look-up (Figma update 2026-11-13). */
+function gp_checkin_steps() {
+	return apply_filters( 'gp_house_checkin_steps', array(
+		array( 'label' => __( 'Find & Check', 'gp-house' ), 'icon' => 'search' ),
+		array( 'label' => __( 'Verify', 'gp-house' ), 'icon' => 'shield' ),
+		array( 'label' => __( 'Get Access', 'gp-house' ), 'icon' => 'key' ),
+	) );
+}
+
+/** 16px stroke icons for the progress dots (inline so they take the dot's text colour). */
+function gp_checkin_step_icon( $name ) {
+	$paths = array(
+		'search' => '<circle cx="7" cy="7" r="4.25"/><path d="m10.2 10.2 3.3 3.3"/>',
+		'shield' => '<path d="M8 1.9 3.2 3.7v3.8c0 3 2 5.4 4.8 6.6 2.8-1.2 4.8-3.6 4.8-6.6V3.7L8 1.9Z"/><path d="m5.9 8 1.5 1.5 2.8-2.9"/>',
+		'key'    => '<circle cx="4.4" cy="8" r="2.4"/><path d="M6.8 8h7.4M11.2 8v2.2M13.4 8v1.8"/>',
+		'check'  => '<path d="m3.2 8.3 3.1 3.1 6.5-6.6"/>',
+	);
+	return '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . ( $paths[ $name ] ?? '' ) . '</svg>';
+}
+
+/** Simulation modes (?sim=); the Figma tabs were replaced by the progress steps, the modes stay for demos. */
 function gp_checkin_modes() {
 	return array(
 		'real'     => array( 'label' => __( 'Real Clock', 'gp-house' ), 'icon' => 'clock-navy' ),

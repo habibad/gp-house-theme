@@ -16,17 +16,29 @@ $stay  = $args['stay'];
 $saved  = ! empty( $args['saved'] );
 $region = 'region' === ( $args['variant'] ?? '' );
 $cta    = $args['cta'] ?? gp_opt( 'member_label' );
+// Photo slider (Figma dots under the photo): only on stay cards with more than one photo.
+$images = $region ? array() : array_values( array_filter( (array) ( $stay['images'] ?? array() ) ) );
+$slider = count( $images ) > 1;
+if ( ! $slider ) {
+	$images = array( $stay['image'] );
+}
 ?>
 <article class="gp-stay-card<?php echo $region ? ' gp-stay-card--region' : ''; ?>"<?php echo isset( $stay['loc_slug'] ) ? ' data-location="' . esc_attr( $stay['loc_slug'] ) . '"' : ''; ?>>
-	<div class="gp-stay-card__media">
-		<a href="<?php echo esc_url( $stay['url'] ); ?>" tabindex="-1"><img src="<?php echo esc_url( $stay['image'] ); ?>" alt="<?php echo esc_attr( $stay['title'] ); ?>" loading="lazy"></a>
+	<div class="gp-stay-card__media"<?php echo $slider ? ' data-card-slider' : ''; ?>>
+		<a href="<?php echo esc_url( $stay['url'] ); ?>" tabindex="-1"><?php if ( $slider ) : ?><span class="gp-stay-card__track"><?php endif; ?><?php foreach ( $images as $i => $src ) : ?><img src="<?php echo esc_url( $src ); ?>" alt="<?php echo esc_attr( $i ? '' : $stay['title'] ); ?>" loading="lazy"<?php echo $i ? ' aria-hidden="true"' : ''; ?>><?php endforeach; ?><?php if ( $slider ) : ?></span><?php endif; ?></a>
 		<?php gp_chip( $stay['location'] ); ?>
 		<?php if ( ! $region ) : ?>
 		<button class="gp-fav<?php echo $saved ? ' is-active' : ''; ?>" type="button" aria-pressed="<?php echo $saved ? 'true' : 'false'; ?>" aria-label="<?php esc_attr_e( 'Save stay', 'gp-house' ); ?>" data-fav="<?php echo esc_attr( $stay['id'] ); ?>">
 			<img class="gp-fav__off" src="<?php echo esc_url( gp_img( 'icons/heart.svg' ) ); ?>" width="20" height="20" alt="">
 			<img class="gp-fav__on" src="<?php echo esc_url( gp_img( 'icons/heart-filled.svg' ) ); ?>" width="20" height="20" alt="">
 		</button>
-		<img class="gp-stay-card__dots" src="<?php echo esc_url( gp_img( 'icons/slider-dots.svg' ) ); ?>" width="47" height="6" alt="" aria-hidden="true">
+		<?php endif; ?>
+		<?php if ( $slider ) : ?>
+			<div class="gp-stay-card__dots" role="group" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: stay name */ __( 'Photos of %s', 'gp-house' ), $stay['title'] ) ); ?>">
+				<?php foreach ( $images as $i => $src ) : ?>
+					<button class="gp-dot<?php echo 0 === $i ? ' is-active' : ''; ?>" type="button" data-slide="<?php echo (int) $i; ?>" data-dist="<?php echo (int) min( $i, 4 ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: 1: photo number, 2: total */ __( 'Show photo %1$d of %2$d', 'gp-house' ), $i + 1, count( $images ) ) ); ?>"<?php echo 0 === $i ? ' aria-current="true"' : ''; ?>></button>
+				<?php endforeach; ?>
+			</div>
 		<?php endif; ?>
 	</div>
 	<div class="gp-stay-card__body">

@@ -10,7 +10,15 @@ defined( 'ABSPATH' ) || exit;
 $others        = gp_menu_links( 'others' );
 $others_active = (bool) wp_list_filter( $others, array( 'current' => true ) );
 $signed_in     = gp_profile_signed_in();
-$points        = apply_filters( 'gp_house_header_points', is_user_logged_in() ? (int) get_user_meta( get_current_user_id(), 'gp_points', true ) : 450 );
+// Points badge: only for a signed-in member who actually has points (the demo member counts on profile previews).
+$points        = 0;
+if ( is_user_logged_in() ) {
+	$points = (int) get_user_meta( get_current_user_id(), 'gp_points', true );
+} elseif ( $signed_in ) {
+	$points = (int) ( gp_profile_user()['points'] ?? 0 );
+}
+$points        = (int) apply_filters( 'gp_house_header_points', $points );
+$show_points   = $signed_in && $points > 0;
 ?><!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -68,10 +76,12 @@ $points        = apply_filters( 'gp_house_header_points', is_user_logged_in() ? 
 					</div>
 				</div>
 			</div>
-			<a class="gp-points" href="<?php echo esc_url( home_url( '/club/' ) ); ?>">
-				<span class="gp-points__icon"><?php gp_icon( 'points', 16 ); ?></span>
-				<?php echo esc_html( number_format_i18n( $points ) ); ?> P
-			</a>
+			<?php if ( $show_points ) : ?>
+				<a class="gp-points" href="<?php echo esc_url( home_url( '/profile/points/' ) ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: points */ __( '%s points — view your rewards', 'gp-house' ), number_format_i18n( $points ) ) ); ?>">
+					<span class="gp-points__icon"><?php gp_icon( 'points', 16 ); ?></span>
+					<?php echo esc_html( number_format_i18n( $points ) ); ?> P
+				</a>
+			<?php endif; ?>
 			<?php if ( $signed_in ) : ?>
 				<div class="gp-popover gp-account" data-popover data-hover>
 					<button class="gp-account-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="<?php esc_attr_e( 'My account', 'gp-house' ); ?>">
@@ -123,10 +133,12 @@ $points        = apply_filters( 'gp_house_header_points', is_user_logged_in() ? 
 		<?php endif; ?>
 		<div class="gp-mobile-menu__meta">
 			<span class="gp-mobile-menu__locale"><strong>En</strong><span class="gp-locale__currency">USD</span></span>
-			<a class="gp-points gp-points--menu" href="<?php echo esc_url( $signed_in ? home_url( '/profile/points/' ) : home_url( '/club/' ) ); ?>">
-				<?php gp_icon( 'sparkle-navy', 24 ); ?>
-				<?php echo esc_html( number_format_i18n( $points ) ); ?> P
-			</a>
+			<?php if ( $show_points ) : ?>
+				<a class="gp-points gp-points--menu" href="<?php echo esc_url( home_url( '/profile/points/' ) ); ?>">
+					<?php gp_icon( 'sparkle-navy', 24 ); ?>
+					<?php echo esc_html( number_format_i18n( $points ) ); ?> P
+				</a>
+			<?php endif; ?>
 		</div>
 		<a class="gp-btn gp-btn--primary gp-mobile-menu__book" href="<?php echo esc_url( home_url( '/stays/' ) ); ?>"><?php esc_html_e( 'Book', 'gp-house' ); ?></a>
 	</div>

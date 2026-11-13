@@ -6,14 +6,24 @@
 
 .gp-sc { padding: 100px 0 0; background: #fff; }
 
-/* Arrival-time switcher */
-.gp-sc-modes { display: flex; height: 52px; border-radius: 26px; background: var(--gp-sand-light); }
-.gp-sc-modes__tab { display: flex; flex: 1; align-items: center; justify-content: center; gap: 10px; border: 2px solid transparent; border-radius: 26px; color: var(--gp-navy); font-weight: 500; font-size: 16px; line-height: 24px; text-transform: none; transition: background-color .2s; }
-.gp-sc-modes__tab.is-active { border-color: #f6f5f3; background: #fff; }
-.gp-sc-modes__tab:not(.is-active):hover { background: rgba(255, 255, 255, .5); }
+/* Progress steps: Find & Check → Verify → Get Access (Figma update 2026-11-13) */
+.gp-sc-steps { display: flex; align-items: flex-start; margin-top: 16px; }
+.gp-sc-step { position: relative; z-index: 1; display: flex; flex: none; flex-direction: column; align-items: center; gap: 7px; width: 160px; }
+.gp-sc-step__dot { position: relative; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; }
+.gp-sc-step__dot::before { content: ""; position: absolute; width: 32px; height: 32px; border-radius: 50%; background: #c7c7cc; }
+.gp-sc-step__dot svg { position: relative; color: #fff; }
+.gp-sc-step__label { color: #67708d; font-size: 16px; line-height: 24px; white-space: nowrap; }
+.gp-sc-step.is-done .gp-sc-step__dot::before { background: #e1f7e6; }
+.gp-sc-step.is-done .gp-sc-step__dot svg { color: #34c759; }
+.gp-sc-step.is-done .gp-sc-step__label { color: var(--gp-navy); }
+.gp-sc-step.is-current .gp-sc-step__dot { border: 1.5px dashed #34c759; background: #effbf2; }
+.gp-sc-step.is-current .gp-sc-step__dot::before { background: #34c759; }
+.gp-sc-step.is-current .gp-sc-step__label { color: var(--gp-navy); font-weight: 600; }
+.gp-sc-steps__bar { flex: 1; height: 2px; margin: 21px -50px 0; background: #e5e5ea; }
+.gp-sc-steps__bar.is-done { background: #34c759; }
 
 /* Look-up card */
-.gp-sc-lookup { margin-top: 41px; padding: 30px 32px 32px; border-radius: 24px; background: var(--gp-sand-light); }
+.gp-sc-lookup { margin-top: 39px; padding: 30px 32px 32px; border-radius: 24px; background: var(--gp-sand-light); }
 .gp-sc-lookup__title { margin: 0; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 600; font-size: 49px; line-height: 60px; text-align: center; font-variation-settings: normal; }
 .gp-sc-lookup__text { margin: 24px 0 0; color: var(--gp-text); font-size: 16px; line-height: 24px; text-align: center; }
 .gp-sc-lookup__form { display: flex; align-items: center; gap: 12px; height: 60px; margin-top: 56px; padding: 0 10px 0 23px; border: 1px solid var(--gp-stroke); border-radius: 12px; background: #fff; }
@@ -29,8 +39,8 @@
 
 .gp-sc-notice { margin: 24px 0 0; padding: 16px 24px; border: 1px solid #f0c9c9; border-radius: 16px; background: #fdf1f1; color: #a12a2a; font-size: 16px; line-height: 24px; text-align: center; text-transform: none; }
 
-/* Result */
-.gp-sc-result { margin-top: 50px; }
+/* Result (the updated Figma keeps the result 13px under the look-up card) */
+.gp-sc-result { margin-top: 13px; }
 .gp-sc-banner { display: flex; align-items: center; gap: 17px; padding: 20px 24px; border: 1px solid; border-radius: 16px; }
 .gp-sc-banner__icon { display: flex; flex: none; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 12px; }
 .gp-sc-banner__text { flex: 1; min-width: 0; }
@@ -80,16 +90,26 @@
 .gp-sc-how li { position: relative; padding-left: 12px; color: var(--gp-text); font-size: 14px; line-height: 26px; }
 .gp-sc-how li::before { content: ""; position: absolute; left: 0; top: 12px; width: 4px; height: 4px; border-radius: 50%; background: var(--gp-navy); }
 
-/* Locked state: dim cards + white panel */
-.gp-sc-card.is-dim::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .45); }
+/* Locked state: blurred, lightly greyed cards + white panel */
+.gp-sc-card.is-dim > :not(.gp-sc-lock) { filter: blur(7px); user-select: none; pointer-events: none; }
+.gp-sc-card.is-dim::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .18); }
+.gp-sc-room .gp-sc-lock { box-shadow: 0 12px 32px rgba(1, 16, 65, .12); }
+.gp-sc-lock__pin { display: flex; align-items: center; gap: 10px; }
+.gp-sc-lock__pin .gp-icon { opacity: .3; }
 .gp-sc-lock { position: absolute; left: 24px; right: 24px; top: 156px; z-index: 1; display: flex; align-items: center; gap: 24px; height: 200px; padding: 24px; border-radius: 24px; background: #fff; }
 .gp-sc-lock__icon { display: flex; flex: none; align-items: center; justify-content: center; width: 152px; height: 152px; border-radius: 16px; background: var(--gp-sand); }
 .gp-sc-lock p { margin: 0; color: var(--gp-navy); font-size: 16px; line-height: 24px; }
 .gp-sc-lock strong { display: block; color: var(--gp-navy); font-family: var(--gp-font-body); font-weight: 500; font-size: 28px; line-height: 40px; }
-.gp-sc-pin .gp-sc-lock strong { margin: 4px 0; font-size: 28px; letter-spacing: .12em; }
+.gp-sc-pin .gp-sc-lock strong { margin: 4px 0; font-size: 26px; font-weight: 600; letter-spacing: 1px; }
 .gp-sc-lock div > p:first-child { font-size: 16px; }
 .gp-sc-pin .gp-sc-lock p:last-child { margin-top: 4px; }
 .gp-sc-pin .gp-sc-lock { top: 156px; }
+@media (min-width: 601px) {
+	.gp-sc-room .gp-sc-lock > div { padding-top: 10px; }
+	.gp-sc-room .gp-sc-lock strong { margin-top: 16px; font-size: 26px; }
+	.gp-sc-pin .gp-sc-lock > div { padding-top: 4px; }
+	.gp-sc-lock .gp-sc-lock__pin { margin: 3px 0 -1px; }
+}
 
 /* NFC key + estate access */
 .gp-sc-nfc { position: relative; display: flex; align-items: flex-end; justify-content: space-between; height: 476px; margin: 25px 1px 0; padding: 0 20px 0 47px; overflow: hidden; border-radius: 24px; background: radial-gradient(60% 70% at 18% 8%, #1a3a9c 0%, rgba(26, 58, 156, 0) 100%), #011041; }
@@ -121,8 +141,8 @@
 .gp-sc-action__btn.is-done { background: #3dba5e; color: #fff; }
 
 /* Perks */
-.gp-sc-perks { padding: 160px 0 53px; background: #fff; }
-.gp-sc-perks--idle { padding-bottom: 63px; }
+.gp-sc-perks { padding: 160px 0 83px; background: #fff; }
+.gp-sc-perks--idle { padding-bottom: 81px; }
 .gp-sc-perks--unlocked { padding: 141px 0 84px; }
 .gp-sc-perks__list { display: grid; grid-template-columns: 302px 300px 314px; justify-content: center; margin: 0; padding: 0; list-style: none; }
 .gp-sc-perks__list li { display: flex; flex-direction: column; align-items: center; padding: 19px 20px 0; text-align: center; }
@@ -140,13 +160,12 @@
 	.gp-page-hero--sc .gp-page-hero__text { width: 100%; line-height: 22px; }
 
 	.gp-sc { padding-top: 40px; }
-	.gp-sc-modes { height: 47px; margin-right: -20px; overflow-x: auto; border-radius: 26px 0 0 26px; scrollbar-width: none; }
-	.gp-sc-modes::-webkit-scrollbar { display: none; }
-	.gp-sc-modes__tab { flex: none; gap: 8px; padding: 0 16px; border-radius: 26px; font-size: 16px; }
-	.gp-sc-modes__tab .gp-icon { width: 20px; height: 20px; }
-	.gp-sc-modes__tab.is-active { margin: 3px 0; border-width: 0; }
+	.gp-sc-steps { margin-top: 0; }
+	.gp-sc-step { gap: 6px; width: 92px; }
+	.gp-sc-step__label { font-size: 13px; line-height: 20px; }
+	.gp-sc-steps__bar { margin-inline: -16px; }
 
-	.gp-sc-lookup { margin-top: 26px; padding: 23px 20px 18px; border-radius: 20px; }
+	.gp-sc-lookup { margin-top: 24px; padding: 23px 20px 18px; border-radius: 20px; }
 	.gp-sc-lookup__title { font-size: 28px; line-height: 33px; }
 	.gp-sc-lookup__text { max-width: 284px; margin: 13px auto 0; font-size: 14px; line-height: 21px; }
 	.gp-sc-lookup__form { margin-top: 25px; padding: 0 10px 0 16px; }
@@ -190,7 +209,7 @@
 
 	.gp-sc-lock { left: 16px; right: 16px; top: 124px; gap: 16px; height: 122px; padding: 17px 16px; border-radius: 16px; }
 	.gp-sc-lock__icon { width: 88px; height: 88px; border-radius: 12px; }
-	.gp-sc-lock__icon img { width: 48px; height: 49px; }
+	.gp-sc-lock__icon img { width: 38px; height: 42px; }
 	.gp-sc-lock p, .gp-sc-lock div > p:first-child { font-size: 13px; line-height: 20px; }
 	.gp-sc-lock strong { font-size: 22px; line-height: 28px; }
 	.gp-sc-pin .gp-sc-lock strong { margin: 4px 0; font-size: 24px; line-height: 32px; letter-spacing: .1em; }

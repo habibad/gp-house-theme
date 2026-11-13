@@ -108,6 +108,15 @@
 			} );
 			minis.forEach( ( m ) => m.classList.toggle( 'is-active', m.dataset.stay === index ) );
 			pins.forEach( ( p ) => p.classList.toggle( 'is-active', p.dataset.stay === index ) );
+			// A scrolling mini list (4+ stays): bring the active card into view without moving the page.
+			const list = $( '.gp-map__list--scroll', map );
+			const mini = minis.find( ( m ) => m.dataset.stay === index );
+			if ( list && mini && list.scrollHeight > list.clientHeight ) {
+				const top = mini.offsetTop - list.offsetTop;
+				if ( top < list.scrollTop || top + mini.offsetHeight > list.scrollTop + list.clientHeight ) {
+					list.scrollTo( { top: Math.max( 0, top - 8 ), behavior: 'smooth' } );
+				}
+			}
 		};
 
 		[ ...pins, ...minis ].forEach( ( el ) => el.addEventListener( 'click', () => select( el.dataset.stay ) ) );
@@ -495,10 +504,111 @@
 					$$( '[data-region-items] [data-location]', root ).forEach( ( card ) => {
 						card.hidden = !! slug && card.dataset.location !== slug;
 					} );
+					$$( '[data-region-items]', root ).forEach( ( row ) => {
+						row.scrollLeft = 0;
+						row.dispatchEvent( new Event( 'gp:refresh' ) );
+					} );
 					const tab = chip.dataset.regionName && $( `.gp-map [data-region="${ chip.dataset.regionName }"]`, root );
 					if ( tab ) tab.click();
 				} );
 			} );
+		} );
+	}
+
+	/* Guest photo stack: a photo behind comes to the front when clicked; the front photo goes to the back */
+	function initPhotoStack() {
+		$$( '[data-photo-stack]' ).forEach( ( stack ) => {
+			const items = $$( '.gp-photo-stack__item', stack );
+			const order = () => items.slice().sort( ( a, b ) => Number( a.dataset.pos ) - Number( b.dataset.pos ) );
+			items.forEach( ( item ) => item.addEventListener( 'click', () => {
+				const list = order(); // front first
+				const next = item === list[ 0 ] ? [ ...list.slice( 1 ), list[ 0 ] ] : [ item, ...list.filter( ( el ) => el !== item ) ];
+				next.forEach( ( el, i ) => {
+					el.dataset.pos = String( i + 1 );
+					el.setAttribute( 'aria-pressed', String( 0 === i ) );
+				} );
+			} ) );
+		} );
+	}
+
+	/* Stay card photo slider: the dots under the photo switch photos ------------- */
+	function initCardSliders() {
+		$$( '[data-card-slider]' ).forEach( ( media ) => {
+			const track = $( '.gp-stay-card__track', media );
+			const imgs = $$( 'img', track );
+			const dots = $$( '.gp-dot', media );
+			if ( ! track || ! dots.length ) return;
+			const preload = () => imgs.forEach( ( img ) => ( img.loading = 'eager' ) );
+			const go = ( index ) => {
+				track.style.transform = `translateX(${ -index * 100 }%)`;
+				imgs.forEach( ( img, k ) => ( k === index ? img.removeAttribute( 'aria-hidden' ) : img.setAttribute( 'aria-hidden', 'true' ) ) );
+				dots.forEach( ( dot, k ) => {
+					const on = k === index;
+					dot.classList.toggle( 'is-active', on );
+					dot.dataset.dist = String( Math.min( Math.abs( k - index ), 4 ) );
+					if ( on ) dot.setAttribute( 'aria-current', 'true' );
+					else dot.removeAttribute( 'aria-current' );
+				} );
+			};
+			dots.forEach( ( dot ) => dot.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				e.stopPropagation();
+				preload();
+				go( parseInt( dot.dataset.slide, 10 ) || 0 );
+			} ) );
+			// Load the other photos as soon as the visitor shows interest in the card.
+			media.addEventListener( 'pointerenter', preload, { once: true } );
+			media.addEventListener( 'focusin', preload, { once: true } );
+		} );
+	}
+
+	/* Horizontal card rows: drag with the mouse (touch and trackpads scroll natively) - */
+	function initDragScroll() {
+		$$( '[data-drag-scroll]' ).forEach( ( row ) => {
+			let down = false;
+			let moved = false;
+			let startX = 0;
+			let startLeft = 0;
+			const refresh = () => row.classList.toggle( 'is-scrollable', row.scrollWidth > row.clientWidth + 1 );
+			refresh();
+			window.addEventListener( 'resize', refresh );
+			row.addEventListener( 'gp:refresh', refresh );
+			row.addEventListener( 'pointerenter', refresh ); // the grid panel may have been hidden on load
+
+			row.addEventListener( 'pointerdown', ( e ) => {
+				if ( 'mouse' !== e.pointerType || 0 !== e.button || ! row.classList.contains( 'is-scrollable' ) ) return;
+				down = true;
+				moved = false;
+				startX = e.clientX;
+				startLeft = row.scrollLeft;
+			} );
+			window.addEventListener( 'pointermove', ( e ) => {
+				if ( ! down ) return;
+				const dx = e.clientX - startX;
+				if ( ! moved && Math.abs( dx ) > 5 ) {
+					moved = true;
+					row.classList.add( 'is-dragging' );
+				}
+				if ( moved ) row.scrollLeft = startLeft - dx;
+			} );
+			window.addEventListener( 'pointerup', () => {
+				if ( ! down ) return;
+				down = false;
+				if ( ! moved ) return;
+				// Let the browser snap to the nearest card again, then allow clicks.
+				const left = row.scrollLeft;
+				row.classList.remove( 'is-dragging' );
+				row.scrollLeft = left;
+				setTimeout( () => ( moved = false ), 0 );
+			} );
+			// A drag must not open the card under the pointer.
+			row.addEventListener( 'click', ( e ) => {
+				if ( moved ) {
+					e.preventDefault();
+					e.stopPropagation();
+				}
+			}, true );
+			row.addEventListener( 'dragstart', ( e ) => e.preventDefault() );
 		} );
 	}
 
@@ -1101,6 +1211,9 @@
 		initRoomGallery();
 		initBookingCard();
 		initRegionTabs();
+		initDragScroll();
+		initCardSliders();
+		initPhotoStack();
 		initAccordions();
 		initHoverLists();
 		initClubCalc();

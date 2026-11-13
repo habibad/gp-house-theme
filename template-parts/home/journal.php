@@ -13,7 +13,7 @@ if ( ! $stories ) {
 	return;
 }
 $tabs  = gp_get_destinations();
-$order = apply_filters( 'gp_house_journal_tab_order', array( 'phuket', 'bangkok', 'bali', 'krabi' ) );
+$order = apply_filters( 'gp_house_journal_tab_order', array( 'phuket', 'bangkok', 'sukhumvit', 'krabi' ) );
 usort( $tabs, function ( $a, $b ) use ( $order ) {
 	$pa = array_search( $a['slug'], $order, true );
 	$pb = array_search( $b['slug'], $order, true );

@@ -3,21 +3,35 @@
 .gp-destinations-page { text-transform: capitalize; }
 .gp-destinations { padding-top: 160px; background: #fff; }
 .gp-destinations__bar { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.gp-region-tabs { display: flex; gap: 12px; }
+.gp-region-tabs { display: flex; align-items: center; }
+/* Destinations PDF (2026-11-13): plain text filters split by thin dividers; the active one is the navy pill. */
+.gp-region-tabs .gp-filter-chip { position: relative; padding: 0 24px; border: 0; background: transparent; }
+.gp-region-tabs .gp-filter-chip:first-child { margin-right: 11px; padding: 0 20px; }
+.gp-region-tabs .gp-filter-chip + .gp-filter-chip::before,
+.gp-region-tabs .gp-filter-chip:last-child::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 1px; background: var(--gp-stroke); }
+.gp-region-tabs .gp-filter-chip:last-child::after { left: auto; right: 0; }
+.gp-region-tabs .gp-filter-chip:not(.is-active):hover { color: var(--gp-navy); }
+.gp-region-tabs .gp-filter-chip.is-active { background: var(--gp-navy); color: #fff; }
 
 .gp-destinations__panel { padding-top: 48px; }
 .gp-destinations__panel[hidden] { display: none; }
 /* Figma: 100px below the cards / 160px below the map, then the CTA starts 82px into its section (the shared footer area uses 120px). */
 .gp-destinations__panel--grid { padding-bottom: 62px; }
 .gp-destinations__panel--map { padding-bottom: 122px; }
-.gp-destinations__cards { display: flex; gap: 24px; margin-top: 40px; }
+/* Cards run in one row from the container's left edge to the screen's right edge (4th card peeks); scroll or drag. */
+.gp-destinations { --gp-gutter: max(24px, (100vw - var(--gp-container)) / 2); overflow-x: clip; }
+.gp-destinations__cards { display: flex; gap: 24px; margin-top: 40px; margin-right: calc(var(--gp-gutter) * -1); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.gp-destinations__cards::-webkit-scrollbar { display: none; }
+.gp-destinations__cards::after { content: ""; flex: 0 0 calc(var(--gp-gutter) - 24px); }
+.gp-destinations__cards .gp-stay-card { flex: 0 0 360px; scroll-snap-align: start; }
+.gp-destinations__cards.is-scrollable { cursor: grab; }
+.gp-destinations__cards.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+.gp-destinations__cards.is-dragging a { pointer-events: none; }
 .gp-destinations__panel--map .gp-map { margin-top: 48px; }
 
 @media (max-width: 1180px) {
 	.gp-destinations { padding-top: 80px; }
 	.gp-destinations__bar { flex-wrap: wrap; }
-	.gp-destinations__cards { overflow-x: auto; scrollbar-width: none; }
-	.gp-destinations__cards .gp-stay-card { flex: 0 0 360px; }
 }
 
 /* Mobile — Figma 1435:7062 (grid) / 1435:7770 (map), 402px */
@@ -31,7 +45,10 @@
 	.gp-destinations__panel { padding-top: 32px; }
 	.gp-destinations__panel--grid,
 	.gp-destinations__panel--map { padding-bottom: 0; }
-	.gp-destinations__cards { flex-direction: column; gap: 12px; margin-top: 24px; overflow: visible; }
+	.gp-destinations__cards { flex-direction: column; gap: 12px; margin-top: 24px; margin-right: 0; overflow: visible; scroll-snap-type: none; }
+	.gp-destinations__cards::after { display: none; }
+	.gp-region-tabs .gp-filter-chip { padding: 0 18px; }
+	.gp-region-tabs .gp-filter-chip:first-child { margin-right: 8px; padding: 0 20px; }
 	.gp-destinations__cards .gp-stay-card { flex: none; width: 100%; max-width: none; }
 	.gp-destinations__panel--map .gp-map { margin-top: 24px; }
 	.gp-destinations__panel--map .gp-map__regions { display: none; }

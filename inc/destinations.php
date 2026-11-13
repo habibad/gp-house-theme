@@ -29,6 +29,14 @@ function gp_demo_regions() {
 			'price' => 360,
 			'image' => 'destinations/region-bangkok.jpg',
 		),
+		// Destinations PDF (2026-11-13). The card is cut off in the design, so the title and text are reconstructed.
+		'sukhumvit' => array(
+			'filter_label' => 'Express Sukhumvit 81',
+			'title'        => 'Superior King Room With City Balcony',
+			'text'         => 'Upgraded room featuring a private balcony, seating area, electric kettle and complimentary laptop safe.',
+			'price'        => 261,
+			'image'        => 'destinations/region-sukhumvit.jpg',
+		),
 	);
 }
 
@@ -51,6 +59,7 @@ function gp_get_region_cards() {
 				'id'       => $t->slug,
 				'loc_slug' => $t->slug,
 				'location' => $t->name,
+				'filter_label' => get_term_meta( $t->term_id, 'gp_filter_label', true ) ?: $t->name,
 				'title'    => $title,
 				'excerpt'  => get_term_meta( $t->term_id, 'gp_region_text', true ),
 				'price'    => (float) get_term_meta( $t->term_id, 'gp_from_price', true ),
@@ -72,6 +81,7 @@ function gp_get_region_cards() {
 			'id'       => $dest['slug'],
 			'loc_slug' => $dest['slug'],
 			'location' => $dest['name'],
+			'filter_label' => $r['filter_label'] ?? $dest['name'],
 			'title'    => $r['title'],
 			'excerpt'  => $r['text'],
 			'price'    => $r['price'],
@@ -129,6 +139,18 @@ function gp_demo_destination_pages() {
 				array( 'viewpoint', 'Hidden Viewpoints & Excursions', 'Take the resort’s longtail to Wat Arun at first light, before the city wakes and the river is still glass.' ),
 				array( 'season', 'Best Season & Climate', 'November to February for cool, dry evenings on the river; March to October for festivals and quieter temples.' ),
 				array( 'gastronomy', 'Regional Gastronomy Icon', 'Boat noodles from the Victory Monument canal stalls — rich, spiced broth served in tiny bowls.' ),
+			),
+			'faqs'          => array(),
+		),
+		// Placeholder copy until the client sends the Sukhumvit content.
+		'sukhumvit' => array(
+			'hero'          => 'destinations/hero-thailand.jpg',
+			'hero_text'     => 'A calm city base on Sukhumvit Soi 81, close to the Skytrain, street-food lanes and a direct ride to Suvarnabhumi Airport.',
+			'insider_image' => 'destinations/phuket-insider.jpg',
+			'insider'       => array(
+				array( 'viewpoint', 'Hidden Viewpoints & Excursions', 'Ride the Skytrain to Benjakitti Forest Park for a quiet morning walk above the wetlands before the city heats up.' ),
+				array( 'season', 'Best Season & Climate', 'November to February for cool, dry evenings; March to October for festivals and quieter malls and markets.' ),
+				array( 'gastronomy', 'Regional Gastronomy Icon', 'Late-night khao man gai from the On Nut market stalls — poached chicken, ginger rice and a punchy soybean sauce.' ),
 			),
 			'faqs'          => array(),
 		),

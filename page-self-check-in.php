@@ -35,13 +35,26 @@ get_header();
 
 	<section class="gp-sc">
 		<div class="gp-container">
-			<nav class="gp-sc-modes" aria-label="<?php esc_attr_e( 'Arrival time', 'gp-house' ); ?>">
-				<?php foreach ( gp_checkin_modes() as $key => $mode ) : ?>
-					<a class="gp-sc-modes__tab<?php echo $key === $req['mode'] ? ' is-active' : ''; ?>" href="<?php echo esc_url( $lookup_url( $booking ? $booking['id'] : '', $key ) ); ?>"<?php echo $key === $req['mode'] ? ' aria-current="true"' : ''; ?>>
-						<?php gp_icon( $mode['icon'], 16 ); ?><span><?php echo esc_html( $mode['label'] ); ?></span>
-					</a>
+			<?php
+			// Progress: 1 = find the booking, 2 = verified but access still locked, 3 = access details released.
+			$current = $booking ? ( $state['unlocked'] ? 3 : 2 ) : 1;
+			$steps   = gp_checkin_steps();
+			?>
+			<div class="gp-sc-steps" role="list" aria-label="<?php esc_attr_e( 'Check-in progress', 'gp-house' ); ?>">
+				<?php foreach ( $steps as $i => $step ) : ?>
+					<?php
+					$n      = $i + 1;
+					$status = $n < $current ? 'is-done' : ( $n === $current ? 'is-current' : 'is-todo' );
+					if ( $i ) :
+						?>
+						<span class="gp-sc-steps__bar<?php echo $n <= $current ? ' is-done' : ''; ?>" aria-hidden="true"></span>
+					<?php endif; ?>
+					<div class="gp-sc-step <?php echo esc_attr( $status ); ?>" role="listitem"<?php echo $n === $current ? ' aria-current="step"' : ''; ?>>
+						<span class="gp-sc-step__dot"><?php echo gp_checkin_step_icon( 'is-done' === $status ? 'check' : $step['icon'] ); // phpcs:ignore WordPress.Security.EscapeOutput -- static SVG. ?></span>
+						<span class="gp-sc-step__label"><?php echo esc_html( $step['label'] ); ?></span>
+					</div>
 				<?php endforeach; ?>
-			</nav>
+			</div>
 
 			<div class="gp-sc-lookup">
 				<h2 class="gp-sc-lookup__title"><?php echo esc_html( gp_opt( 'sc_lookup_title' ) ); ?></h2>
@@ -105,7 +118,7 @@ get_header();
 								<p class="gp-sc-room__status"><?php echo esc_html( sprintf( /* translators: %s: room status */ __( 'Status: %s', 'gp-house' ), $booking['status'] ) ); ?></p>
 								<?php if ( ! $state['unlocked'] ) : ?>
 									<div class="gp-sc-lock">
-										<span class="gp-sc-lock__icon"><img src="<?php echo esc_url( gp_img( 'icons/door-handle.svg' ) ); ?>" width="68" height="70" alt=""></span>
+										<span class="gp-sc-lock__icon"><img src="<?php echo esc_url( gp_img( 'icons/door-handle.svg' ) ); ?>" width="54" height="60" alt=""></span>
 										<div><p><?php echo esc_html( $booking['room_name'] ); ?></p><strong><?php esc_html_e( 'Locked Until 11 PM', 'gp-house' ); ?></strong></div>
 									</div>
 								<?php endif; ?>
@@ -131,8 +144,8 @@ get_header();
 								</div>
 								<?php if ( ! $state['unlocked'] ) : ?>
 									<div class="gp-sc-lock">
-										<span class="gp-sc-lock__icon"><img src="<?php echo esc_url( gp_img( 'icons/door-handle.svg' ) ); ?>" width="68" height="70" alt=""></span>
-										<div><p><?php esc_html_e( 'Electronic PIN', 'gp-house' ); ?></p><strong>••••#</strong><p><?php esc_html_e( 'Unlocks At 23:00', 'gp-house' ); ?></p></div>
+										<span class="gp-sc-lock__icon"><img src="<?php echo esc_url( gp_img( 'icons/door-handle.svg' ) ); ?>" width="54" height="60" alt=""></span>
+										<div><p><?php esc_html_e( 'Electronic PIN', 'gp-house' ); ?></p><p class="gp-sc-lock__pin"><strong aria-label="<?php esc_attr_e( 'Hidden until 11 PM', 'gp-house' ); ?>">*****</strong><?php gp_icon( 'copy-navy', 24 ); ?></p><p><?php esc_html_e( 'Unlocks At 23:00', 'gp-house' ); ?></p></div>
 									</div>
 								<?php endif; ?>
 							</section>

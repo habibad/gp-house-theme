@@ -183,7 +183,8 @@ function gp_demo_content() {
 			array( 'slug' => 'phuket', 'name' => 'Phuket', 'card_title' => 'Phuket Beach', 'subtitle' => 'Azure shores & tropical escapes', 'image' => 'photos/dest-phuket.jpg' ),
 			array( 'slug' => 'krabi', 'name' => 'Krabi', 'card_title' => 'Krabi Island', 'subtitle' => 'Pristine shores & limestone cliffs', 'image' => 'photos/dest-krabi.jpg' ),
 			array( 'slug' => 'bangkok', 'name' => 'Bangkok', 'card_title' => 'Bangkok City', 'subtitle' => 'Riverside calm & Thai elegance', 'image' => 'photos/dest-bangkok.jpg' ),
-			array( 'slug' => 'bali', 'name' => 'Bali', 'card_title' => 'Bali', 'subtitle' => '', 'image' => '' ),
+			// Placeholder copy + photo until the client sends the Sukhumvit content (replaces Bali, 2026-11-13).
+			array( 'slug' => 'sukhumvit', 'name' => 'Sukhumvit 81', 'card_title' => 'Sukhumvit', 'subtitle' => 'City energy & easy Skytrain access', 'image' => 'photos/dest-sukhumvit.jpg' ),
 		),
 		'stays'        => array(
 			array(
@@ -235,6 +236,23 @@ function gp_demo_content() {
 				'map'         => true,
 				'featured'    => true,
 				'map_active'  => true,
+			),
+			// Fourth map location. Placeholder copy, price and photos until the client sends the real content.
+			array(
+				'slug'        => 'gp-house-express-sukhumvit-81',
+				'title'       => 'GP House Express Sukhumvit 81',
+				'destination' => 'sukhumvit',
+				'tagline'     => 'City Express',
+				'excerpt'     => 'A calm, modern base on Sukhumvit Soi 81, a short walk from On Nut Skytrain station, with easy connections to the city centre and Suvarnabhumi Airport.',
+				'price'       => 261,
+				'reviews'     => 0,
+				'image'       => 'photos/stay-sukhumvit.jpg',
+				'thumb'       => 'photos/stay-sukhumvit-thumb.jpg',
+				'amenities'   => array( 'location|Near On Nut BTS Station', 'plane|Airport Link Access', 'utensils|Thai Street Food Nearby', 'bed|Soundproof Rooms' ),
+				'pin'         => array( 455, 560 ),
+				'pin_mobile'  => array( 247, 286 ),
+				'map'         => true,
+				'featured'    => false,
 			),
 			array(
 				'slug'        => 'old-town-heritage-suite',

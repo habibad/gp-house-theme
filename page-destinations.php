@@ -39,7 +39,7 @@ get_header();
 				<div class="gp-region-tabs" role="group" aria-label="<?php esc_attr_e( 'Regions', 'gp-house' ); ?>" data-region-tabs>
 					<button class="gp-filter-chip is-active" type="button" aria-pressed="true" data-region-filter=""><?php esc_html_e( 'All Regions', 'gp-house' ); ?></button>
 					<?php foreach ( $regions as $r ) : ?>
-						<button class="gp-filter-chip" type="button" aria-pressed="false" data-region-filter="<?php echo esc_attr( $r['loc_slug'] ); ?>" data-region-name="<?php echo esc_attr( $r['location'] ); ?>"><?php echo esc_html( $r['location'] ); ?></button>
+						<button class="gp-filter-chip" type="button" aria-pressed="false" data-region-filter="<?php echo esc_attr( $r['loc_slug'] ); ?>" data-region-name="<?php echo esc_attr( $r['location'] ); ?>"><?php echo esc_html( $r['filter_label'] ?? $r['location'] ); ?></button>
 					<?php endforeach; ?>
 				</div>
 				<div class="gp-tabs" role="tablist">
@@ -53,7 +53,7 @@ get_header();
 		<div class="gp-destinations__panel gp-destinations__panel--grid" data-panel="grid"<?php echo 'grid' === $view ? '' : ' hidden'; ?>>
 			<div class="gp-container">
 				<?php gp_component( 'section-head', array( 'kicker' => gp_opt( 'dpage_grid_kicker' ), 'title' => gp_opt( 'dpage_grid_title' ), 'title_class' => 'gp-title--h3' ) ); ?>
-				<div class="gp-destinations__cards" data-region-items>
+				<div class="gp-destinations__cards" data-region-items data-drag-scroll>
 					<?php
 					foreach ( $regions as $r ) {
 						gp_component( 'stay-card', array( 'stay' => $r, 'variant' => 'region', 'cta' => __( 'Explore Stays', 'gp-house' ) ) );

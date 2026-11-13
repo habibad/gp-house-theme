@@ -54,6 +54,35 @@ function gp_get_destinations() {
 	}, gp_demo_content()['destinations'] );
 }
 
+/**
+ * A stay (property) has no page of its own: it lives on its destination page, which tells the
+ * property's story and lists its rooms. Stay links point there; old /stays/<slug>/ URLs redirect.
+ */
+function gp_stay_url( $post ) {
+	$terms = get_the_terms( $post, 'gp_destination' );
+	if ( $terms && ! is_wp_error( $terms ) ) {
+		$link = get_term_link( $terms[0] );
+		if ( ! is_wp_error( $link ) ) {
+			return $link;
+		}
+	}
+	return get_post_type_archive_link( 'gp_stay' ) ?: home_url( '/stays/' );
+}
+add_filter( 'post_type_link', function ( $link, $post ) {
+	return 'gp_stay' === $post->post_type && 'publish' === $post->post_status ? gp_stay_url( $post ) : $link;
+}, 10, 2 );
+add_action( 'template_redirect', function () {
+	if ( is_singular( 'gp_stay' ) ) {
+		wp_safe_redirect( gp_stay_url( get_queried_object() ), 301 );
+		exit;
+	}
+} );
+// The stay URLs are the destination pages, so keep them out of the XML sitemap.
+add_filter( 'wp_sitemaps_post_types', function ( $types ) {
+	unset( $types['gp_stay'] );
+	return $types;
+} );
+
 /** Split "icon|text" amenity lines. */
 function gp_parse_amenities( $lines ) {
 	$out = array();
@@ -64,6 +93,45 @@ function gp_parse_amenities( $lines ) {
 		}
 	}
 	return $out;
+}
+
+/**
+ * Photos for a stay card's slider (max 5, card size): the stay's own "Card photo slider" gallery,
+ * otherwise its featured image followed by photos of the rooms in the same destination
+ * (first photo of each room, then the second, …).
+ */
+function gp_stay_images( WP_Post $p, $max = 5 ) {
+	$ids = array_values( array_filter( array_map( 'absint', explode( ',', (string) get_post_meta( $p->ID, 'gp_gallery', true ) ) ) ) );
+	if ( ! $ids ) {
+		$ids   = array_filter( array( (int) get_post_thumbnail_id( $p ) ) );
+		$terms = get_the_terms( $p, 'gp_destination' );
+		if ( $terms && ! is_wp_error( $terms ) ) {
+			$rooms     = get_posts( array(
+				'post_type'   => 'gp_room',
+				'numberposts' => 12,
+				'orderby'     => array( 'menu_order' => 'ASC', 'date' => 'ASC' ),
+				'tax_query'   => array( array( 'taxonomy' => 'gp_destination', 'field' => 'term_id', 'terms' => $terms[0]->term_id ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
+			) );
+			$galleries = array_map( function ( $r ) {
+				return array_values( array_filter( array_map( 'absint', explode( ',', (string) get_post_meta( $r->ID, 'gp_gallery', true ) ) ) ) );
+			}, $rooms );
+			for ( $i = 0; $i < 7 && count( $ids ) < $max; $i++ ) {
+				foreach ( $galleries as $g ) {
+					if ( isset( $g[ $i ] ) && ! in_array( $g[ $i ], $ids, true ) && count( $ids ) < $max ) {
+						$ids[] = $g[ $i ];
+					}
+				}
+			}
+		}
+	}
+	$urls = array();
+	foreach ( array_slice( array_unique( $ids ), 0, $max ) as $id ) {
+		$url = wp_get_attachment_image_url( $id, 'gp-card' );
+		if ( $url ) {
+			$urls[] = $url;
+		}
+	}
+	return $urls;
 }
 
 /**
@@ -102,6 +170,7 @@ function gp_get_stays( $args = array() ) {
 				'price'      => (float) get_post_meta( $p->ID, 'gp_price', true ),
 				'reviews'    => (int) get_post_meta( $p->ID, 'gp_reviews', true ),
 				'image'      => get_the_post_thumbnail_url( $p, 'gp-card' ) ?: '',
+				'images'     => gp_stay_images( $p ),
 				'image_main' => gp_media_url( $main ?: get_post_thumbnail_id( $p ), 'large' ),
 				'thumb'      => gp_media_url( $thumb ?: get_post_thumbnail_id( $p ), 'medium' ),
 				'amenities'  => gp_parse_amenities( get_post_meta( $p->ID, 'gp_amenities', true ) ),
@@ -121,13 +190,14 @@ function gp_get_stays( $args = array() ) {
 		$stays[] = array(
 			'id'         => $i + 1,
 			'title'      => $s['title'],
-			'url'        => home_url( '/stays/' . $s['slug'] . '/' ),
+			'url'        => home_url( '/destinations/' . $s['destination'] . '/' ),
 			'location'   => $dest ? reset( $dest )['name'] : '',
 			'tagline'    => $s['tagline'],
 			'excerpt'    => $s['excerpt'],
 			'price'      => $s['price'],
 			'reviews'    => $s['reviews'],
 			'image'      => gp_media_url( $s['image'] ),
+			'images'     => array( gp_media_url( $s['image'] ) ),
 			'image_main' => gp_media_url( $s['image_main'] ?? $s['image'] ),
 			'thumb'      => gp_media_url( $s['thumb'] ),
 			'amenities'  => gp_parse_amenities( $s['amenities'] ),

@@ -65,7 +65,9 @@ $map_regions = array_values( array_unique( wp_list_pluck( $stays, 'location' ) )
 							<div class="gp-map-card__info">
 								<div class="gp-map-card__top">
 									<p class="gp-map-card__tagline"><?php echo esc_html( $stay['tagline'] ); ?></p>
-									<span class="gp-chip gp-chip--pill gp-chip--sand"><?php printf( esc_html( _n( '%s review', '%s reviews', $stay['reviews'], 'gp-house' ) ), esc_html( number_format_i18n( $stay['reviews'] ) ) ); ?></span>
+									<?php if ( $stay['reviews'] > 0 ) : ?>
+										<span class="gp-chip gp-chip--pill gp-chip--sand"><?php printf( esc_html( _n( '%s review', '%s reviews', $stay['reviews'], 'gp-house' ) ), esc_html( number_format_i18n( $stay['reviews'] ) ) ); ?></span>
+									<?php endif; ?>
 								</div>
 								<div class="gp-map-card__titles">
 									<h3 class="gp-map-card__title"><?php echo esc_html( $stay['title'] ); ?></h3>
@@ -88,7 +90,7 @@ $map_regions = array_values( array_unique( wp_list_pluck( $stays, 'location' ) )
 				</article>
 			<?php endforeach; ?>
 
-			<div class="gp-map__list">
+			<div class="gp-map__list<?php echo count( $stays ) > 3 ? ' gp-map__list--scroll' : ''; ?>">
 				<?php foreach ( $stays as $i => $stay ) : ?>
 					<button class="gp-mini-card<?php echo $i === $active ? ' is-active' : ''; ?>" type="button" data-stay="<?php echo esc_attr( $i ); ?>">
 						<img src="<?php echo esc_url( $stay['thumb'] ); ?>" alt="" loading="lazy">
