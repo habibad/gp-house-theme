@@ -29,7 +29,7 @@ $ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//GP House//Stay//EN\r\nBEGIN:
 						<h3><?php esc_html_e( 'Reservation Itinerary', 'gp-house' ); ?></h3>
 						<p><?php echo esc_html( sprintf( /* translators: %s: confirmation code */ __( 'Confirmation Code:%s', 'gp-house' ), $b['id'] ) ); ?></p>
 					</div>
-					<span class="gp-bk__status is-<?php echo esc_attr( $b['status'] ); ?>"><?php echo esc_html( gp_profile_status_label( $b['status'] ) ); ?></span>
+					<span class="gp-bk__status is-<?php echo esc_attr( $b['status'] ); ?>"><?php echo esc_html( gp_profile_status_label( $b['status'] ) ); ?></span><?php if ( ! empty( $b['test'] ) ) : ?><span class="gp-bk__status is-test" title="<?php esc_attr_e( 'Test booking: no payment, not reserved at the hotel', 'gp-house' ); ?>"><?php esc_html_e( 'Test', 'gp-house' ); ?></span><?php endif; ?>
 				</section>
 
 				<dl class="gp-it__box gp-it__dates">

@@ -49,7 +49,7 @@ if ( ! $bookings ) {
 				<div class="gp-bk__main">
 					<div class="gp-bk__head">
 						<h3><?php echo esc_html( $b['title'] ); ?></h3>
-						<span class="gp-bk__status is-<?php echo esc_attr( $b['status'] ); ?>"><?php echo esc_html( gp_profile_status_label( $b['status'] ) ); ?></span>
+						<span class="gp-bk__status is-<?php echo esc_attr( $b['status'] ); ?>"><?php echo esc_html( gp_profile_status_label( $b['status'] ) ); ?></span><?php if ( ! empty( $b['test'] ) ) : ?><span class="gp-bk__status is-test" title="<?php esc_attr_e( 'Test booking: no payment, not reserved at the hotel', 'gp-house' ); ?>"><?php esc_html_e( 'Test', 'gp-house' ); ?></span><?php endif; ?>
 						<a class="gp-btn gp-btn--primary gp-btn--xs gp-bk__again" href="<?php echo esc_url( $b['url'] ); ?>"><?php esc_html_e( 'Book Again', 'gp-house' ); ?></a>
 					</div>
 					<dl class="gp-bk__facts">

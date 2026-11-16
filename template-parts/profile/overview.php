@@ -15,8 +15,16 @@ $upcoming = count( array_filter( gp_profile_bookings(), fn( $b ) => 'confirmed' 
 	<article class="gp-pf-card gp-pf-card--tier">
 		<span class="gp-pf-card__icon"><?php gp_icon( 'award-navy', 24 ); ?></span>
 		<div class="gp-pf-card__body">
-			<h2><?php echo esc_html( sprintf( /* translators: %s: next tier */ __( 'Silver To %s Tier Status', 'gp-house' ), $m['next_tier'] ) ); ?></h2>
-			<p><?php echo esc_html( sprintf( /* translators: 1: points earned, 2: points to next tier, 3: tier name */ __( '%1$s Points Earned This Year. Earn %2$s More To Unlock %3$s Member Perks.', 'gp-house' ), number_format_i18n( $m['earned'] ), number_format_i18n( $m['to_next'] ), $m['next_tier'] ) ); ?></p>
+			<?php if ( ! empty( $m['next_tier'] ) ) : ?>
+				<h2><?php echo esc_html( sprintf( /* translators: 1: current tier, 2: next tier */ __( '%1$s To %2$s Tier Status', 'gp-house' ), $m['tier_from'] ?? $m['tier'], $m['next_tier'] ) ); ?></h2>
+				<p><?php echo esc_html( sprintf( /* translators: 1: qualifying points, 2: points to next tier, 3: tier name */ __( '%1$s Points Earned This Year. Earn %2$s More To Unlock %3$s Member Perks.', 'gp-house' ), number_format_i18n( $m['qualifying'] ?? $m['earned'] ), number_format_i18n( $m['to_next'] ), $m['next_tier'] ) ); ?></p>
+			<?php else : ?>
+				<h2><?php echo esc_html( sprintf( /* translators: %s: tier */ __( '%s Tier Status', 'gp-house' ), $m['tier'] ) ); ?></h2>
+				<p><?php echo esc_html( sprintf( /* translators: %s: qualifying points */ __( '%s Points Earned This Year — You Enjoy Our Highest Member Perks.', 'gp-house' ), number_format_i18n( $m['qualifying'] ?? $m['earned'] ) ) ); ?></p>
+			<?php endif; ?>
+			<?php if ( ! empty( $m['pending'] ) ) : ?>
+				<p class="gp-pf-card__pending"><?php echo esc_html( sprintf( /* translators: %s: points */ __( '+%s Points Pending — Credited After Your Stay.', 'gp-house' ), number_format_i18n( $m['pending'] ) ) ); ?></p>
+			<?php endif; ?>
 		</div>
 		<div class="gp-pf-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo (int) $m['progress']; ?>">
 			<span class="gp-pf-progress__bar"><i style="width:<?php echo (int) $m['progress']; ?>%"></i></span>

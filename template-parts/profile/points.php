@@ -22,7 +22,10 @@ $history = gp_profile_history();
 		<p class="gp-pts__value"><?php echo esc_html( number_format_i18n( $m['points'] ) ); ?></p>
 		<div class="gp-pts__notes">
 			<p><?php esc_html_e( 'Your Points Never Expire While Your Account Remains Active.', 'gp-house' ); ?></p>
-			<p><?php esc_html_e( 'Earn 10 Points For Every $1 Spent On Accommodations, Dining, And Spa Experiences.', 'gp-house' ); ?></p>
+			<p><?php echo esc_html( gp_club_earn_note( $m ) ); ?></p>
+			<?php if ( ! empty( $m['pending'] ) ) : ?>
+				<p class="gp-pts__pending"><?php echo esc_html( sprintf( /* translators: %s: points */ __( '+%s Points Pending — Credited After Your Stay.', 'gp-house' ), number_format_i18n( $m['pending'] ) ) ); ?></p>
+			<?php endif; ?>
 		</div>
 	</section>
 
@@ -41,7 +44,9 @@ $history = gp_profile_history();
 					<p><?php echo esc_html( $r['text'] ); ?></p>
 					<div class="gp-reward__foot">
 						<span><?php echo esc_html( number_format_i18n( $m['points'] ) . ' / ' . number_format_i18n( $r['points'] ) . ' ' . __( 'Points', 'gp-house' ) ); ?></span>
-						<?php if ( $enough ) : ?>
+						<?php if ( $enough && empty( $m['is_demo'] ) ) : ?>
+							<button class="gp-btn gp-btn--primary gp-btn--card" type="button" data-redeem="<?php echo esc_attr( sanitize_title( str_replace( '|', ' ', $r['title'] ) ) ); ?>" data-name="<?php echo esc_attr( trim( str_replace( array( '-|', '|' ), array( '-', ' ' ), $r['title'] ) ) ); ?>" data-cost="<?php echo (int) $r['points']; ?>" data-rest="<?php echo esc_url( rest_url( 'gp/v1/club/redeem' ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>"><?php esc_html_e( 'Redeem Now', 'gp-house' ); ?></button>
+						<?php elseif ( $enough ) : ?>
 							<a class="gp-btn gp-btn--primary gp-btn--card" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Redeem Now', 'gp-house' ); ?></a>
 						<?php else : ?>
 							<button class="gp-btn gp-btn--primary gp-btn--card" type="button" disabled><?php esc_html_e( 'Insufficient Points', 'gp-house' ); ?></button>
@@ -54,9 +59,9 @@ $history = gp_profile_history();
 
 	<?php if ( $history ) : ?>
 		<div class="gp-pts__table" role="table" aria-label="<?php esc_attr_e( 'Points history', 'gp-house' ); ?>">
-			<div class="gp-pts__row gp-pts__row--head" role="row"><span role="columnheader"><?php esc_html_e( 'Date', 'gp-house' ); ?></span><span role="columnheader"><?php esc_html_e( 'Description', 'gp-house' ); ?></span><span role="columnheader"><?php esc_html_e( 'Points Earned', 'gp-house' ); ?></span></div>
+			<div class="gp-pts__row gp-pts__row--head" role="row"><span role="columnheader"><?php esc_html_e( 'Date', 'gp-house' ); ?></span><span role="columnheader"><?php esc_html_e( 'Description', 'gp-house' ); ?></span><span role="columnheader"><?php esc_html_e( 'Points', 'gp-house' ); ?></span></div>
 			<?php foreach ( $history as $h ) : ?>
-				<div class="gp-pts__row" role="row"><span role="cell"><?php echo esc_html( $h['date'] ); ?></span><span role="cell"><?php echo esc_html( $h['text'] ); ?></span><span role="cell" class="gp-pts__earn">+<?php echo esc_html( number_format_i18n( $h['points'] ) ); ?></span></div>
+				<div class="gp-pts__row" role="row"><span role="cell"><?php echo esc_html( $h['date'] ); ?></span><span role="cell"><?php echo esc_html( $h['text'] ); ?></span><span role="cell" class="gp-pts__earn<?php echo $h['points'] < 0 ? ' is-spent' : ''; ?>"><?php echo esc_html( ( $h['points'] < 0 ? '−' : '+' ) . number_format_i18n( abs( $h['points'] ) ) ); ?></span></div>
 			<?php endforeach; ?>
 		</div>
 	<?php endif; ?>

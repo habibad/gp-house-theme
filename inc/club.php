@@ -10,14 +10,94 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/** Points earned per US$ for the Interactive Calculator (Figma: 4 nights × $380 = +3,040). */
-function gp_club_points_per_dollar() {
-	return (float) apply_filters( 'gp_house_club_points_per_dollar', 2 );
+/**
+ * Club rules (tiers with minimum qualifying points and points per US$1, welcome bonus, credit timing) —
+ * from the booking plugin's settings when it is active, otherwise the design defaults.
+ */
+function gp_club_rules() {
+	if ( function_exists( 'gp_club_settings' ) ) {
+		return gp_club_settings();
+	}
+	return array(
+		'tiers'       => array(
+			'silver'   => array( 'name' => 'Silver Explorer', 'short' => 'Silver', 'min' => 0, 'rate' => 1 ),
+			'gold'     => array( 'name' => 'Gold Connoisseur', 'short' => 'Gold', 'min' => 2500, 'rate' => 1.5 ),
+			'platinum' => array( 'name' => 'Platinum Patron', 'short' => 'Platinum', 'min' => 5000, 'rate' => 2 ),
+		),
+		'welcome'     => 500,
+		'credit'      => 'checkout',
+		'window_days' => 365,
+	);
 }
 
-/** All Club page lists. */
+/** "1", "1.5", "2". */
+function gp_club_rate_text( $rate ) {
+	return rtrim( rtrim( number_format( (float) $rate, 2, '.', '' ), '0' ), '.' );
+}
+
+/**
+ * Points per US$ for the Interactive Calculator: the member's own tier rate when signed in,
+ * otherwise the top tier rate (Figma: 4 nights × $380 = +3,040 at 2 points per $1).
+ */
+function gp_club_points_per_dollar() {
+	$rates = wp_list_pluck( gp_club_rules()['tiers'], 'rate' );
+	$rate  = $rates ? max( $rates ) : 2;
+	if ( is_user_logged_in() && function_exists( 'gp_club_tier_of' ) ) {
+		$rate = (float) gp_club_tier_of( get_current_user_id() )['rate'];
+	}
+	return (float) apply_filters( 'gp_house_club_points_per_dollar', $rate );
+}
+
+/** Points page line under the balance. */
+function gp_club_earn_note( array $member ) {
+	if ( ! empty( $member['is_demo'] ) || empty( $member['rate'] ) ) {
+		return __( 'Earn 10 Points For Every $1 Spent On Accommodations, Dining, And Spa Experiences.', 'gp-house' );
+	}
+	/* translators: 1: points per US$1, 2: tier */
+	return sprintf( __( 'As A %2$s Member You Earn %1$s Points For Every $1 Spent On Direct Stays.', 'gp-house' ), gp_club_rate_text( $member['rate'] ), $member['tier'] );
+}
+
+/** All Club page lists (tier points, earning rates and the earn / welcome texts follow the Club rules). */
 function gp_club_content() {
-	return apply_filters( 'gp_house_club_content', array(
+	return apply_filters( 'gp_house_club_content', gp_club_apply_rules( gp_club_content_defaults() ) );
+}
+
+/** Put the live Club rules into the Club page copy. */
+function gp_club_apply_rules( array $c ) {
+	$rules = gp_club_rules();
+	$tiers = array_values( $rules['tiers'] );
+	$rates = wp_list_pluck( $tiers, 'rate' );
+	$range = gp_club_rate_text( min( $rates ) ) . ( min( $rates ) !== max( $rates ) ? '–' . gp_club_rate_text( max( $rates ) ) : '' );
+	foreach ( $c['tiers'] as $i => &$card ) {
+		if ( ! isset( $tiers[ $i ] ) ) {
+			continue;
+		}
+		$t             = $tiers[ $i ];
+		$next          = $tiers[ $i + 1 ] ?? null;
+		$card['name']  = $t['name'];
+		$card['points'] = $next ? number_format_i18n( max( 0, (int) $next['min'] - 1 ) ) . ' Pts' : number_format_i18n( (int) $t['min'] ) . '+ Pts';
+		/* translators: %s: points */
+		$card['earning'] = array( sprintf( _n( 'Earning: %s Point', 'Earning: %s Points', (float) $t['rate'] > 1 ? 2 : 1, 'gp-house' ), gp_club_rate_text( $t['rate'] ) ), __( 'Per $1 Spent', 'gp-house' ) );
+	}
+	unset( $card );
+	/* translators: %s: welcome points */
+	$c['steps'][0]['text'] = sprintf( __( 'Create your free account and receive %s welcome points instantly.', 'gp-house' ), number_format_i18n( (int) $rules['welcome'] ) );
+	/* translators: %s: points range, e.g. 1–2 */
+	$c['steps'][2]['text'] = sprintf( __( 'Earn %s points per $1 spent on direct stays, depending on your tier.', 'gp-house' ), $range );
+	$c['faqs'][0][1] = sprintf(
+		/* translators: 1: points range, 2: when points are credited */
+		__( 'Earn %1$s points per $1 on direct stays, depending on your tier. %2$s', 'gp-house' ),
+		$range,
+		'confirm' === $rules['credit'] ? __( 'Points are added as soon as your booking is confirmed.', 'gp-house' ) : __( 'Points are added after checkout and show as pending until then.', 'gp-house' )
+	);
+	/* translators: %d: months */
+	$c['faqs'][3][1] = sprintf( __( 'Your tier follows the stay points you earned in the last %d months, and updates automatically after every stay.', 'gp-house' ), max( 1, (int) round( (int) $rules['window_days'] / 30.4 ) ) );
+	return $c;
+}
+
+/** Club page lists as designed (Figma copy). */
+function gp_club_content_defaults() {
+	return apply_filters( 'gp_house_club_content_defaults', array(
 		'steps'        => array(
 			array( 'num' => '01', 'title' => 'Sign Up', 'text' => 'Create your free account and receive 500 welcome points instantly.', 'link' => 'Active Member', 'url' => '', 'done' => true, 'image' => 'club/step-1.jpg' ),
 			array( 'num' => '02', 'title' => 'Book', 'text' => 'Book direct with 10% off, priority check-in, and flexible check-out.', 'link' => 'Book Member Rate', 'url' => '/stays/', 'done' => false, 'image' => 'club/step-2.jpg' ),

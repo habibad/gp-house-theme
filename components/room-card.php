@@ -20,6 +20,9 @@ $specs   = array(
 	array( array( __( 'Area', 'gp-house' ), $room['area'] ), array( __( 'Guests', 'gp-house' ), $room['guests'] ) ),
 	array( array( __( 'Bed', 'gp-house' ), $room['bed'] ), array( __( 'View', 'gp-house' ), $room['view'] ) ),
 );
+// Leave out empty specs (rooms imported from eZee have no area / view yet) and keep two columns.
+$specs   = array_values( array_filter( array_merge( ...$specs ), fn( $x ) => '' !== trim( (string) $x[1] ) ) );
+$specs   = $specs ? array_chunk( $specs, (int) ceil( count( $specs ) / 2 ) ) : array();
 ?>
 <article class="gp-room" data-room data-location="<?php echo esc_attr( $room['loc_slug'] ); ?>" data-type="<?php echo esc_attr( $room['type'] ); ?>" data-beds="<?php echo esc_attr( implode( ' ', $room['beds'] ) ); ?>" data-tags="<?php echo esc_attr( implode( ' ', $room['tags'] ) ); ?>" data-price="<?php echo esc_attr( $room['price'] ); ?>" data-area="<?php echo esc_attr( (int) $room['area'] ); ?>"<?php echo empty( $args['hidden'] ) ? '' : ' hidden'; ?>>
 	<div class="gp-room__media" data-gallery>

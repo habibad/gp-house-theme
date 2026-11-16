@@ -78,6 +78,7 @@ add_action( 'wp_enqueue_scripts', function () {
 			'pay'       => __( 'Continue to payment', 'gp-house' ),
 			'processing' => __( 'Please wait…', 'gp-house' ),
 			'cancelled' => __( 'Payment cancelled. You can try again below.', 'gp-house' ),
+			'points'    => __( 'You will earn %s GP House Club points with this stay.', 'gp-house' ),
 			'linkText'  => __( 'Complete your booking on our secure booking page.', 'gp-house' ),
 			'linkButton' => __( 'Continue to booking page', 'gp-house' ),
 			'sdk'       => __( 'We could not load PayPal. Please refresh the page.', 'gp-house' ),

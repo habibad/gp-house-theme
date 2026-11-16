@@ -30,6 +30,7 @@ $intro = $room['amenities_intro'] ?: __( 'Thoughtfully appointed with bespoke lu
 			<?php foreach ( $specs as $column ) : ?>
 				<ul>
 					<?php foreach ( $column as $spec ) : ?>
+						<?php if ( '' === trim( (string) $spec[2] ) ) { continue; } // e.g. rooms imported from eZee have no area / view yet. ?>
 						<li><?php gp_icon( $spec[0], 16 ); ?><span><?php echo esc_html( $spec[1] ); ?> <strong><?php echo esc_html( $spec[2] ); ?></strong></span></li>
 					<?php endforeach; ?>
 				</ul>

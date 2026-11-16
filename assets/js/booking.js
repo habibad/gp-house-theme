@@ -205,8 +205,36 @@
 		payment.hidden = false;
 		startTimer( res.expires_in );
 		payment.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
-		mountPayPal( res );
+		const pts = $( '[data-pay-points]', payment );
+		if ( pts ) {
+			pts.hidden = ! res.points;
+			pts.textContent = res.points ? t.points.replace( '%s', new Intl.NumberFormat( 'en-US' ).format( res.points ) ) : '';
+		}
+		const testBox = $( '[data-test-box]', payment );
+		if ( testBox ) testBox.hidden = ! res.test_checkout;
+		if ( res.order_id ) mountPayPal( res );
 	} );
+
+	// Test mode (PayPal sandbox): finish the booking without paying; the hotel hold is released.
+	const testBtn = $( '[data-test-complete]', payment );
+	if ( testBtn ) {
+		testBtn.addEventListener( 'click', async () => {
+			if ( ! state.booking ) return;
+			const alertEl = $( '[data-pay-alert]', payment );
+			alertEl.hidden = true;
+			testBtn.disabled = true;
+			const res = await api( 'test-complete', { method: 'POST', body: JSON.stringify( { booking_id: state.booking.booking_id } ) } );
+			if ( res.ok && res.redirect ) {
+				clearInterval( state.timer );
+				state.booking = null;
+				window.location.href = res.redirect;
+				return;
+			}
+			testBtn.disabled = false;
+			alertEl.textContent = res.message || t.error;
+			alertEl.hidden = false;
+		} );
+	}
 
 	const startTimer = ( seconds ) => {
 		clearInterval( state.timer );

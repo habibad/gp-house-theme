@@ -515,6 +515,24 @@
 		} );
 	}
 
+	/* Points & Privileges: redeem a reward (points are taken at once, the concierge is notified) */
+	function initRedeem() {
+		$$( '[data-redeem]' ).forEach( ( btn ) => btn.addEventListener( 'click', async () => {
+			const cost = new Intl.NumberFormat( 'en-US' ).format( parseInt( btn.dataset.cost, 10 ) || 0 );
+			if ( ! window.confirm( `Redeem "${ btn.dataset.name }" for ${ cost } points?` ) ) return;
+			btn.disabled = true;
+			const res = await fetch( btn.dataset.rest, {
+				method: 'POST',
+				credentials: 'same-origin',
+				headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': btn.dataset.nonce },
+				body: JSON.stringify( { reward: btn.dataset.redeem } ),
+			} ).then( ( r ) => r.json() ).catch( () => ( {} ) );
+			window.alert( res.message || 'We could not redeem this reward. Please try again.' );
+			if ( res.ok ) window.location.reload();
+			else btn.disabled = false;
+		} ) );
+	}
+
 	/* Guest photo stack: a photo behind comes to the front when clicked; the front photo goes to the back */
 	function initPhotoStack() {
 		$$( '[data-photo-stack]' ).forEach( ( stack ) => {
@@ -1214,6 +1232,7 @@
 		initDragScroll();
 		initCardSliders();
 		initPhotoStack();
+		initRedeem();
 		initAccordions();
 		initHoverLists();
 		initClubCalc();

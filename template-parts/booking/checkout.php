@@ -52,6 +52,11 @@ defined( 'ABSPATH' ) || exit;
 	<h2><?php esc_html_e( 'Pay Securely With PayPal', 'gp-house' ); ?></h2>
 	<p class="gp-book__hold"><?php esc_html_e( 'Your room is held for', 'gp-house' ); ?> <strong data-hold-timer>20:00</strong></p>
 	<p class="gp-book__alert" data-pay-alert role="alert" hidden></p>
+	<p class="gp-book__points" data-pay-points hidden></p>
+	<div class="gp-book__test" data-test-box hidden>
+		<p><strong><?php esc_html_e( 'Test mode', 'gp-house' ); ?></strong> — <?php esc_html_e( 'PayPal is in sandbox. No real money is taken, and the room hold is released at the hotel after the test.', 'gp-house' ); ?></p>
+		<button class="gp-btn gp-btn--outline gp-btn--tab gp-btn--navy-text" type="button" data-test-complete><?php esc_html_e( 'Complete test booking (no payment)', 'gp-house' ); ?></button>
+	</div>
 	<div id="gp-paypal-buttons" class="gp-book__paypal"></div>
 	<p class="gp-book__fine"><?php esc_html_e( 'You can pay with your PayPal balance or a debit / credit card. Your booking is confirmed the moment the payment succeeds.', 'gp-house' ); ?></p>
 	<button class="gp-book__link" type="button" data-change-room><?php esc_html_e( 'Choose a different room', 'gp-house' ); ?></button>

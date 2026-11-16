@@ -87,6 +87,7 @@ function gp_profile_user() {
 		'earned'     => 2450,
 		'to_next'    => 5150,
 		'next_tier'  => 'Gold',
+		'tier_from'  => 'Silver', // Figma demo: "Silver To Gold Tier Status" on a Gold member card.
 		'progress'   => 48,
 		'phone'      => '',
 		'prefs'      => array(
@@ -116,12 +117,15 @@ function gp_profile_user() {
 			'earned'     => (int) $m( 'gp_points_earned', 0 ),
 			'phone'      => $m( 'gp_phone' ),
 			'is_demo'    => false,
+			'tier_from'  => null, // Real members: "<tier> To <next tier>".
+			'pending'    => 0,
 		) );
 		foreach ( array( 'bed', 'pillow', 'floor', 'dietary', 'requests' ) as $k ) {
 			$user['prefs'][ $k ] = $m( 'gp_pref_' . $k, '' );
 		}
 	}
-	return apply_filters( 'gp_house_profile_user', $user );
+	$user = apply_filters( 'gp_house_profile_user', $user ); // Cache the filtered member (Club tier, points, progress).
+	return $user;
 }
 
 /** Sample reservations (replace with the eZee reservation list). */
