@@ -30,7 +30,7 @@
 	.gp-filters__selects { gap: 12px; }
 	.gp-filters__selects .gp-select { flex: 1 1 0; min-width: 0; }
 	.gp-filters__selects .gp-select__toggle { justify-content: space-between; width: 100%; }
-	.gp-filters__right { flex-direction: column; align-items: stretch; gap: 16px; }
+	.gp-filters__right { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 16px; }
 	.gp-filters__tags { margin-right: -20px; padding-right: 20px; overflow-x: auto; scrollbar-width: none; }
 	.gp-filters__tags::-webkit-scrollbar { display: none; }
 	.gp-filter-chip { flex: none; }

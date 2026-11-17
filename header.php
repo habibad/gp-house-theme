@@ -60,7 +60,7 @@ $show_points   = $signed_in && $points > 0;
 			<div class="gp-popover gp-locale-wrap" data-popover>
 				<button class="gp-locale" type="button" aria-haspopup="true" aria-expanded="false" aria-label="<?php esc_attr_e( 'Language and currency', 'gp-house' ); ?>">
 					<span class="gp-locale__lang">En</span>
-					<span class="gp-locale__currency">USD</span>
+					<span class="gp-locale__currency"><?php echo esc_html( gp_current_currency() ); ?></span>
 				</button>
 				<div class="gp-popover__panel gp-locale-menu" hidden>
 					<p class="gp-locale-menu__label"><?php esc_html_e( 'Language', 'gp-house' ); ?></p>
@@ -71,7 +71,7 @@ $show_points   = $signed_in && $points > 0;
 					<p class="gp-locale-menu__label gp-locale-menu__label--cur"><?php esc_html_e( 'Currency', 'gp-house' ); ?></p>
 					<div class="gp-locale-menu__row">
 						<?php foreach ( array( 'USD', 'THB', 'EUR', 'GBP' ) as $code ) : ?>
-							<button type="button" data-currency="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $code ); ?></button>
+							<button type="button" data-currency="<?php echo esc_attr( $code ); ?>"<?php echo gp_current_currency() === $code ? ' class="is-active" aria-pressed="true"' : ' aria-pressed="false"'; ?>><?php echo esc_html( $code ); ?></button>
 						<?php endforeach; ?>
 					</div>
 				</div>
@@ -132,7 +132,7 @@ $show_points   = $signed_in && $points > 0;
 			</div>
 		<?php endif; ?>
 		<div class="gp-mobile-menu__meta">
-			<span class="gp-mobile-menu__locale"><strong>En</strong><span class="gp-locale__currency">USD</span></span>
+			<span class="gp-mobile-menu__locale"><strong>En</strong><span class="gp-locale__currency"><?php echo esc_html( gp_current_currency() ); ?></span></span>
 			<?php if ( $show_points ) : ?>
 				<a class="gp-points gp-points--menu" href="<?php echo esc_url( home_url( '/profile/points/' ) ); ?>">
 					<?php gp_icon( 'sparkle-navy', 24 ); ?>

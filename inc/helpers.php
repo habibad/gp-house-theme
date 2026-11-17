@@ -44,9 +44,9 @@ function gp_inline_svg( $relative, $class = '' ) {
 	echo $svg; // phpcs:ignore WordPress.Security.EscapeOutput -- trusted theme file.
 }
 
-/** Format a nightly price like the design: $380. */
+/** A US$ price in the visitor's currency, like the design: $380 / ฿13,300 (see inc/currency.php). */
 function gp_price( $amount ) {
-	return '$' . number_format_i18n( (float) $amount );
+	return function_exists( 'gp_money' ) ? gp_money( $amount ) : '$' . number_format_i18n( (float) $amount );
 }
 
 /** Theme option with design default (Customizer). */

@@ -54,7 +54,7 @@ $upcoming = count( array_filter( gp_profile_bookings(), fn( $b ) => 'confirmed' 
 		<span class="gp-pf-card__more"><?php esc_html_e( 'Update Profile', 'gp-house' ); ?><?php gp_icon( 'chevron-right-navy', 16 ); ?></span>
 		<div class="gp-pf-card__body">
 			<h2><?php esc_html_e( 'Hospitality Preferences', 'gp-house' ); ?></h2>
-			<p><?php esc_html_e( 'Pillow, Dietary & Arrival Preferences Saved.', 'gp-house' ); ?></p>
+			<p><?php echo esc_html( gp_profile_prefs_saved() ? __( 'Pillow, Dietary & Arrival Preferences Saved.', 'gp-house' ) : __( 'Tell Us Your Pillow, Dietary & Arrival Preferences.', 'gp-house' ) ); ?></p>
 		</div>
 	</a>
 </div>

@@ -164,10 +164,75 @@ function gp_profile_status_label( $status ) {
 /** Saved stays (the first four stays in the demo). */
 function gp_profile_saved() {
 	if ( ! gp_profile_is_demo() ) {
-		return apply_filters( 'gp_house_profile_saved', array() );
+		return apply_filters( 'gp_house_profile_saved', is_user_logged_in() ? gp_saved_items( get_current_user_id() ) : array() );
 	}
 	return apply_filters( 'gp_house_profile_saved', array_slice( gp_get_stays(), 0, 4 ) );
 }
+
+/* Saved stays & rooms (the heart button on cards) ---------------------------------------- */
+
+/** IDs a member saved: stay post IDs ("12") and rooms ("room-185"). */
+function gp_saved_ids( $user_id = 0 ) {
+	$user_id = $user_id ?: get_current_user_id();
+	$ids     = $user_id ? get_user_meta( $user_id, 'gp_saved', true ) : array();
+	return is_array( $ids ) ? array_values( array_map( 'strval', $ids ) ) : array();
+}
+
+function gp_is_saved( $id ) {
+	return is_user_logged_in() && in_array( (string) $id, gp_saved_ids(), true );
+}
+
+/** Saved items in the stay-card shape (newest first), skipping anything unpublished. */
+function gp_saved_items( $user_id ) {
+	$stays = array();
+	foreach ( gp_get_stays() as $s ) {
+		$stays[ (string) $s['id'] ] = $s;
+	}
+	$out = array();
+	foreach ( array_reverse( gp_saved_ids( $user_id ) ) as $id ) {
+		if ( 0 === strpos( $id, 'room-' ) ) {
+			$p = get_post( (int) substr( $id, 5 ) );
+			if ( $p && 'gp_room' === $p->post_type && 'publish' === $p->post_status ) {
+				$r     = gp_room_from_post( $p );
+				$out[] = array( 'id' => $id, 'title' => $r['title'], 'excerpt' => $r['excerpt'], 'price' => $r['price'], 'url' => $r['url'], 'location' => $r['location'], 'image' => $r['gallery'][ $r['active'] ]['full'] ?? ( $r['gallery'][0]['full'] ?? '' ), 'images' => array() );
+			}
+		} elseif ( isset( $stays[ $id ] ) ) {
+			$out[] = $stays[ $id ];
+		}
+	}
+	return $out;
+}
+
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'gp/v1', '/saved', array(
+		'methods'             => 'POST',
+		'permission_callback' => function () {
+			return is_user_logged_in();
+		},
+		'callback'            => function ( WP_REST_Request $r ) {
+			$id   = sanitize_text_field( (string) $r->get_param( 'id' ) );
+			$post = get_post( (int) preg_replace( '/^room-/', '', $id ) );
+			$type = 0 === strpos( $id, 'room-' ) ? 'gp_room' : 'gp_stay';
+			if ( ! $post || $type !== $post->post_type || 'publish' !== $post->post_status ) {
+				return new WP_REST_Response( array( 'ok' => false ), 404 );
+			}
+			$ids = array_values( array_diff( gp_saved_ids(), array( $id ) ) );
+			if ( $r->get_param( 'on' ) ) {
+				$ids[] = $id;
+			}
+			update_user_meta( get_current_user_id(), 'gp_saved', array_slice( $ids, -100 ) );
+			return new WP_REST_Response( array( 'ok' => true, 'count' => count( $ids ) ) );
+		},
+	) );
+} );
+
+add_action( 'wp_enqueue_scripts', function () {
+	wp_localize_script( 'gp-house', 'gpSaved', array(
+		'rest'     => esc_url_raw( rest_url( 'gp/v1/saved' ) ),
+		'nonce'    => is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : '',
+		'loggedIn' => is_user_logged_in(),
+	) );
+}, 26 );
 
 /** Rewards that can be redeemed with points. */
 function gp_profile_rewards() {
@@ -245,6 +310,7 @@ add_action( 'admin_post_gp_profile_save', function () {
 		}
 	}
 	update_user_meta( $uid, 'gp_pref_dietary', isset( $_POST['pref_dietary'] ) ? sanitize_text_field( wp_unslash( $_POST['pref_dietary'] ) ) : '' );
+	update_user_meta( $uid, 'gp_prefs_saved', time() );
 	update_user_meta( $uid, 'gp_pref_requests', isset( $_POST['pref_requests'] ) ? sanitize_textarea_field( wp_unslash( $_POST['pref_requests'] ) ) : '' );
 	update_user_meta( $uid, 'gp_phone', isset( $_POST['phone'] ) ? preg_replace( '/[^\d+\s\-()]/', '', wp_unslash( $_POST['phone'] ) ) : '' );
 	if ( ! empty( $_POST['full_name'] ) ) {
@@ -265,3 +331,20 @@ add_filter( 'body_class', function ( $classes ) {
 	}
 	return $classes;
 } );
+
+/** Has the member saved their stay preferences yet? (The demo profile always has.) */
+function gp_profile_prefs_saved() {
+	if ( ! is_user_logged_in() || ( function_exists( 'gp_profile_is_demo' ) && gp_profile_is_demo() ) ) {
+		return true;
+	}
+	$uid = get_current_user_id();
+	if ( get_user_meta( $uid, 'gp_prefs_saved', true ) ) {
+		return true;
+	}
+	foreach ( array_keys( gp_profile_pref_options() ) as $key ) {
+		if ( '' !== (string) get_user_meta( $uid, 'gp_pref_' . $key, true ) ) {
+			return true;
+		}
+	}
+	return false;
+}

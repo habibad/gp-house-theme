@@ -25,6 +25,12 @@
 	const t = cfg.i18n;
 	const state = { offers: [], offer: null, stay: null, booking: null, timer: null, sdk: null, run: 0 };
 
+	// Rates are charged in THB; other display currencies get an approximation (window.gpCurrency, inc/currency.php).
+	const approx = ( thb ) => {
+		const c = window.gpCurrency;
+		if ( ! c || 'THB' === c.code || ! c.thb ) return '';
+		return '≈ ' + c.symbol + Math.round( ( thb / c.thb ) * c.rate ).toLocaleString( 'en-US' );
+	};
 	const esc = ( s ) => String( s ?? '' ).replace( /[&<>"']/g, ( c ) => ( { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ c ] ) );
 	const iso = ( d ) => d.toISOString().slice( 0, 10 );
 	const addDays = ( s, n ) => {
@@ -53,6 +59,24 @@
 		const d = Object.fromEntries( new FormData( form ).entries() );
 		return { property: root.dataset.property, room: root.dataset.room, checkin: d.checkin, checkout: form.elements.checkout.value, adults: d.adults, children: d.children, promo: ( d.promo || '' ).trim() };
 	};
+	// Promo code carried over from an offer (?promo= on this page or remembered from the Stays page).
+	( () => {
+		let code = '';
+		try {
+			code = new URLSearchParams( window.location.search ).get( 'promo' ) || sessionStorage.getItem( 'gpPromo' ) || '';
+		} catch ( e ) {}
+		if ( code && form.elements.promo && ! form.elements.promo.value ) form.elements.promo.value = code.replace( /[^A-Za-z0-9_-]/g, '' ).slice( 0, 30 );
+		// Dates / guests chosen in the home search.
+		let stay = {};
+		try {
+			stay = JSON.parse( sessionStorage.getItem( 'gpStay' ) || '{}' ) || {};
+		} catch ( e ) {}
+		const ci = form.elements.checkin;
+		if ( stay.checkin && ci && stay.checkin >= ci.min ) ci.value = stay.checkin;
+		const ad = form.elements.adults;
+		if ( stay.adults && ad && [ ...ad.options ].some( ( o ) => Number( o.value ) === stay.adults ) ) ad.value = String( stay.adults );
+	} )();
+
 	const syncCheckout = () => {
 		const ci = form.elements.checkin.value;
 		form.elements.checkout.value = ci ? addDays( ci, nights() ) : '';
@@ -98,6 +122,11 @@
 		}
 		state.stay = res.stay;
 		state.offers = res.offers;
+		state.others = res.others || [];
+		// Remember the stay so another suite's page starts with the same dates / guests.
+		try {
+			sessionStorage.setItem( 'gpStay', JSON.stringify( { checkin: res.stay.checkin, adults: Number( res.stay.adults ) } ) );
+		} catch ( e ) {}
 		setStatus( '' );
 		renderOffers();
 		if ( state.offers.length === 1 ) selectOffer( state.offers[ 0 ].key, true );
@@ -105,7 +134,8 @@
 
 	const renderOffers = () => {
 		if ( ! state.offers.length ) {
-			offersEl.innerHTML = `<div class="gp-book__panel gp-book__panel--empty"><p>${ esc( t.none ) }</p></div>`;
+			const others = ( state.others || [] ).map( ( o ) => `<li><a href="${ esc( o.url ) }">${ esc( o.title ) }</a> <span>${ esc( t.from ) } ${ esc( o.night_label ) }${ approx( o.total / Math.max( 1, nights() ) ) ? ' (' + esc( approx( o.total / Math.max( 1, nights() ) ) ) + ')' : '' } / ${ esc( t.night ) }</span></li>` ).join( '' );
+			offersEl.innerHTML = `<div class="gp-book__panel gp-book__panel--empty"><p>${ esc( others ? t.roomFull : t.none ) }</p>${ others ? `<ul class="gp-book__others">${ others }</ul>` : '' }</div>`;
 			return;
 		}
 		offersEl.innerHTML = state.offers.map( ( o ) => `
@@ -115,7 +145,7 @@
 					<strong>${ esc( o.rate && o.rate !== o.room ? o.rate.replace( o.room + ' — ', '' ) : o.room ) }${ o.promotion ? ` <em>${ esc( o.promotion ) }</em>` : '' }</strong>
 					<span class="gp-rate__meta">${ o.inclusion ? esc( o.inclusion ) + ' · ' : '' }<span class="${ o.nonrefundable ? 'is-strict' : 'is-ok' }">${ esc( o.cancel_text ) }</span>${ o.available <= 2 ? ' · ' + esc( t.left.replace( '%d', o.available ) ) : '' }</span>
 				</span>
-				<span class="gp-rate__price"><strong>${ esc( o.total_label ) }</strong><span>${ esc( o.night_label ) } / ${ esc( t.night ) }</span></span>
+				<span class="gp-rate__price"><strong>${ esc( o.total_label ) }</strong><span>${ esc( o.night_label ) } / ${ esc( t.night ) }${ approx( o.total ) ? ' · ' + esc( approx( o.total ) ) : '' }</span></span>
 			</label>` ).join( '' );
 	};
 	offersEl.addEventListener( 'change', ( e ) => {
@@ -174,7 +204,7 @@
 				<div><dt>Guests</dt><dd>${ esc( s.adults ) } adults${ Number( s.children ) ? ', ' + esc( s.children ) + ' children' : '' }</dd></div>
 				<div><dt>${ esc( o.night_label ) } × ${ esc( o.nights ) } ${ esc( o.nights === 1 ? t.night : t.nights ) }</dt><dd>${ esc( o.total_label ) }</dd></div>
 			</dl>
-			<p class="gp-sum__total"><span>Total to pay today</span><strong>${ esc( o.total_label ) }</strong></p>
+			<p class="gp-sum__total"><span>Total to pay today</span><strong>${ esc( o.total_label ) }</strong></p>${ approx( o.total ) ? `<p class="gp-sum__approx">${ esc( approx( o.total ) ) } — ${ esc( t.charged ) }</p>` : '' }
 			<p class="gp-sum__note">${ esc( o.cancel_text ) }. Prices include all taxes and fees unless stated.</p>`;
 	};
 

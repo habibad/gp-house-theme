@@ -13,7 +13,8 @@
 defined( 'ABSPATH' ) || exit;
 
 $stay  = $args['stay'];
-$saved  = ! empty( $args['saved'] );
+// Signed-in members see their own saved items; the design's sample state only applies to the demo profile.
+$saved  = is_user_logged_in() && function_exists( 'gp_is_saved' ) ? gp_is_saved( $stay['id'] ) : ( ! empty( $args['saved'] ) && function_exists( 'gp_profile_is_demo' ) && gp_profile_is_demo() );
 $region = 'region' === ( $args['variant'] ?? '' );
 $cta    = $args['cta'] ?? gp_opt( 'member_label' );
 // Photo slider (Figma dots under the photo): only on stay cards with more than one photo.

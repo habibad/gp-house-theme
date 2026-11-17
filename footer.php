@@ -94,7 +94,7 @@ $cta = apply_filters( 'gp_house_footer_cta', array(
 				<div class="gp-footer__currency">
 					<span><?php esc_html_e( 'Currency:', 'gp-house' ); ?></span>
 					<?php foreach ( array( 'USD', 'THB', 'EUR', 'GBP' ) as $code ) : ?>
-						<button type="button" data-currency="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $code ); ?></button>
+						<button type="button" data-currency="<?php echo esc_attr( $code ); ?>"<?php echo gp_current_currency() === $code ? ' class="is-active" aria-pressed="true"' : ' aria-pressed="false"'; ?>><?php echo esc_html( $code ); ?></button>
 					<?php endforeach; ?>
 				</div>
 			</div>

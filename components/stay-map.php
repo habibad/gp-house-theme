@@ -14,6 +14,8 @@ defined( 'ABSPATH' ) || exit;
 $stays = $args['stays'];
 $active = (int) ( $args['active'] ?? 0 );
 $map_regions = array_values( array_unique( wp_list_pluck( $stays, 'location' ) ) );
+// The region tab of the stay shown first is the selected one.
+$active_region = $stays[ $active ]['location'] ?? ( $map_regions[0] ?? '' );
 ?>
 <?php if ( $stays ) : ?>
 	<div class="gp-map"<?php echo $args['attrs'] ?? ''; // phpcs:ignore -- trusted attribute string from templates. ?> data-active="<?php echo esc_attr( $active ); ?>">
@@ -24,7 +26,7 @@ $map_regions = array_values( array_unique( wp_list_pluck( $stays, 'location' ) )
 
 		<div class="gp-map__regions gp-tabs gp-tabs--white">
 			<?php foreach ( $map_regions as $i => $region ) : ?>
-				<button class="gp-tabs__tab<?php echo 0 === $i ? ' is-active' : ''; ?>" type="button" data-region="<?php echo esc_attr( $region ); ?>"><?php echo esc_html( $region ); ?></button>
+				<button class="gp-tabs__tab<?php echo $region === $active_region ? ' is-active' : ''; ?>" type="button" data-region="<?php echo esc_attr( $region ); ?>"><?php echo esc_html( $region ); ?></button>
 			<?php endforeach; ?>
 		</div>
 

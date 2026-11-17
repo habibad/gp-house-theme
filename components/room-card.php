@@ -28,7 +28,8 @@ $specs   = $specs ? array_chunk( $specs, (int) ceil( count( $specs ) / 2 ) ) : a
 	<div class="gp-room__media" data-gallery>
 		<img class="gp-room__photo" src="<?php echo esc_url( $main ); ?>" alt="<?php echo esc_attr( $room['title'] ); ?>" loading="lazy" data-gallery-main>
 		<?php gp_chip( $room['location'] ); ?>
-		<button class="gp-fav" type="button" aria-pressed="false" aria-label="<?php esc_attr_e( 'Save room', 'gp-house' ); ?>" data-fav="room-<?php echo esc_attr( $room['id'] ); ?>">
+		<?php $gp_saved = function_exists( 'gp_is_saved' ) && gp_is_saved( 'room-' . $room['id'] ); ?>
+		<button class="gp-fav<?php echo $gp_saved ? ' is-active' : ''; ?>" type="button" aria-pressed="<?php echo $gp_saved ? 'true' : 'false'; ?>" aria-label="<?php esc_attr_e( 'Save room', 'gp-house' ); ?>" data-fav="room-<?php echo esc_attr( $room['id'] ); ?>">
 			<img class="gp-fav__off" src="<?php echo esc_url( gp_img( 'icons/heart.svg' ) ); ?>" width="20" height="20" alt="">
 			<img class="gp-fav__on" src="<?php echo esc_url( gp_img( 'icons/heart-filled.svg' ) ); ?>" width="20" height="20" alt="">
 		</button>

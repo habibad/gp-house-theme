@@ -108,6 +108,10 @@
 			} );
 			minis.forEach( ( m ) => m.classList.toggle( 'is-active', m.dataset.stay === index ) );
 			pins.forEach( ( p ) => p.classList.toggle( 'is-active', p.dataset.stay === index ) );
+			// Region tabs follow the selected stay.
+			const card = cards.find( ( c ) => c.dataset.stayCard === index );
+			const place = card && ( $( '.gp-chip', card ) || {} ).textContent;
+			if ( place ) regions.forEach( ( t ) => t.classList.toggle( 'is-active', t.dataset.region === place.trim() ) );
 			// A scrolling mini list (4+ stays): bring the active card into view without moving the page.
 			const list = $( '.gp-map__list--scroll', map );
 			const mini = minis.find( ( m ) => m.dataset.stay === index );
@@ -120,6 +124,23 @@
 		};
 
 		[ ...pins, ...minis ].forEach( ( el ) => el.addEventListener( 'click', () => select( el.dataset.stay ) ) );
+
+		// Keep every pin label inside the map (long stay names near the edge would be cut off).
+		const fitPins = () => {
+			const box = map.getBoundingClientRect();
+			pins.forEach( ( pin ) => {
+				const label = $( '.gp-pin__label', pin );
+				if ( ! label ) return;
+				label.style.transform = '';
+				if ( ! pin.offsetParent ) return;
+				const r = label.getBoundingClientRect();
+				const shift = r.right > box.right - 8 ? box.right - 8 - r.right : ( r.left < box.left + 8 ? box.left + 8 - r.left : 0 );
+				if ( shift ) label.style.transform = `translateX(${ Math.round( shift ) }px)`;
+			} );
+		};
+		fitPins();
+		window.addEventListener( 'resize', fitPins, { passive: true } );
+		window.addEventListener( 'load', fitPins );
 
 		regions.forEach( ( tab ) => {
 			tab.addEventListener( 'click', () => {
@@ -197,29 +218,43 @@
 
 	/* Saved stays (heart) — stored locally until member accounts exist ---- */
 	function initFavourites() {
-		const KEY = 'gpHouseSaved';
-		let saved;
-		try {
-			saved = JSON.parse( localStorage.getItem( KEY ) || 'null' );
-		} catch ( e ) {
-			saved = null;
-		}
+		const cfg = window.gpSaved || {};
 		$$( '[data-fav]' ).forEach( ( btn ) => {
-			const id = btn.dataset.fav;
-			if ( Array.isArray( saved ) ) {
-				const on = saved.includes( id );
-				btn.classList.toggle( 'is-active', on );
-				btn.setAttribute( 'aria-pressed', String( on ) );
-			}
-			btn.addEventListener( 'click', () => {
-				const list = $$( '[data-fav].is-active' ).map( ( b ) => b.dataset.fav );
+			btn.addEventListener( 'click', async ( e ) => {
+				e.preventDefault();
+				// Guests sign in first and come back to this page.
+				if ( ! cfg.loggedIn ) {
+					const signin = $( '[data-auth="signin"]' );
+					if ( signin ) {
+						signin.dataset.redirect = window.location.href;
+						signin.click();
+					}
+					return;
+				}
 				const on = ! btn.classList.contains( 'is-active' );
 				btn.classList.toggle( 'is-active', on );
 				btn.setAttribute( 'aria-pressed', String( on ) );
-				const next = on ? [ ...new Set( [ ...list, id ] ) ] : list.filter( ( x ) => x !== id );
-				try {
-					localStorage.setItem( KEY, JSON.stringify( next ) );
-				} catch ( e ) {}
+				btn.disabled = true;
+				const res = await fetch( cfg.rest, {
+					method: 'POST',
+					credentials: 'same-origin',
+					headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': cfg.nonce },
+					body: JSON.stringify( { id: btn.dataset.fav, on: on ? 1 : 0 } ),
+				} ).then( ( r ) => r.json() ).catch( () => ( {} ) );
+				btn.disabled = false;
+				if ( ! res.ok ) {
+					btn.classList.toggle( 'is-active', ! on );
+					btn.setAttribute( 'aria-pressed', String( ! on ) );
+					return;
+				}
+				// Same item elsewhere on the page follows.
+				$$( `[data-fav="${ btn.dataset.fav }"]` ).forEach( ( b ) => {
+					b.classList.toggle( 'is-active', on );
+					b.setAttribute( 'aria-pressed', String( on ) );
+				} );
+				// Saved Stays page: an un-saved card leaves the list.
+				const card = btn.closest( '.gp-saved > *' );
+				if ( card && ! on ) card.remove();
 			} );
 		} );
 	}
@@ -291,25 +326,28 @@
 		update();
 	}
 
-	/* Footer currency switch (visual until pricing API exists) ----------- */
+	/* Currency switch (header pop-over, mobile menu, footer): remembered in a cookie, prices re-rendered by the server */
 	function initCurrency() {
 		const buttons = $$( '[data-currency]' );
-		const label = $( '.gp-locale__currency' );
-		let current = 'USD';
-		try {
-			current = localStorage.getItem( 'gpHouseCurrency' ) || 'USD';
-		} catch ( e ) {}
-		const set = ( code ) => {
-			buttons.forEach( ( b ) => b.classList.toggle( 'is-active', b.dataset.currency === code ) );
-			if ( label ) label.textContent = code;
-			try {
-				localStorage.setItem( 'gpHouseCurrency', code );
-			} catch ( e ) {}
-		};
-		buttons.forEach( ( b ) => b.addEventListener( 'click', () => set( b.dataset.currency ) ) );
-		set( current );
+		const current = ( window.gpCurrency && window.gpCurrency.code ) || 'USD';
+		buttons.forEach( ( b ) => {
+			b.classList.toggle( 'is-active', b.dataset.currency === current );
+			b.setAttribute( 'aria-pressed', String( b.dataset.currency === current ) );
+			b.addEventListener( 'click', () => {
+				const code = b.dataset.currency;
+				if ( code === current ) return;
+				const secure = 'https:' === window.location.protocol ? '; Secure' : '';
+				document.cookie = `gp_currency=${ encodeURIComponent( code ) }; Max-Age=31536000; Path=/; SameSite=Lax${ secure }`;
+				window.location.reload();
+			} );
+		} );
 	}
 
+	/** US$ amount → the visitor's currency, e.g. ฿4,550 (window.gpCurrency comes from inc/currency.php). */
+	function gpMoney( usd ) {
+		const c = window.gpCurrency || { symbol: '$', rate: 1 };
+		return c.symbol + Math.round( usd * c.rate ).toLocaleString( 'en-US' );
+	}
 
 	/* Filter dropdowns (gp_dropdown) ------------------------------------- */
 	function initDropdowns() {
@@ -474,7 +512,7 @@
 		const card = $( '[data-booking]' );
 		if ( ! card ) return;
 		const price = parseFloat( card.dataset.price ) || 0;
-		const fmt = ( n ) => '$' + Math.round( n ).toLocaleString( 'en-US' );
+		const fmt = ( n ) => gpMoney( n );
 		let nights = parseInt( $( '[data-nights]', card ).textContent, 10 ) || 1;
 		const render = () => {
 			$$( '[data-nights]', card ).forEach( ( el ) => ( el.textContent = nights ) );
@@ -790,10 +828,23 @@
 				// Clipboard blocked — nothing to do.
 			}
 		} ) );
-		[ '[data-unlock]', '[data-arrived]' ].forEach( ( sel ) => $$( sel ).forEach( ( btn ) => btn.addEventListener( 'click', () => {
+		[ '[data-unlock]', '[data-arrived]' ].forEach( ( sel ) => $$( sel ).forEach( ( btn ) => btn.addEventListener( 'click', async () => {
+			btn.disabled = true;
+			// Real bookings tell the team (Late Night Self Check-In → "I Have Arrived In My Room").
+			if ( btn.dataset.rest ) {
+				const res = await fetch( btn.dataset.rest, {
+					method: 'POST',
+					credentials: 'same-origin',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify( { booking_id: btn.dataset.booking, token: btn.dataset.token } ),
+				} ).then( ( r ) => r.json() ).catch( () => ( {} ) );
+				if ( ! res.ok ) {
+					btn.disabled = false;
+					return;
+				}
+			}
 			btn.textContent = btn.dataset.done;
 			btn.classList.add( 'is-done' );
-			btn.disabled = true;
 		} ) ) );
 	}
 
@@ -1209,7 +1260,21 @@
 		} );
 	}
 
+	/* Promo codes from offers (?promo=CODE) follow the visitor to the room's Reserve panel (booking.js reads it). */
+	function rememberPromo() {
+		try {
+			const code = new URLSearchParams( window.location.search ).get( 'promo' );
+			if ( code ) sessionStorage.setItem( 'gpPromo', code.replace( /[^A-Za-z0-9_-]/g, '' ).slice( 0, 30 ) );
+			// Hero search (?checkin=YYYY-MM-DD&guests=ADULTS-ROOMS): the Reserve panel starts with the same stay.
+			const q = new URLSearchParams( window.location.search );
+			const checkin = q.get( 'checkin' ) || '';
+			const adults = parseInt( ( q.get( 'guests' ) || '' ).split( '-' )[ 0 ], 10 ) || 0;
+			if ( /^\d{4}-\d{2}-\d{2}$/.test( checkin ) || adults ) sessionStorage.setItem( 'gpStay', JSON.stringify( { checkin, adults } ) );
+		} catch ( e ) {}
+	}
+
 	document.addEventListener( 'DOMContentLoaded', () => {
+		rememberPromo();
 		initPopovers();
 		initAuth();
 		initReviewForm();

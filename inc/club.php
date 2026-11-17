@@ -54,7 +54,8 @@ function gp_club_earn_note( array $member ) {
 		return __( 'Earn 10 Points For Every $1 Spent On Accommodations, Dining, And Spa Experiences.', 'gp-house' );
 	}
 	/* translators: 1: points per US$1, 2: tier */
-	return sprintf( __( 'As A %2$s Member You Earn %1$s Points For Every $1 Spent On Direct Stays.', 'gp-house' ), gp_club_rate_text( $member['rate'] ), $member['tier'] );
+	$one = 1.0 === (float) $member['rate'];
+	return sprintf( $one ? __( 'As A %2$s Member You Earn %1$s Point For Every $1 Spent On Direct Stays.', 'gp-house' ) : __( 'As A %2$s Member You Earn %1$s Points For Every $1 Spent On Direct Stays.', 'gp-house' ), gp_club_rate_text( $member['rate'] ), $member['tier'] );
 }
 
 /** All Club page lists (tier points, earning rates and the earn / welcome texts follow the Club rules). */

@@ -123,16 +123,55 @@ function gp_checkin_state( $mode ) {
 	return array( 'unlocked' => $unlocked, 'note' => $note, 'remaining' => $left );
 }
 
-/** Sanitised query: booking ID + simulation mode. */
+/** Sanitised query: booking ID, last name / email (real bookings) + simulation mode (demo). */
 function gp_checkin_request() {
 	// phpcs:disable WordPress.Security.NonceVerification -- read-only look-up, no state change.
-	$id   = isset( $_GET['booking'] ) ? strtoupper( preg_replace( '/[^A-Za-z0-9\-]/', '', wp_unslash( $_GET['booking'] ) ) ) : '';
-	$mode = isset( $_GET['sim'] ) ? sanitize_key( wp_unslash( $_GET['sim'] ) ) : 'real';
+	$id     = isset( $_GET['booking'] ) ? strtoupper( preg_replace( '/[^A-Za-z0-9\-]/', '', wp_unslash( $_GET['booking'] ) ) ) : '';
+	$verify = isset( $_GET['verify'] ) ? sanitize_text_field( wp_unslash( $_GET['verify'] ) ) : '';
+	$mode   = isset( $_GET['sim'] ) ? sanitize_key( wp_unslash( $_GET['sim'] ) ) : 'real';
 	// phpcs:enable
 	if ( ! isset( gp_checkin_modes()[ $mode ] ) ) {
 		$mode = 'real';
 	}
-	return array( 'id' => $id, 'mode' => $mode );
+	return array( 'id' => $id, 'verify' => $verify, 'mode' => $mode );
+}
+
+/**
+ * Demo mode = the Figma sample bookings (GPH-…) and the 11 PM simulation. Used when the booking plugin is not
+ * active or to preview the designs (define GP_HOUSE_CHECKIN_DEMO or GP_HOUSE_PROFILE_DEMO as true in wp-config.php).
+ * Otherwise guests look up their real booking.
+ */
+function gp_checkin_is_demo() {
+	$demo = ! function_exists( 'gp_booking_checkin_find' )
+		|| ( defined( 'GP_HOUSE_CHECKIN_DEMO' ) && GP_HOUSE_CHECKIN_DEMO )
+		|| ( defined( 'GP_HOUSE_PROFILE_DEMO' ) && GP_HOUSE_PROFILE_DEMO );
+	return (bool) apply_filters( 'gp_house_checkin_demo', $demo );
+}
+
+/** Look-up for the page: { booking: array|null (template shape), state: array }. */
+function gp_checkin_lookup( array $req, $demo ) {
+	$out = array( 'booking' => null, 'state' => array( 'unlocked' => false, 'note' => '', 'remaining' => '', 'phase' => 'before' ) );
+	if ( ! $req['id'] ) {
+		return $out;
+	}
+	if ( $demo ) {
+		$all = gp_checkin_bookings();
+		if ( isset( $all[ $req['id'] ] ) ) {
+			$out['booking'] = $all[ $req['id'] ];
+			$out['state']   = gp_checkin_state( $req['mode'] ) + array( 'phase' => 'open' );
+		}
+		return $out;
+	}
+	// Slow down guessing: 20 look-ups per hour and visitor.
+	if ( function_exists( 'gp_core_rate_limit' ) && function_exists( 'gp_core_client_ip' ) && ! gp_core_rate_limit( 'checkin|' . gp_core_client_ip(), 20, HOUR_IN_SECONDS ) ) {
+		return $out;
+	}
+	$b = gp_booking_checkin_find( $req['id'], $req['verify'] );
+	if ( $b ) {
+		$out['state']   = gp_booking_checkin_state( $b );
+		$out['booking'] = gp_booking_checkin_view( $b, $out['state']['unlocked'] );
+	}
+	return $out;
 }
 
 // Look-ups are personal: never cache or index.
