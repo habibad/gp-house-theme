@@ -96,7 +96,9 @@ function gp_get_offers() {
 				'save'         => get_post_meta( $p->ID, 'gp_offer_save', true ),
 				'image'        => get_the_post_thumbnail_url( $p, 'large' ) ?: '',
 				'image_mobile' => $mobile ? gp_media_url( $mobile, 'large' ) : '',
-				'url'          => gp_offer_book_url( $code, get_post_meta( $p->ID, 'gp_offer_url', true ) ),
+				// The code (and its saving) only shows when eZee accepts it (GP House Booking checks daily).
+				'live'         => $code ? (bool) apply_filters( 'gp_house_offer_live', true, $code ) : false,
+				'url'          => $code && apply_filters( 'gp_house_offer_live', true, $code ) ? gp_offer_book_url( $code, get_post_meta( $p->ID, 'gp_offer_url', true ) ) : ( get_post_meta( $p->ID, 'gp_offer_url', true ) ?: ( get_post_type_archive_link( 'gp_stay' ) ?: home_url( '/stays/' ) ) ),
 			);
 		}, $posts );
 	}
@@ -113,7 +115,8 @@ function gp_get_offers() {
 			'save'         => $o['save'],
 			'image'        => gp_img( $o['image'] ),
 			'image_mobile' => gp_img( $o['image_mobile'] ),
-			'url'          => gp_offer_book_url( $o['code'] ),
+			'live'         => (bool) apply_filters( 'gp_house_offer_live', true, $o['code'] ),
+			'url'          => apply_filters( 'gp_house_offer_live', true, $o['code'] ) ? gp_offer_book_url( $o['code'] ) : ( get_post_type_archive_link( 'gp_stay' ) ?: home_url( '/stays/' ) ),
 		);
 	}, gp_demo_offers() );
 }

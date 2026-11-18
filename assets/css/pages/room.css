@@ -113,6 +113,7 @@
 .gp-booking-card__lines dt { color: var(--gp-ink-2); }
 .gp-booking-card__lines dd { margin: 0; color: var(--gp-navy); }
 .gp-booking-card__total { padding-top: 12px; border-top: 1px solid rgba(26, 26, 26, .15); }
+.gp-booking-card__was { margin-right: 6px; color: var(--gp-text); font-weight: 400; }
 .gp-booking-card__note { width: 230px; color: var(--gp-ink-2); font-size: 12px; line-height: 1.6; text-align: center; }
 
 @media (max-width: 1100px) {
@@ -191,6 +192,9 @@
 .gp-rate__price { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
 .gp-rate__price strong { font: 700 20px var(--gp-font-head); color: var(--gp-navy); }
 .gp-rate__price span { font-size: 13px; color: var(--gp-text); }
+.gp-rate__price .gp-rate__was { display: flex; align-items: center; gap: 6px; }
+.gp-rate__was s { color: var(--gp-text); }
+.gp-rate__was b { padding: 2px 6px; border-radius: 4px; background: #e7f6ec; color: #17803d; font-weight: 600; font-size: 12px; }
 
 .gp-reserve__checkout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; margin-top: 18px; }
 .gp-reserve__summary { order: 2; padding: 22px; background: #fff; border: 1px solid var(--gp-stroke); border-radius: 14px; }
@@ -230,6 +234,11 @@
 .gp-sum__total { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 8px; color: var(--gp-navy); font-weight: 600; }
 .gp-sum__total strong { font: 700 22px var(--gp-font-head); }
 .gp-sum__note { margin: 0; font-size: 13px; color: var(--gp-text); line-height: 1.5; }
+.gp-reserve__summary .gp-sum__save dt, .gp-reserve__summary .gp-sum__save dd { color: #17803d; }
+.gp-reserve__summary .gp-sum__nights { flex-direction: column; gap: 6px; }
+.gp-sum__nights ul { margin: 0; padding: 0; list-style: none; font-weight: 500; }
+.gp-sum__nights li { display: flex; justify-content: space-between; gap: 12px; padding: 2px 0; }
+.gp-sum__nights li span:first-child { color: var(--gp-text); font-weight: 400; }
 
 @media (max-width: 1080px) {
 	.gp-reserve__stay { grid-template-columns: repeat(3, minmax(0, 1fr)); }

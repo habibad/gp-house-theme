@@ -66,8 +66,14 @@ $ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//GP House//Stay//EN\r\nBEGIN:
 					<p class="gp-it__note"><?php esc_html_e( 'Direct Best-Rate Guaranteed • Fully Paid & Secured.', 'gp-house' ); ?></p>
 					<dl>
 						<div><dt><?php echo esc_html( sprintf( /* translators: %d: nights */ __( 'Accommodation (%d Nights):', 'gp-house' ), (int) $b['nights'] ) ); ?></dt><dd><?php echo esc_html( $b['accommodation'] ); ?></dd></div>
-						<div><dt><?php esc_html_e( 'Resort Service Fee (10%', 'gp-house' ); ?></dt><dd><?php esc_html_e( 'Included', 'gp-house' ); ?></dd></div>
-						<div><dt><?php esc_html_e( 'Provincial VAT (7%)', 'gp-house' ); ?></dt><dd><?php esc_html_e( 'Included', 'gp-house' ); ?></dd></div>
+						<?php if ( isset( $b['rate_rows'] ) ) : ?>
+							<?php foreach ( (array) $b['rate_rows'] as $row ) : ?>
+								<div><dt><?php echo esc_html( $row[0] ); ?></dt><dd><?php echo esc_html( $row[1] ); ?></dd></div>
+							<?php endforeach; ?>
+						<?php else : ?>
+							<div><dt><?php esc_html_e( 'Resort Service Fee (10%', 'gp-house' ); ?></dt><dd><?php esc_html_e( 'Included', 'gp-house' ); ?></dd></div>
+							<div><dt><?php esc_html_e( 'Provincial VAT (7%)', 'gp-house' ); ?></dt><dd><?php esc_html_e( 'Included', 'gp-house' ); ?></dd></div>
+						<?php endif; ?>
 					</dl>
 				</section>
 

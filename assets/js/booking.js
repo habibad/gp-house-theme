@@ -39,6 +39,7 @@
 		return iso( d );
 	};
 	const fmtDate = ( s ) => new Date( s + 'T00:00:00' ).toLocaleDateString( 'en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' } );
+	const fmtNight = ( s ) => new Date( s + 'T00:00:00' ).toLocaleDateString( 'en-GB', { weekday: 'short', day: 'numeric', month: 'short' } );
 	const nights = () => parseInt( ( card && card.querySelector( '[data-nights]' ) || {} ).textContent, 10 ) || 3;
 	// Sets the stay length on the booking card (main.js re-renders the counter and estimate).
 	const setNights = ( n ) => {
@@ -106,7 +107,7 @@
 	// eZee prices are THB; the card shows the visitor's currency (THB exact, others converted).
 	const cardMoney = ( thb ) => {
 		const c = window.gpCurrency;
-		if ( ! c || 'THB' === c.code || ! c.thb ) return '฿' + Math.round( thb ).toLocaleString( 'en-US' );
+		if ( ! c || 'THB' === c.code || ! c.thb ) return '฿' + thb.toLocaleString( 'en-US', { minimumFractionDigits: Math.abs( thb - Math.round( thb ) ) >= 0.005 ? 2 : 0, maximumFractionDigits: 2 } );
 		return c.symbol + Math.round( ( thb / c.thb ) * c.rate ).toLocaleString( 'en-US' );
 	};
 	const cardShortDate = ( s ) => new Date( s + 'T00:00:00' ).toLocaleDateString( 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' } );
@@ -122,6 +123,8 @@
 		if ( ! offer ) {
 			set( '[data-subtotal]', '—' );
 			set( '[data-total]', '—' );
+			const was = card.querySelector( '[data-card-was]' );
+			if ( was ) was.hidden = true;
 			return;
 		}
 		const night = offer.total / Math.max( 1, offer.nights );
@@ -131,6 +134,11 @@
 		set( '[data-card-unit]', cardMoney( night ) );
 		set( '[data-subtotal]', cardMoney( offer.total ) );
 		set( '[data-total]', cardMoney( offer.total ) );
+		const was = card.querySelector( '[data-card-was]' );
+		if ( was ) {
+			was.hidden = ! offer.before_total;
+			was.textContent = offer.before_total ? cardMoney( offer.before_total ) : '';
+		}
 	};
 	const cheapest = ( offers ) => offers.reduce( ( a, o ) => ( ! a || o.total < a.total ? o : a ), null );
 
@@ -225,7 +233,7 @@
 					<strong>${ esc( o.rate && o.rate !== o.room ? o.rate.replace( o.room + ' — ', '' ) : o.room ) }${ o.promotion ? ` <em>${ esc( o.promotion ) }</em>` : '' }</strong>
 					<span class="gp-rate__meta">${ o.inclusion ? esc( o.inclusion ) + ' · ' : '' }<span class="${ o.nonrefundable ? 'is-strict' : 'is-ok' }">${ esc( o.cancel_text ) }</span>${ o.available <= 2 ? ' · ' + esc( t.left.replace( '%d', o.available ) ) : '' }</span>
 				</span>
-				<span class="gp-rate__price"><strong>${ esc( o.total_label ) }</strong><span>${ esc( o.night_label ) } / ${ esc( t.night ) }${ approx( o.total ) ? ' · ' + esc( approx( o.total ) ) : '' }</span></span>
+				<span class="gp-rate__price">${ o.before_total ? `<span class="gp-rate__was"><s>${ esc( o.before_label ) }</s> <b>${ esc( t.save.replace( '%d', o.save_pct ) ) }</b></span>` : '' }<strong>${ esc( o.total_label ) }</strong><span>${ o.varies ? esc( t.avg ) + ' ' : '' }${ esc( o.night_label ) } / ${ esc( t.night ) }${ approx( o.total ) ? ' · ' + esc( approx( o.total ) ) : '' }</span></span>
 			</label>` ).join( '' );
 	};
 	offersEl.addEventListener( 'change', ( e ) => {
@@ -283,7 +291,9 @@
 				<div><dt>Check-in</dt><dd>${ esc( fmtDate( s.checkin ) ) }</dd></div>
 				<div><dt>Check-out</dt><dd>${ esc( fmtDate( s.checkout ) ) }</dd></div>
 				<div><dt>Guests</dt><dd>${ esc( s.adults ) } adults${ Number( s.children ) ? ', ' + esc( s.children ) + ' children' : '' }</dd></div>
-				<div><dt>${ esc( o.night_label ) } × ${ esc( o.nights ) } ${ esc( o.nights === 1 ? t.night : t.nights ) }</dt><dd>${ esc( o.total_label ) }</dd></div>
+				${ o.before_total ? `<div><dt>${ esc( t.regular ) }</dt><dd><s>${ esc( o.before_label ) }</s></dd></div><div class="gp-sum__save"><dt>${ esc( o.discount_name ) } (−${ esc( o.save_pct ) }%)</dt><dd>−${ esc( o.save_label ) }</dd></div>` : '' }
+				${ ( o.days || [] ).length ? `<div class="gp-sum__nights"><dt>${ esc( t.nightly ) }</dt><dd><ul>${ o.days.map( ( d ) => `<li><span>${ esc( fmtNight( d.date ) ) }</span><span>${ esc( d.label ) }</span></li>` ).join( '' ) }</ul></dd></div>` : `<div><dt>${ esc( o.night_label ) } × ${ esc( o.nights ) } ${ esc( o.nights === 1 ? t.night : t.nights ) }</dt><dd>${ esc( o.total_label ) }</dd></div>` }
+				${ o.tax_label ? `<div><dt>${ esc( o.tax_name ? t.taxIncl.replace( '%s', o.tax_name ) : t.taxes ) }</dt><dd>${ esc( o.tax_label ) }</dd></div>` : '' }
 			</dl>
 			<p class="gp-sum__total"><span>Total to pay today</span><strong>${ esc( o.total_label ) }</strong></p>${ approx( o.total ) ? `<p class="gp-sum__approx">${ esc( approx( o.total ) ) } — ${ esc( t.charged ) }</p>` : '' }
 			<p class="gp-sum__note">${ esc( o.cancel_text ) }. Prices include all taxes and fees unless stated.</p>`;

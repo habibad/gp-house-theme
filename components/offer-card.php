@@ -19,7 +19,7 @@ $o = $args['offer'];
 			<?php endif; ?>
 			<img src="<?php echo esc_url( $o['image'] ); ?>" alt="" loading="lazy">
 		</picture>
-		<?php if ( $o['code'] ) : ?>
+		<?php if ( $o['code'] && ! empty( $o['live'] ) ) : ?>
 			<span class="gp-offer-card__code"><?php gp_icon( 'tag', 16 ); ?><?php echo esc_html( $o['code'] ); ?></span>
 		<?php endif; ?>
 	</div>
@@ -37,8 +37,9 @@ $o = $args['offer'];
 			</ul>
 		<?php endif; ?>
 		<div class="gp-offer-card__foot">
-			<p class="gp-offer-card__save"><?php echo esc_html( $o['save'] ); ?></p>
-			<?php gp_button( array( 'label' => __( 'Book With Code', 'gp-house' ), 'url' => $o['url'], 'size' => 'xs' ) ); ?>
+			<?php // The saving is an eZee promotion: shown only while eZee accepts the code. ?>
+			<p class="gp-offer-card__save"><?php echo ! empty( $o['live'] ) ? esc_html( $o['save'] ) : ''; ?></p>
+			<?php gp_button( array( 'label' => ! empty( $o['live'] ) ? __( 'Book With Code', 'gp-house' ) : __( 'Book Now', 'gp-house' ), 'url' => $o['url'], 'size' => 'xs' ) ); ?>
 		</div>
 	</div>
 </article>

@@ -13,7 +13,11 @@ defined( 'ABSPATH' ) || exit;
 $room     = $args['room'];
 $property = function_exists( 'gp_booking_room_property' ) ? gp_booking_room_property( $room['id'] ) : '';
 $tomorrow = gmdate( 'Y-m-d', strtotime( '+1 day', current_time( 'timestamp' ) ) );
-$max      = max( 2, (int) ( $room['max_guests'] ?? 2 ) );
+// Guest limits come from eZee (room sync); older rooms fall back to the room's guest count.
+$max_a    = (int) get_post_meta( $room['id'], 'gp_max_adults', true );
+$max      = $max_a > 0 ? $max_a : max( 2, (int) ( $room['max_guests'] ?? 2 ) );
+$max_c    = get_post_meta( $room['id'], 'gp_max_children', true );
+$max_c    = '' === $max_c ? 3 : (int) $max_c;
 ?>
 <section class="gp-reserve" id="reserve" data-reserve data-room="<?php echo (int) $room['id']; ?>" data-property="<?php echo esc_attr( $property ); ?>" hidden>
 	<div class="gp-reserve__inner">
@@ -26,11 +30,15 @@ $max      = max( 2, (int) ( $room['max_guests'] ?? 2 ) );
 			<label class="gp-book__field"><span><?php esc_html_e( 'Check-in', 'gp-house' ); ?></span><input type="date" name="checkin" value="<?php echo esc_attr( $tomorrow ); ?>" min="<?php echo esc_attr( gmdate( 'Y-m-d', current_time( 'timestamp' ) ) ); ?>" required></label>
 			<label class="gp-book__field"><span><?php esc_html_e( 'Check-out', 'gp-house' ); ?></span><input type="date" name="checkout" value="<?php echo esc_attr( gmdate( 'Y-m-d', strtotime( '+4 days', current_time( 'timestamp' ) ) ) ); ?>" required></label>
 			<label class="gp-book__field"><span><?php esc_html_e( 'Adults', 'gp-house' ); ?></span>
-				<select name="adults"><?php for ( $i = 1; $i <= $max; $i++ ) : ?><option value="<?php echo (int) $i; ?>" <?php selected( 2, $i ); ?>><?php echo (int) $i; ?></option><?php endfor; ?></select>
+				<select name="adults"><?php for ( $i = 1; $i <= $max; $i++ ) : ?><option value="<?php echo (int) $i; ?>" <?php selected( min( 2, $max ), $i ); ?>><?php echo (int) $i; ?></option><?php endfor; ?></select>
 			</label>
-			<label class="gp-book__field"><span><?php esc_html_e( 'Children', 'gp-house' ); ?></span>
-				<select name="children"><?php for ( $i = 0; $i <= 3; $i++ ) : ?><option value="<?php echo (int) $i; ?>"><?php echo (int) $i; ?></option><?php endfor; ?></select>
-			</label>
+			<?php if ( $max_c > 0 ) : ?>
+				<label class="gp-book__field"><span><?php esc_html_e( 'Children', 'gp-house' ); ?></span>
+					<select name="children"><?php for ( $i = 0; $i <= min( 4, $max_c ); $i++ ) : ?><option value="<?php echo (int) $i; ?>"><?php echo (int) $i; ?></option><?php endfor; ?></select>
+				</label>
+			<?php else : ?>
+				<input type="hidden" name="children" value="0"><?php // eZee: this room does not take children. ?>
+			<?php endif; ?>
 			<label class="gp-book__field"><span><?php esc_html_e( 'Promo code', 'gp-house' ); ?></span><input type="text" name="promo" autocomplete="off"></label>
 		</form>
 		<p class="gp-reserve__hint"><?php esc_html_e( 'Pick your check-out date, or change the nights in the booking card above (up to 30 nights).', 'gp-house' ); ?></p>

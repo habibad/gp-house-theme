@@ -533,6 +533,8 @@
 			$$( '[data-nights]', card ).forEach( ( el ) => ( el.textContent = nights ) );
 			$( '[data-subtotal]', card ).textContent = fmt( price * nights );
 			$( '[data-total]', card ).textContent = fmt( price * nights );
+			const was = $( '[data-card-was]', card );
+			if ( was ) was.hidden = true; // an estimate until eZee answers for the new length
 			$( '[data-nights-step="-1"]', card ).disabled = nights <= 1;
 			$( '[data-nights-step="1"]', card ).disabled = nights >= 30;
 		};

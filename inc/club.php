@@ -196,7 +196,7 @@ add_filter( 'gp_house_footer_cta', function ( $cta ) {
 		'text'    => gp_opt( 'club_cta_text' ),
 		'class'   => 'gp-cta--club',
 		'buttons' => array(
-			array( 'label' => __( 'Reserve A Stay', 'gp-house' ), 'url' => add_query_arg( 'promo', 'MEMBERDIRECT', home_url( '/stays/' ) ), 'size' => 'tab' ),
+			array( 'label' => __( 'Reserve A Stay', 'gp-house' ), 'url' => home_url( '/stays/' ) /* members get the eZee member rate automatically when signed in */, 'size' => 'tab' ),
 			array( 'label' => __( 'Member Dashboard', 'gp-house' ), 'url' => home_url( '/profile/' ), 'size' => 'tab', 'variant' => 'outline', 'text' => 'navy' ),
 		),
 	);
