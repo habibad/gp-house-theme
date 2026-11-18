@@ -287,6 +287,15 @@
 .gp-popover__panel { position: absolute; top: calc(100% + 22px); z-index: 60; padding: 8px; border-radius: 16px; background: #fff; box-shadow: 0 10px 40px rgba(1, 16, 65, .12); }
 .gp-popover__panel[hidden] { display: none; }
 .gp-account .gp-popover__panel { right: 0; width: 252px; padding: 9px 8px 8px; }
+/* Member card (profile sidebar + this pop-up) */
+.gp-member { display: flex; align-items: center; gap: 12px; height: 63px; padding: 0 17px 0 8px; border: 1px solid var(--gp-stroke); border-radius: 16px; background: transparent; }
+.gp-member__avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+.gp-member__text { flex: 1; min-width: 0; }
+.gp-member__name { margin: 0; color: var(--gp-navy); font-weight: 600; font-size: 16px; line-height: 20px; }
+.gp-member__mail { margin: 4px 0 0; overflow: hidden; color: var(--gp-text); font-size: 12px; line-height: 16px; text-overflow: ellipsis; text-transform: none; white-space: nowrap; }
+.gp-member__tier { flex: none; padding: 4px 8px; border-radius: 4px; background: var(--gp-primary); color: var(--gp-black); font-weight: 500; font-size: 10px; line-height: 16px; }
+.gp-member__name, .gp-member__tier { white-space: nowrap; }
+.gp-member__name { overflow: hidden; text-overflow: ellipsis; }
 .gp-member--menu { height: 49px; padding: 0 10px 0 8px; border-radius: 12px; }
 .gp-member--menu .gp-member__avatar { width: 40px; height: 40px; }
 .gp-member--menu .gp-member__name { font-size: 14px; line-height: 20px; }
@@ -306,10 +315,20 @@
 .gp-locale-menu__row--lang button { flex: 1 1 50%; }
 
 /* Mobile menu (Figma 1455:15327 signed out / 1455:18457 signed in) ----------- */
-.gp-mobile-menu__top, .gp-mobile-menu__meta { display: none; }
+.gp-mobile-menu__top { display: none; }
+.gp-mobile-menu__meta { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 4px; }
+.gp-mobile-menu__locale { display: flex; align-items: center; gap: 12px; color: var(--gp-navy); font-size: 16px; line-height: 24px; text-transform: none; }
+.gp-mobile-menu__locale strong { color: var(--gp-navy); font-weight: 600; }
+.gp-mobile-menu__currency { position: relative; display: inline-flex; align-items: center; }
+.gp-mobile-menu__currency select { -webkit-appearance: none; appearance: none; margin: 0; padding: 0 20px 0 0; border: 0; background: transparent; color: var(--gp-navy); font: inherit; line-height: 24px; cursor: pointer; }
+.gp-mobile-menu__currency .gp-icon { position: absolute; right: 0; pointer-events: none; }
+.gp-mobile-menu__member { display: block; margin: 6px; border-radius: 16px; }
+.gp-mobile-menu__member .gp-member { background: #fff; transition: border-color .2s; }
+.gp-mobile-menu__member:hover .gp-member { border-color: #b9bdca; }
 .gp-mobile-menu__label { margin: 0; padding: 10px 14px 4px; color: var(--gp-text); font-size: 13px; line-height: 18px; }
 .gp-mobile-menu__nav, .gp-mobile-menu__group { display: flex; flex-direction: column; gap: 2px; }
-.gp-mobile-menu__signin, .gp-mobile-menu__book { margin: 6px; }
+.gp-mobile-menu > * { flex-shrink: 0; } /* a menu taller than the screen scrolls; items keep their size */
+.gp-mobile-menu__signin, .gp-mobile-menu__book { margin: 6px; padding: 12px 20px; }
 html.gp-menu-open { overflow: hidden; }
 
 @media (max-width: 600px) {
@@ -319,6 +338,7 @@ html.gp-menu-open { overflow: hidden; }
 	.gp-mobile-menu__logo img { display: block; width: 145px; height: auto; }
 	.gp-mobile-menu__close { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; padding: 0; border: 1px solid var(--gp-stroke); border-radius: 10px; background: #fff; cursor: pointer; }
 	.gp-mobile-menu__signin { width: 100%; height: 41px; margin: 19px 0 0; padding: 0; border-radius: 8px; font-size: 16px; }
+	.gp-mobile-menu__member { margin: 19px 0 0; }
 	.gp-mobile-menu__nav { margin-top: 20px; gap: 0; }
 	.gp-mobile-menu__link { display: flex; align-items: center; height: 52px; padding: 0 13px; border-radius: 8px; color: var(--gp-navy); font-size: 16px; line-height: 24px; }
 	.gp-mobile-menu__nav::after { content: ""; display: block; height: 1px; margin: 19px 0 0; background: var(--gp-stroke); }
@@ -326,9 +346,6 @@ html.gp-menu-open { overflow: hidden; }
 	.gp-mobile-menu__label { padding: 0 0 4px; font-size: 14px; }
 	.gp-mobile-menu__link--sub { height: 48px; padding: 0 13px; }
 	.gp-mobile-menu__meta { display: flex; align-items: center; justify-content: space-between; margin-top: 22px; padding: 0; }
-	.gp-mobile-menu__locale { display: flex; align-items: center; gap: 12px; color: var(--gp-navy); font-size: 16px; line-height: 24px; text-transform: none; }
-	.gp-mobile-menu__locale .gp-locale__currency { padding: 0; color: var(--gp-navy); text-transform: none; }
-	.gp-mobile-menu__locale strong { color: var(--gp-navy); font-weight: 600; }
 	.gp-points--menu { display: flex; gap: 8px; height: 46px; padding: 0 20px 0 14px; border: 0; background: var(--gp-b20); color: var(--gp-navy); font-weight: 600; font-size: 14px; }
 	.gp-mobile-menu__book { width: 100%; height: 48px; margin: 21px 0 0; padding: 0; border-radius: 8px; font-size: 16px; }
 }
@@ -364,6 +381,8 @@ html.gp-menu-open { overflow: hidden; }
 .gp-contact__grid { display: grid; grid-template-columns: 300px 1fr; gap: 32px; margin-top: 48px; align-items: start; }
 .gp-contact__details { display: flex; flex-direction: column; gap: 20px; margin: 0; padding: 0; list-style: none; }
 .gp-contact__details li { display: flex; align-items: center; gap: 14px; }
+.gp-contact__details li > div { min-width: 0; }
+.gp-contact__details a { overflow-wrap: anywhere; }
 .gp-contact__icon { display: flex; flex: none; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: var(--gp-sand-light); }
 .gp-contact__label { margin: 0; color: var(--gp-text); font-size: 13px; line-height: 18px; }
 .gp-contact__details a, .gp-contact__details p:not(.gp-contact__label) { margin: 0; color: var(--gp-navy); font-weight: 500; font-size: 16px; line-height: 24px; }
@@ -407,4 +426,13 @@ html.gp-menu-open { overflow: hidden; }
 @media (max-width: 600px) {
 	.gp-review__who { flex-wrap: wrap; }
 	.gp-review__hint { margin-left: 0; }
+}
+
+/* Signed-in admins: keep the floating header below the WordPress toolbar (32px, 46px on small screens). */
+.admin-bar .gp-header { top: 48px; }
+@media screen and (max-width: 782px) {
+	.admin-bar .gp-header { top: 62px; }
+}
+@media (max-width: 600px) {
+	.admin-bar .gp-mobile-menu { top: var(--wp-admin--admin-bar--height, 46px); height: auto; }
 }

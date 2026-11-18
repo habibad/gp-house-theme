@@ -375,7 +375,8 @@ input.gp-search__value::placeholder { color: rgba(255, 255, 255, .6); opacity: 1
 	.gp-search__value { height: auto; font-family: var(--gp-font-body); font-size: 16px; line-height: 1.5; font-variation-settings: "opsz" 14; }
 	/* Explore destinations */
 	.gp-explore { padding: 38px 0 22px; background: linear-gradient(to bottom, #eeeff1, #fff 160px); }
-	.gp-chatbot { position: absolute; top: 180px; right: 20px; bottom: auto; width: 52px; height: 52px; }
+	/* Floating chat button (like tablet): it sat on top of the map region tabs. */
+	.gp-chatbot { position: fixed; top: auto; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 40; width: 52px; height: 52px; filter: drop-shadow(0 6px 14px rgba(1, 16, 65, .18)); }
 	.gp-dest-grid { margin-top: 24px; }
 	/* Featured */
 	.gp-featured { padding: 40px 0 31px; overflow: hidden; }

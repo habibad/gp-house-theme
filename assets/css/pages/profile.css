@@ -8,13 +8,7 @@
 .gp-pf__side { display: flex; flex: none; flex-direction: column; width: 299px; padding: 16px 15px 16px 16px; }
 .gp-pf__main { flex: 1; min-width: 0; padding: 24px; border-radius: 40px 0 0 40px; background: #fff; }
 
-/* Member card */
-.gp-member { display: flex; align-items: center; gap: 12px; height: 63px; padding: 0 17px 0 8px; border: 1px solid var(--gp-stroke); border-radius: 16px; background: transparent; }
-.gp-member__avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
-.gp-member__text { flex: 1; min-width: 0; }
-.gp-member__name { margin: 0; color: var(--gp-navy); font-weight: 600; font-size: 16px; line-height: 20px; }
-.gp-member__mail { margin: 4px 0 0; overflow: hidden; color: var(--gp-text); font-size: 12px; line-height: 16px; text-overflow: ellipsis; text-transform: none; white-space: nowrap; }
-.gp-member__tier { flex: none; padding: 4px 8px; border-radius: 4px; background: var(--gp-primary); color: var(--gp-black); font-weight: 500; font-size: 10px; line-height: 16px; }
+/* Member card: base styles live in layout.css (also used by the header account pop-up). */
 
 /* Sidebar navigation */
 .gp-pf__nav { display: flex; flex-direction: column; margin-top: 20px; }

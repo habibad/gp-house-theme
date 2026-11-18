@@ -22,5 +22,9 @@
 	.gp-page-hero--offers .gp-page-hero__text { width: 320px; }
 	.gp-offers { padding: 40px 0; }
 	.gp-offers__grid { grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
+	/* Offer-type chips scroll sideways on narrow phones instead of widening the page. */
+	.gp-offers__tabs { margin-right: -20px; padding-right: 20px; overflow-x: auto; scrollbar-width: none; }
+	.gp-offers__tabs::-webkit-scrollbar { display: none; }
+	.gp-offers__tabs .gp-filter-chip { flex: none; }
 	.gp-page-offers .gp-footer-area { padding-top: 35px; }
 }

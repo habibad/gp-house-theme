@@ -110,8 +110,9 @@
 	.gp-page-hero--tabs .gp-page-hero__kicker { font-size: 16px; line-height: 1.5; }
 	.gp-page-hero--tabs .gp-page-hero__title { font-size: 39px; line-height: 1.2; }
 	.gp-page-hero--tabs .gp-page-hero__text { width: auto; font-size: 13px; line-height: 22px; }
-	.gp-hero-tabs { width: 293px; margin-top: 16px; padding: 3px; }
-	.gp-hero-tabs__tab { flex: 1 1 0; justify-content: center; height: 38px; padding: 0; font-size: 14px; }
+	.gp-hero-tabs { width: auto; max-width: 100%; margin-top: 16px; padding: 3px; overflow-x: auto; scrollbar-width: none; }
+	.gp-hero-tabs::-webkit-scrollbar { display: none; }
+	.gp-hero-tabs__tab { flex: none; justify-content: center; height: 38px; padding: 0 14px; font-size: 14px; }
 
 	.gp-dest-rooms { padding: 40px 0 0; }
 	.gp-dest-rooms__views { display: inline-flex; margin-bottom: 28px; }
@@ -157,4 +158,9 @@
 	.gp-destination-page + .gp-footer-area .gp-cta { gap: 24px; margin-bottom: 38px; }
 	.gp-destination-page + .gp-footer-area .gp-cta__text { gap: 19px; }
 	.gp-destination-page + .gp-footer-area .gp-cta__actions .gp-btn { padding-top: 14px; padding-bottom: 14px; }
+}
+
+/* Small phones (360–380px): the four destination pills still fit on one line. */
+@media (max-width: 380px) {
+	.gp-hero-tabs__tab { padding: 0 11px; font-size: 13px; }
 }

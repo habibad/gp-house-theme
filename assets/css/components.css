@@ -722,7 +722,7 @@
 	-webkit-backdrop-filter: blur(10px);
 	backdrop-filter: blur(10px);
 }
-.gp-hero-tabs__tab { display: flex; align-items: center; height: 42px; padding: 0 28px; border-radius: 40px; color: #fff; font-weight: 500; font-size: 16px; line-height: 1.25; transition: background-color .2s, color .2s; }
+.gp-hero-tabs__tab { display: flex; flex: none; align-items: center; height: 42px; padding: 0 28px; white-space: nowrap; border-radius: 40px; color: #fff; font-weight: 500; font-size: 16px; line-height: 1.25; transition: background-color .2s, color .2s; }
 .gp-hero-tabs__tab:hover { background: rgba(255, 255, 255, .15); }
 .gp-hero-tabs__tab.is-active { background: #fff; color: var(--gp-navy); }
 
@@ -1040,6 +1040,7 @@
 		margin: 96px auto 0;
 		padding-top: 370px;
 		overflow: visible;
+		overflow-x: clip;
 	}
 	.gp-map__image { display: block; top: 0; left: 0; width: 100%; height: 370px; border-radius: 16px; }
 	.gp-map__area { display: block; top: 38px; left: 35px; width: 275px; height: 297px; }
@@ -1053,7 +1054,8 @@
 		overflow-x: auto;
 		scrollbar-width: none;
 	}
-	.gp-map__regions .gp-tabs__tab { flex: 1 0 119px; }
+	/* All four regions fit on one line on phones (the row still scrolls on very narrow screens). */
+	.gp-map__regions .gp-tabs__tab { flex: 1 0 auto; padding: 12px 10px; }
 	.gp-pin { display: flex; left: var(--mx); top: var(--my); }
 	.gp-map__panel {
 		position: static;
@@ -1166,4 +1168,9 @@
 	.gp-inquiry { padding: 16px; border-radius: 16px; }
 	.gp-inquiry__grid { grid-template-columns: 1fr; row-gap: 16px; }
 	.gp-inquiry__submit { width: 100%; margin-top: 24px; }
+}
+
+/* Small phones: the map region tabs (Phuket, Krabi, Bangkok, Sukhumvit 81) still fit on one line. */
+@media (max-width: 380px) {
+	.gp-map__regions .gp-tabs__tab { padding: 12px 8px; font-size: 14px; }
 }

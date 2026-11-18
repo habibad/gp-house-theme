@@ -112,6 +112,14 @@
 			const card = cards.find( ( c ) => c.dataset.stayCard === index );
 			const place = card && ( $( '.gp-chip', card ) || {} ).textContent;
 			if ( place ) regions.forEach( ( t ) => t.classList.toggle( 'is-active', t.dataset.region === place.trim() ) );
+			// Phones: keep the active region tab visible when the row scrolls (without moving the page).
+			const row = regions.length && regions[ 0 ].parentElement;
+			const tab = regions.find( ( t ) => t.classList.contains( 'is-active' ) );
+			if ( row && tab && row.scrollWidth > row.clientWidth ) {
+				const r = row.getBoundingClientRect();
+				const a = tab.getBoundingClientRect();
+				row.scrollLeft += a.left - r.left - ( r.width - a.width ) / 2;
+			}
 			// A scrolling mini list (4+ stays): bring the active card into view without moving the page.
 			const list = $( '.gp-map__list--scroll', map );
 			const mini = minis.find( ( m ) => m.dataset.stay === index );
@@ -330,16 +338,21 @@
 	function initCurrency() {
 		const buttons = $$( '[data-currency]' );
 		const current = ( window.gpCurrency && window.gpCurrency.code ) || 'USD';
+		const choose = ( code ) => {
+			if ( ! code || code === current ) return;
+			const secure = 'https:' === window.location.protocol ? '; Secure' : '';
+			document.cookie = `gp_currency=${ encodeURIComponent( code ) }; Max-Age=31536000; Path=/; SameSite=Lax${ secure }`;
+			window.location.reload();
+		};
 		buttons.forEach( ( b ) => {
 			b.classList.toggle( 'is-active', b.dataset.currency === current );
 			b.setAttribute( 'aria-pressed', String( b.dataset.currency === current ) );
-			b.addEventListener( 'click', () => {
-				const code = b.dataset.currency;
-				if ( code === current ) return;
-				const secure = 'https:' === window.location.protocol ? '; Secure' : '';
-				document.cookie = `gp_currency=${ encodeURIComponent( code ) }; Max-Age=31536000; Path=/; SameSite=Lax${ secure }`;
-				window.location.reload();
-			} );
+			b.addEventListener( 'click', () => choose( b.dataset.currency ) );
+		} );
+		// Mobile / tablet menu: currency picker.
+		$$( '[data-currency-select]' ).forEach( ( s ) => {
+			s.value = current;
+			s.addEventListener( 'change', () => choose( s.value ) );
 		} );
 	}
 
@@ -526,6 +539,17 @@
 		$$( '[data-nights-step]', card ).forEach( ( b ) => b.addEventListener( 'click', () => render( current() + parseInt( b.dataset.nightsStep, 10 ) ) ) );
 		card.addEventListener( 'gp:nights', ( e ) => render( e.detail ) );
 		render( current() );
+	}
+
+	/* Destination hero: on small phones the pill row scrolls — start with the current destination in view. */
+	function initHeroTabs() {
+		$$( '.gp-hero-tabs' ).forEach( ( row ) => {
+			const active = $( '.is-active', row );
+			if ( ! active || row.scrollWidth <= row.clientWidth ) return;
+			const r = row.getBoundingClientRect();
+			const a = active.getBoundingClientRect();
+			row.scrollLeft += a.left - r.left - ( r.width - a.width ) / 2;
+		} );
 	}
 
 	/* Destinations page: region chips filter the cards and focus the map --- */
@@ -1306,5 +1330,6 @@
 		initTeamTabs();
 		initOwnerSim();
 		initCheckin();
+		initHeroTabs();
 	} );
 }() );

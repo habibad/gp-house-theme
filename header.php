@@ -117,6 +117,9 @@ $show_points   = $signed_in && $points > 0;
 		</div>
 		<?php if ( ! $signed_in ) : ?>
 			<a class="gp-btn gp-btn--outline gp-mobile-menu__signin" href="<?php echo esc_url( wp_login_url( home_url( '/profile/' ) ) ); ?>" data-auth="signin"><?php esc_html_e( 'Sign In', 'gp-house' ); ?></a>
+		<?php else : ?>
+			<?php // Signed in: the member card opens the account (bookings, points, preferences, log out). ?>
+			<a class="gp-mobile-menu__member" href="<?php echo esc_url( home_url( '/profile/' ) ); ?>"><?php gp_component( 'member-card', array( 'member' => gp_profile_user() ) ); ?></a>
 		<?php endif; ?>
 		<nav class="gp-mobile-menu__nav" aria-label="<?php esc_attr_e( 'Main', 'gp-house' ); ?>">
 			<?php foreach ( gp_menu_links( 'primary' ) as $link ) : ?>
@@ -132,7 +135,17 @@ $show_points   = $signed_in && $points > 0;
 			</div>
 		<?php endif; ?>
 		<div class="gp-mobile-menu__meta">
-			<span class="gp-mobile-menu__locale"><strong>En</strong><span class="gp-locale__currency"><?php echo esc_html( gp_current_currency() ); ?></span></span>
+			<span class="gp-mobile-menu__locale"><strong>En</strong>
+				<label class="gp-mobile-menu__currency">
+					<span class="screen-reader-text"><?php esc_html_e( 'Currency', 'gp-house' ); ?></span>
+					<select data-currency-select>
+						<?php foreach ( array( 'USD', 'THB', 'EUR', 'GBP' ) as $code ) : ?>
+							<option value="<?php echo esc_attr( $code ); ?>"<?php selected( gp_current_currency(), $code ); ?>><?php echo esc_html( $code ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<?php gp_icon( 'chevron-down', 16 ); ?>
+				</label>
+			</span>
 			<?php if ( $show_points ) : ?>
 				<a class="gp-points gp-points--menu" href="<?php echo esc_url( home_url( '/profile/points/' ) ); ?>">
 					<?php gp_icon( 'sparkle-navy', 24 ); ?>
