@@ -511,20 +511,21 @@
 	function initBookingCard() {
 		const card = $( '[data-booking]' );
 		if ( ! card ) return;
-		const price = parseFloat( card.dataset.price ) || 0;
 		const fmt = ( n ) => gpMoney( n );
-		let nights = parseInt( $( '[data-nights]', card ).textContent, 10 ) || 1;
-		const render = () => {
+		// The nights live in the card; booking.js also sets them when a check-out date is picked (gp:nights).
+		const current = () => parseInt( $( '[data-nights]', card ).textContent, 10 ) || 1;
+		const render = ( n ) => {
+			const nights = Math.min( 30, Math.max( 1, parseInt( n, 10 ) || 1 ) );
+			const price = parseFloat( card.dataset.price ) || 0;
 			$$( '[data-nights]', card ).forEach( ( el ) => ( el.textContent = nights ) );
 			$( '[data-subtotal]', card ).textContent = fmt( price * nights );
 			$( '[data-total]', card ).textContent = fmt( price * nights );
 			$( '[data-nights-step="-1"]', card ).disabled = nights <= 1;
+			$( '[data-nights-step="1"]', card ).disabled = nights >= 30;
 		};
-		$$( '[data-nights-step]', card ).forEach( ( b ) => b.addEventListener( 'click', () => {
-			nights = Math.min( 30, Math.max( 1, nights + parseInt( b.dataset.nightsStep, 10 ) ) );
-			render();
-		} ) );
-		render();
+		$$( '[data-nights-step]', card ).forEach( ( b ) => b.addEventListener( 'click', () => render( current() + parseInt( b.dataset.nightsStep, 10 ) ) ) );
+		card.addEventListener( 'gp:nights', ( e ) => render( e.detail ) );
+		render( current() );
 	}
 
 	/* Destinations page: region chips filter the cards and focus the map --- */

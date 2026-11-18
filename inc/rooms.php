@@ -224,6 +224,14 @@ function gp_room_from_post( WP_Post $p ) {
 	};
 	$dest   = $terms( 'gp_destination' );
 	$ids    = array_filter( array_map( 'absint', explode( ',', (string) get_post_meta( $p->ID, 'gp_gallery', true ) ) ) );
+	// No photos for this room (e.g. none uploaded in eZee yet): show its property's photos instead of an empty hero.
+	if ( ! $ids && $dest ) {
+		$stay = get_posts( array( 'post_type' => 'gp_stay', 'numberposts' => 1, 'fields' => 'ids', 'tax_query' => array( array( 'taxonomy' => 'gp_destination', 'terms' => $dest[0]->term_id ) ) ) ); // phpcs:ignore WordPress.DB.SlowDBQuery
+		if ( $stay ) {
+			$ids = array_filter( array_merge( array( (int) get_post_thumbnail_id( $stay[0] ) ), array_map( 'absint', explode( ',', (string) get_post_meta( $stay[0], 'gp_gallery', true ) ) ) ) );
+			$ids = array_values( array_unique( $ids ) );
+		}
+	}
 	$images = array_map( function ( $id ) {
 		return array(
 			'full'  => (string) wp_get_attachment_image_url( $id, 'gp-room' ),

@@ -39,7 +39,15 @@
 		return iso( d );
 	};
 	const fmtDate = ( s ) => new Date( s + 'T00:00:00' ).toLocaleDateString( 'en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' } );
-	const nights = () => parseInt( ( card && card.querySelector( '[data-nights]' ) || {} ).textContent, 10 ) || 2;
+	const nights = () => parseInt( ( card && card.querySelector( '[data-nights]' ) || {} ).textContent, 10 ) || 3;
+	// Sets the stay length on the booking card (main.js re-renders the counter and estimate).
+	const setNights = ( n ) => {
+		n = Math.min( 30, Math.max( 1, n ) );
+		if ( ! card ) return;
+		card.querySelectorAll( '[data-nights]' ).forEach( ( el ) => ( el.textContent = n ) );
+		card.dispatchEvent( new CustomEvent( 'gp:nights', { detail: n } ) );
+	};
+	const daysBetween = ( a, b ) => Math.round( ( Date.parse( b ) - Date.parse( a ) ) / 864e5 );
 
 	const api = async ( path, opts = {} ) => {
 		const res = await fetch( cfg.rest + path, {
@@ -73,13 +81,70 @@
 		} catch ( e ) {}
 		const ci = form.elements.checkin;
 		if ( stay.checkin && ci && stay.checkin >= ci.min ) ci.value = stay.checkin;
+		if ( stay.nights >= 1 && stay.nights <= 30 ) setNights( Number( stay.nights ) );
 		const ad = form.elements.adults;
 		if ( stay.adults && ad && [ ...ad.options ].some( ( o ) => Number( o.value ) === stay.adults ) ) ad.value = String( stay.adults );
 	} )();
 
 	const syncCheckout = () => {
 		const ci = form.elements.checkin.value;
-		form.elements.checkout.value = ci ? addDays( ci, nights() ) : '';
+		const co = form.elements.checkout;
+		co.value = ci ? addDays( ci, nights() ) : '';
+		co.min = ci ? addDays( ci, 1 ) : '';
+		co.max = ci ? addDays( ci, 30 ) : '';
+	};
+	// A picked check-out date sets the number of nights.
+	const checkoutPicked = () => {
+		const ci = form.elements.checkin.value;
+		const co = form.elements.checkout.value;
+		if ( ! ci || ! co ) return;
+		const n = daysBetween( ci, co );
+		if ( n >= 1 ) setNights( n );
+	};
+
+	/* Booking card: live eZee rate for the stay in the form ------------------- */
+	// eZee prices are THB; the card shows the visitor's currency (THB exact, others converted).
+	const cardMoney = ( thb ) => {
+		const c = window.gpCurrency;
+		if ( ! c || 'THB' === c.code || ! c.thb ) return '฿' + Math.round( thb ).toLocaleString( 'en-US' );
+		return c.symbol + Math.round( ( thb / c.thb ) * c.rate ).toLocaleString( 'en-US' );
+	};
+	const cardShortDate = ( s ) => new Date( s + 'T00:00:00' ).toLocaleDateString( 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' } );
+	const updateCard = ( offer, stay ) => {
+		if ( ! card || ! stay ) return;
+		const dates = card.querySelector( '[data-card-dates]' );
+		const range = `${ cardShortDate( stay.checkin ) } – ${ cardShortDate( stay.checkout ) }`;
+		if ( dates ) {
+			dates.hidden = false;
+			dates.textContent = offer ? range : `${ range }: ${ t.cardNone }`;
+		}
+		const set = ( sel, txt ) => card.querySelectorAll( sel ).forEach( ( el ) => ( el.textContent = txt ) );
+		if ( ! offer ) {
+			set( '[data-subtotal]', '—' );
+			set( '[data-total]', '—' );
+			return;
+		}
+		const night = offer.total / Math.max( 1, offer.nights );
+		// The nights counter (main.js) estimates with this until the next live answer arrives.
+		if ( window.gpCurrency && window.gpCurrency.thb ) card.dataset.price = String( night / window.gpCurrency.thb );
+		set( '[data-card-night]', cardMoney( night ) + ' / ' );
+		set( '[data-card-unit]', cardMoney( night ) );
+		set( '[data-subtotal]', cardMoney( offer.total ) );
+		set( '[data-total]', cardMoney( offer.total ) );
+	};
+	const cheapest = ( offers ) => offers.reduce( ( a, o ) => ( ! a || o.total < a.total ? o : a ), null );
+
+	// Price check without opening the reserve panel (page load, nights counter).
+	let quoteRun = 0;
+	const quote = async () => {
+		syncCheckout();
+		if ( ! form.elements.checkin.value ) return;
+		const run = ++quoteRun;
+		if ( card ) card.classList.add( 'is-loading' );
+		const res = await api( 'availability?' + new URLSearchParams( stayParams() ).toString() );
+		if ( run !== quoteRun ) return;
+		if ( card ) card.classList.remove( 'is-loading' );
+		if ( res.ok && 'api' === res.flow ) updateCard( cheapest( res.offers || [] ), res.stay );
 	};
 
 	/* Open / close ---------------------------------------------------------- */
@@ -123,22 +188,37 @@
 		state.stay = res.stay;
 		state.offers = res.offers;
 		state.others = res.others || [];
+		state.promo = res.promo || null;
 		// Remember the stay so another suite's page starts with the same dates / guests.
 		try {
-			sessionStorage.setItem( 'gpStay', JSON.stringify( { checkin: res.stay.checkin, adults: Number( res.stay.adults ) } ) );
+			sessionStorage.setItem( 'gpStay', JSON.stringify( { checkin: res.stay.checkin, nights: Number( res.stay.nights ) || daysBetween( res.stay.checkin, res.stay.checkout ), adults: Number( res.stay.adults ) } ) );
 		} catch ( e ) {}
 		setStatus( '' );
 		renderOffers();
+		++quoteRun; // a pending card-only price check is now out of date
+		if ( card ) card.classList.remove( 'is-loading' );
+		updateCard( cheapest( state.offers ), state.stay );
 		if ( state.offers.length === 1 ) selectOffer( state.offers[ 0 ].key, true );
+	};
+
+	// Promo codes are checked by eZee: say whether this one applies.
+	const promoNote = () => {
+		const p = state.promo;
+		if ( ! p || ! p.code ) return '';
+		// The automatic member code only shows when eZee applied it.
+		if ( p.member ) return p.applied ? `<p class="gp-book__promo is-ok">${ esc( t.memberRate ) }</p>` : '';
+		return p.applied
+			? `<p class="gp-book__promo is-ok">${ esc( t.promoOk.replace( '%s', p.code ) ) }</p>`
+			: `<p class="gp-book__promo is-bad">${ esc( t.promoBad.replace( '%s', p.code ) ) }</p>`;
 	};
 
 	const renderOffers = () => {
 		if ( ! state.offers.length ) {
 			const others = ( state.others || [] ).map( ( o ) => `<li><a href="${ esc( o.url ) }">${ esc( o.title ) }</a> <span>${ esc( t.from ) } ${ esc( o.night_label ) }${ approx( o.total / Math.max( 1, nights() ) ) ? ' (' + esc( approx( o.total / Math.max( 1, nights() ) ) ) + ')' : '' } / ${ esc( t.night ) }</span></li>` ).join( '' );
-			offersEl.innerHTML = `<div class="gp-book__panel gp-book__panel--empty"><p>${ esc( others ? t.roomFull : t.none ) }</p>${ others ? `<ul class="gp-book__others">${ others }</ul>` : '' }</div>`;
+			offersEl.innerHTML = promoNote() + `<div class="gp-book__panel gp-book__panel--empty"><p>${ esc( others ? t.roomFull : t.none ) }</p>${ others ? `<ul class="gp-book__others">${ others }</ul>` : '' }</div>`;
 			return;
 		}
-		offersEl.innerHTML = state.offers.map( ( o ) => `
+		offersEl.innerHTML = promoNote() + state.offers.map( ( o ) => `
 			<label class="gp-rate" data-key="${ esc( o.key ) }">
 				<input type="radio" name="rate" value="${ esc( o.key ) }">
 				<span class="gp-rate__body">
@@ -158,6 +238,7 @@
 		if ( ! offer ) return;
 		if ( state.booking ) resetHold();
 		state.offer = offer;
+		updateCard( offer, state.stay );
 		$$( '.gp-rate', offersEl ).forEach( ( el ) => {
 			const on = el.dataset.key === key;
 			el.classList.toggle( 'is-selected', on );
@@ -373,13 +454,20 @@
 	let timer;
 	const later = () => {
 		clearTimeout( timer );
-		timer = setTimeout( () => opened && search(), 350 );
+		timer = setTimeout( () => ( opened ? search() : quote() ), 350 );
 	};
-	form.addEventListener( 'change', later );
-	form.addEventListener( 'submit', ( e ) => e.preventDefault() );
-	if ( card ) card.querySelectorAll( '[data-nights-step]' ).forEach( ( b ) => b.addEventListener( 'click', () => {
+	form.addEventListener( 'change', ( e ) => {
+		if ( e.target === form.elements.checkout ) checkoutPicked();
 		syncCheckout();
 		later();
-	} ) );
+	} );
+	form.addEventListener( 'submit', ( e ) => e.preventDefault() );
+	if ( card ) card.addEventListener( 'click', ( e ) => {
+		if ( ! e.target.closest( '[data-nights-step]' ) ) return;
+		syncCheckout();
+		later();
+	} );
+	syncCheckout();
 	if ( window.location.hash === '#reserve' ) open();
+	else quote();
 }() );

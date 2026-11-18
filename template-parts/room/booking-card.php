@@ -21,7 +21,8 @@ $book   = apply_filters( 'gp_house_room_reserve_url', '', $room );
 			<div class="gp-booking-card__rate">
 				<div class="gp-booking-card__price">
 					<span class="gp-booking-card__label"><?php esc_html_e( 'Direct Rate', 'gp-house' ); ?></span>
-					<p><strong><?php echo esc_html( gp_price( $price ) ); ?> / </strong><span class="gp-booking-card__unit"><?php esc_html_e( 'night', 'gp-house' ); ?></span></p>
+					<p><strong data-card-night><?php echo esc_html( gp_price( $price ) ); ?> / </strong><span class="gp-booking-card__unit"><?php esc_html_e( 'night', 'gp-house' ); ?></span></p>
+					<span class="gp-booking-card__dates" data-card-dates hidden></span>
 				</div>
 				<span class="gp-booking-card__label gp-booking-card__label--lh"><?php esc_html_e( 'Best Price Guarantee', 'gp-house' ); ?></span>
 			</div>
@@ -33,7 +34,7 @@ $book   = apply_filters( 'gp_house_room_reserve_url', '', $room );
 		</div>
 
 		<dl class="gp-booking-card__lines">
-			<div><dt><?php echo esc_html( gp_price( $price ) ); ?> × <span data-nights><?php echo (int) $nights; ?></span> <?php esc_html_e( 'nights:', 'gp-house' ); ?></dt><dd data-subtotal><?php echo esc_html( gp_price( $price * $nights ) ); ?></dd></div>
+			<div><dt><span data-card-unit><?php echo esc_html( gp_price( $price ) ); ?></span> × <span data-nights><?php echo (int) $nights; ?></span> <?php esc_html_e( 'nights:', 'gp-house' ); ?></dt><dd data-subtotal><?php echo esc_html( gp_price( $price * $nights ) ); ?></dd></div>
 			<div><dt><?php esc_html_e( 'Resort Services & Amenities:', 'gp-house' ); ?></dt><dd><?php esc_html_e( 'Included', 'gp-house' ); ?></dd></div>
 			<div class="gp-booking-card__total"><dt><?php esc_html_e( 'Estimated Total:', 'gp-house' ); ?></dt><dd data-total><?php echo esc_html( gp_price( $price * $nights ) ); ?></dd></div>
 		</dl>

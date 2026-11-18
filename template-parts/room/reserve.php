@@ -24,7 +24,7 @@ $max      = max( 2, (int) ( $room['max_guests'] ?? 2 ) );
 
 		<form class="gp-reserve__stay" data-stay-form novalidate>
 			<label class="gp-book__field"><span><?php esc_html_e( 'Check-in', 'gp-house' ); ?></span><input type="date" name="checkin" value="<?php echo esc_attr( $tomorrow ); ?>" min="<?php echo esc_attr( gmdate( 'Y-m-d', current_time( 'timestamp' ) ) ); ?>" required></label>
-			<label class="gp-book__field"><span><?php esc_html_e( 'Check-out', 'gp-house' ); ?></span><input type="date" name="checkout" readonly tabindex="-1"></label>
+			<label class="gp-book__field"><span><?php esc_html_e( 'Check-out', 'gp-house' ); ?></span><input type="date" name="checkout" value="<?php echo esc_attr( gmdate( 'Y-m-d', strtotime( '+4 days', current_time( 'timestamp' ) ) ) ); ?>" required></label>
 			<label class="gp-book__field"><span><?php esc_html_e( 'Adults', 'gp-house' ); ?></span>
 				<select name="adults"><?php for ( $i = 1; $i <= $max; $i++ ) : ?><option value="<?php echo (int) $i; ?>" <?php selected( 2, $i ); ?>><?php echo (int) $i; ?></option><?php endfor; ?></select>
 			</label>
@@ -33,7 +33,7 @@ $max      = max( 2, (int) ( $room['max_guests'] ?? 2 ) );
 			</label>
 			<label class="gp-book__field"><span><?php esc_html_e( 'Promo code', 'gp-house' ); ?></span><input type="text" name="promo" autocomplete="off"></label>
 		</form>
-		<p class="gp-reserve__hint"><?php esc_html_e( 'Change the number of nights in the booking card above.', 'gp-house' ); ?></p>
+		<p class="gp-reserve__hint"><?php esc_html_e( 'Pick your check-out date, or change the nights in the booking card above (up to 30 nights).', 'gp-house' ); ?></p>
 
 		<div class="gp-book__status" data-book-status role="status" aria-live="polite" hidden></div>
 		<div class="gp-reserve__rates" data-book-offers></div>

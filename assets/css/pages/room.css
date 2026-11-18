@@ -87,9 +87,14 @@
 .gp-booking-card__price { display: flex; flex-direction: column; gap: 4px; line-height: normal; }
 .gp-booking-card__price p { display: flex; gap: 8px; white-space: nowrap; }
 .gp-booking-card__price strong { color: var(--gp-navy); font-weight: 600; font-size: 14px; white-space: pre; }
-.gp-booking-card__unit { color: var(--gp-sand-light); font-size: 12px; }
+.gp-booking-card__unit { color: var(--gp-text); font-size: 12px; }
 .gp-booking-card__label { color: var(--gp-ink-2); font-size: 12px; line-height: normal; }
 .gp-booking-card__label--lh { line-height: 1.6; }
+.gp-booking-card__dates { color: var(--gp-text); font-size: 11px; line-height: 1.4; }
+.gp-booking-card.is-loading [data-card-night],
+.gp-booking-card.is-loading [data-card-unit],
+.gp-booking-card.is-loading [data-subtotal],
+.gp-booking-card.is-loading [data-total] { opacity: .45; transition: opacity .2s; }
 
 .gp-counter {
 	display: flex;
@@ -198,6 +203,9 @@
 .gp-reserve .gp-book__others li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 12px 14px; border: 1px solid var(--gp-stroke); border-radius: 10px; }
 .gp-reserve .gp-book__others a { font-weight: 600; color: var(--gp-navy); text-decoration: underline; }
 .gp-reserve .gp-book__others span { color: var(--gp-text); font-size: 14px; }
+.gp-reserve .gp-book__promo { margin: 0 0 14px; padding: 12px 14px; border-radius: 10px; font-size: 14px; line-height: 1.5; }
+.gp-reserve .gp-book__promo.is-ok { background: #e8f5ec; color: #1f6b35; }
+.gp-reserve .gp-book__promo.is-bad { background: #fff6e0; color: #7a5500; }
 .gp-reserve .gp-book__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
 .gp-reserve .gp-book__field--full { grid-column: 1 / -1; }
 .gp-reserve .gp-book__terms { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 16px; font-size: 14px; color: var(--gp-text); }

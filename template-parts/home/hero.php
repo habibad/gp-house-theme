@@ -75,7 +75,7 @@ $checkin      = gmdate( 'Y-m-d', strtotime( '+1 day', current_time( 'timestamp' 
 							<span class="gp-search__icon"><?php gp_icon( 'promo', 24 ); ?></span>
 							<span class="gp-search__text">
 								<span class="gp-search__label"><?php esc_html_e( 'Promo code', 'gp-house' ); ?></span>
-								<input class="gp-search__value" type="text" name="promo" value="<?php echo esc_attr( gp_opt( 'hero_promo' ) ); ?>" autocomplete="off">
+								<input class="gp-search__value" type="text" name="promo" value="<?php echo esc_attr( gp_opt( 'hero_promo' ) ); ?>" placeholder="<?php esc_attr_e( 'Enter code', 'gp-house' ); ?>" maxlength="30" autocomplete="off">
 							</span>
 						</label>
 					</div>

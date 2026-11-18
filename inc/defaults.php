@@ -18,14 +18,14 @@ function gp_option_defaults() {
 		'hero_kicker'      => array( 'section' => 'hero', 'label' => 'Kicker', 'default' => 'Thai Sanctuaries' ),
 		'hero_title'       => array( 'section' => 'hero', 'label' => 'Title', 'default' => 'Stay. Explore. Connect. Belong.' ),
 		'hero_badge'       => array( 'section' => 'hero', 'label' => 'Badge above search', 'default' => 'Become a Member & Get 10% Discount' ),
-		'hero_promo'       => array( 'section' => 'hero', 'label' => 'Default promo code', 'default' => 'FIRSTBOOK20' ),
+		'hero_promo'       => array( 'section' => 'hero', 'label' => 'Default promo code (must be set up in eZee; leave empty for none)', 'default' => '' ),
 		'hero_image'       => array( 'section' => 'hero', 'label' => 'Background image', 'default' => '', 'type' => 'image' ),
 		// Stays page.
 		'stays_hero_kicker' => array( 'section' => 'stays_page', 'label' => 'Kicker', 'default' => 'Sanctuaries & Suites' ),
 		'stays_hero_title'  => array( 'section' => 'stays_page', 'label' => 'Title', 'default' => 'Find Your Stay' ),
 		'stays_hero_text'   => array( 'section' => 'stays_page', 'label' => 'Intro', 'default' => 'Discover tailored villas and pavilions with organic teak, private plunge pools, and uninterrupted natural views.', 'type' => 'textarea' ),
 		'stays_hero_image'  => array( 'section' => 'stays_page', 'label' => 'Hero image (1440 × 562)', 'default' => '', 'type' => 'image' ),
-		'room_booking_note' => array( 'section' => 'stays_page', 'label' => 'Room page booking note', 'default' => 'Instant confirmation • Pay upon check-in • Free cancellation 48 hrs prior' ),
+		'room_booking_note' => array( 'section' => 'stays_page', 'label' => 'Room page booking note', 'default' => 'Instant confirmation • Secure online payment • Cancellation terms shown with each rate' ),
 		// Destinations page.
 		'dpage_kicker'      => array( 'section' => 'dest_page', 'label' => 'Hero kicker', 'default' => 'Kingdom of Thailand' ),
 		'dpage_title'       => array( 'section' => 'dest_page', 'label' => 'Hero title', 'default' => 'Explore Thailand' ),

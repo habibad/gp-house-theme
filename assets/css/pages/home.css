@@ -137,6 +137,7 @@
 	outline: none;
 }
 input.gp-search__value { text-transform: none; cursor: text; }
+input.gp-search__value::placeholder { color: rgba(255, 255, 255, .6); opacity: 1; }
 .gp-search__value option { color: var(--gp-black); }
 .gp-search__date { cursor: pointer; color-scheme: dark; }
 .gp-search__date::-webkit-calendar-picker-indicator { display: none; }
