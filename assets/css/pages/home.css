@@ -414,6 +414,8 @@ input.gp-search__value::placeholder { color: rgba(255, 255, 255, .6); opacity: 1
 	.gp-testimonials__col:nth-child(3) { display: none; }
 	.gp-testimonials__col:nth-child(2) { margin-top: 0; }
 	.gp-testimonials__fade { display: block; width: 100%; height: 160px; }
+	.gp-testimonials.is-marquee { --gp-marquee-h: 600px; }
+	.gp-testimonials.is-marquee .gp-testimonials__fade { height: 120px; }
 	/* Journal */
 	.gp-journal { padding: 36px 0 40px; }
 	.gp-journal__head { align-items: stretch; gap: 16px; }

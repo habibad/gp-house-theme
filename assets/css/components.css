@@ -308,6 +308,17 @@
 	margin-top: 118px;
 }
 .gp-testimonials__col { display: flex; flex: 0 1 360px; flex-direction: column; gap: 24px; min-width: 0; }
+.gp-testimonials__track { display: flex; flex-direction: column; gap: inherit; }
+/* Auto-scroll (main.js adds .is-marquee, the card copies and --gp-dur per column) */
+.gp-testimonials.is-marquee { align-items: stretch; height: var(--gp-marquee-h, 735px); overflow: hidden; }
+.gp-testimonials.is-marquee .gp-testimonials__col { overflow: hidden; }
+.gp-testimonials.is-marquee .gp-testimonials__track { animation: gp-marquee-up var(--gp-dur, 30s) linear infinite; will-change: transform; }
+.gp-testimonials.is-marquee [data-dir="down"] .gp-testimonials__track { animation-name: gp-marquee-down; }
+.gp-testimonials.is-marquee:hover .gp-testimonials__track,
+.gp-testimonials.is-marquee:focus-within .gp-testimonials__track { animation-play-state: paused; }
+/* The track holds the cards twice (+ a trailing gap), so -50% is exactly one loop. */
+@keyframes gp-marquee-up { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+@keyframes gp-marquee-down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
 .gp-testimonial__who { display: flex; align-items: center; gap: 12px; }
 .gp-testimonial__who img { width: 44px; height: 44px; border-radius: 50%; }
 .gp-testimonial__who > span { display: flex; flex-direction: column; gap: 2px; white-space: nowrap; }
@@ -329,6 +340,7 @@
 	transform: translateX(-50%);
 	pointer-events: none;
 }
+.gp-testimonials__fade { z-index: 1; }
 .gp-testimonials__fade--top { top: -.5px; background: linear-gradient(to bottom, #fff, rgba(255, 255, 255, 0)); }
 .gp-testimonials__fade--bottom { bottom: -.5px; background: linear-gradient(to top, #fff, rgba(255, 255, 255, 0)); }
 .gp-pills__tab {
@@ -911,6 +923,9 @@
 
 @media (max-width: 1100px) {
 	.gp-testimonials__fade { display: none; }
+	/* Scrolling columns need the soft edges so cards do not cut off sharply. */
+	.gp-testimonials.is-marquee { --gp-marquee-h: 720px; }
+	.gp-testimonials.is-marquee .gp-testimonials__fade { display: block; width: 100%; height: 140px; }
 }
 
 @media (max-width: 860px) {

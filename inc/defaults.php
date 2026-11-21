@@ -65,7 +65,7 @@ function gp_option_defaults() {
 		'club_faq_title' => array( 'section' => 'club_page', 'label' => 'FAQ title', 'default' => 'Frequently Asked Questions' ),
 		'club_cta_kicker' => array( 'section' => 'club_page', 'label' => 'Footer CTA kicker', 'default' => 'Member Privilege' ),
 		'club_cta_title' => array( 'section' => 'club_page', 'label' => 'Footer CTA title', 'default' => 'Your Siamese Sanctuary Awaits' ),
-		'club_cta_text' => array( 'section' => 'club_page', 'label' => 'Footer CTA text', 'default' => 'Book directly today with promo code MEMBERDIRECT for an instant 10% discount and direct VIP privileges.', 'type' => 'textarea' ),
+		'club_cta_text' => array( 'section' => 'club_page', 'label' => 'Footer CTA text', 'default' => 'Sign in and book directly for an instant 10% member discount and direct VIP privileges.', 'type' => 'textarea' ),
 		'about_kicker' => array( 'section' => 'about_page', 'label' => 'Hero kicker', 'default' => 'Heritage & Craft' ),
 		'about_title' => array( 'section' => 'about_page', 'label' => 'Hero title', 'default' => 'Our Story' ),
 		'about_text' => array( 'section' => 'about_page', 'label' => 'Hero text', 'default' => 'GP House celebrates Thai hospitality through intimate sanctuaries rooted in community, landscape, and heritage.', 'type' => 'textarea' ),

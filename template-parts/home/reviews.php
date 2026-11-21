@@ -52,14 +52,17 @@ $avatars = array( 'photos/review-avatar-1.png', 'photos/review-avatar-2.png', 'p
 		</div>
 
 		<?php if ( $testimonials ) : ?>
-			<div class="gp-testimonials">
-				<?php foreach ( $columns as $column ) : ?>
-					<div class="gp-testimonials__col">
-						<?php
-						foreach ( $column as $t ) {
-							gp_component( 'testimonial-card', array( 'testimonial' => $t ) );
-						}
-						?>
+			<?php // Auto-scrolling columns: outer columns move up, the middle one moves down; hovering pauses all (main.js). ?>
+			<div class="gp-testimonials" data-marquee>
+				<?php foreach ( $columns as $i => $column ) : ?>
+					<div class="gp-testimonials__col" data-dir="<?php echo 1 === $i ? 'down' : 'up'; ?>">
+						<div class="gp-testimonials__track">
+							<?php
+							foreach ( $column as $t ) {
+								gp_component( 'testimonial-card', array( 'testimonial' => $t ) );
+							}
+							?>
+						</div>
 					</div>
 				<?php endforeach; ?>
 				<div class="gp-testimonials__fade gp-testimonials__fade--top" aria-hidden="true"></div>

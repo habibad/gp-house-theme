@@ -614,6 +614,58 @@
 		} );
 	}
 
+	/* Guest reviews: columns scroll on a loop (outer up, middle down); hover pauses them (CSS) */
+	function initMarquee() {
+		const boxes = $$( '[data-marquee]' );
+		if ( ! boxes.length ) return;
+		const reduced = window.matchMedia( '(prefers-reduced-motion: reduce)' );
+		const SPEED = 28; // px per second
+
+		const build = () => boxes.forEach( ( box ) => {
+			const cols = $$( '.gp-testimonials__col', box );
+			cols.forEach( ( col ) => $$( '[data-clone]', col ).forEach( ( el ) => el.remove() ) );
+			box.classList.remove( 'is-marquee' );
+			if ( reduced.matches ) return; // static layout for people who turned motion off
+			box.classList.add( 'is-marquee' );
+			const height = box.clientHeight;
+			cols.forEach( ( col ) => {
+				const track = $( '.gp-testimonials__track', col );
+				const cards = track ? Array.from( track.children ) : [];
+				if ( ! track ) return;
+				track.style.paddingBottom = '';
+				if ( ! cards.length || ! col.offsetHeight ) return; // hidden column (small screens)
+				const gap = parseFloat( getComputedStyle( track ).rowGap ) || 0;
+				const set = track.scrollHeight + gap;
+				// Repeat the cards until one loop is taller than the box, then add the same again for a seamless wrap.
+				const repeat = Math.max( 1, Math.ceil( height / Math.max( set, 1 ) ) );
+				for ( let r = 1; r < repeat * 2; r++ ) {
+					cards.forEach( ( card ) => {
+						const copy = card.cloneNode( true );
+						copy.setAttribute( 'data-clone', '' );
+						copy.setAttribute( 'aria-hidden', 'true' );
+						copy.inert = true;
+						track.appendChild( copy );
+					} );
+				}
+				// A trailing gap makes the track exactly two equal halves, so the CSS loop (-50%) has no jump.
+				track.style.paddingBottom = `${ gap }px`;
+				col.style.setProperty( '--gp-dur', `${ ( set * repeat / SPEED ).toFixed( 2 ) }s` );
+			} );
+		} );
+
+		build();
+		document.fonts?.ready.then( build ); // card heights settle once the web fonts are in
+		let lastWidth = window.innerWidth;
+		let timer;
+		window.addEventListener( 'resize', () => {
+			if ( window.innerWidth === lastWidth ) return; // mobile address bar showing/hiding
+			lastWidth = window.innerWidth;
+			clearTimeout( timer );
+			timer = setTimeout( build, 200 );
+		} );
+		reduced.addEventListener?.( 'change', build );
+	}
+
 	/* Stay card photo slider: the dots under the photo switch photos ------------- */
 	function initCardSliders() {
 		$$( '[data-card-slider]' ).forEach( ( media ) => {
@@ -1324,6 +1376,7 @@
 		initDragScroll();
 		initCardSliders();
 		initPhotoStack();
+		initMarquee();
 		initRedeem();
 		initAccordions();
 		initHoverLists();
