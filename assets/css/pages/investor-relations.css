@@ -8,7 +8,7 @@
 /* Stats */
 .gp-ir-stats { padding: 201px 0 0; background: #fff; }
 .gp-ir-stats__list { display: flex; justify-content: space-between; margin: 0; padding: 0 41px 40px; border-bottom: 1px solid var(--gp-stroke); list-style: none; }
-.gp-ir-stats__list strong { display: block; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 500; font-size: 40px; line-height: 48px; font-variation-settings: normal; text-transform: none; }
+.gp-ir-stats__list strong { display: block; color: var(--gp-navy); font-family: var(--gp-font-head); font-weight: 500; font-size: 40px; line-height: 48px; font-variation-settings: normal; font-variant-numeric: tabular-nums; text-transform: none; }
 .gp-ir-stats__list span { display: block; margin-top: 2px; color: var(--gp-text); font-size: 14px; line-height: 20px; }
 
 /* Advantage */
@@ -17,7 +17,21 @@
 .gp-ir-adv__head .gp-heading { max-width: 500px; }
 .gp-ir-adv__text { flex: none; width: 310px; margin-bottom: 12px; color: var(--gp-text); font-size: 16px; line-height: 26px; }
 .gp-ir-adv__grid { display: grid; grid-template-columns: 360px 1fr; gap: 24px; margin-top: 44px; }
-.gp-noi { min-height: 610px; padding: 28px 20px; border-radius: 16px; background: var(--gp-navy) var(--bg) center / cover no-repeat; color: #fff; }
+.gp-noi { position: relative; isolation: isolate; overflow: hidden; min-height: 610px; padding: 28px 20px; border-radius: 16px; background: var(--gp-navy); color: #fff; }
+/* The photo sits on its own layer so it can zoom on hover without moving the text. */
+.gp-noi::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--bg) center / cover no-repeat; }
+
+/* Hover zoom: photos grow slowly inside their rounded frame (mouse devices only; not with reduced motion). */
+.gp-zoom { display: block; position: relative; overflow: hidden; }
+.gp-zoom > img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+	.gp-zoom > img,
+	.gp-noi::before { transition: transform .7s cubic-bezier(.2, .7, .2, 1); will-change: transform; }
+	.gp-adv-card:hover .gp-zoom > img,
+	.gp-ir-models__image:hover > img,
+	.gp-ir-form__image:hover > img,
+	.gp-noi:hover::before { transform: scale(1.08); }
+}
 .gp-noi h3 { max-width: 300px; margin: 0; font-family: var(--gp-font-head); font-weight: 400; font-size: 24px; line-height: 31px; font-variation-settings: normal; }
 .gp-noi p { margin-top: 14px; font-size: 14px; line-height: 22px; }
 .gp-ir-adv__cards { display: flex; flex-direction: column; gap: 24px; }
@@ -254,6 +268,6 @@
 	.gp-ir-models__image { flex: 0 0 46%; width: auto; height: auto; aspect-ratio: 552 / 647; }
 	.gp-sim { grid-template-columns: 1fr 1fr; gap: 112px; }
 	.gp-sim__result { height: auto; min-height: 509px; padding-bottom: 52px; }
-	.gp-ir-form__image { width: 520px; height: auto; min-height: 631px; }
+	.gp-ir-form__image { width: 520px; height: auto; min-height: 631px; aspect-ratio: 446 / 631; }
 }
 @media (min-width: 1181px) { .gp-ir-stats__list { padding-inline: 0; } }

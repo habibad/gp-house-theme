@@ -14,8 +14,10 @@ $room    = $args['room'];
 $gallery = $room['gallery'];
 $active  = min( max( 0, (int) $room['active'] ), max( 0, count( $gallery ) - 1 ) );
 $main    = $gallery[ $active ]['full'] ?? '';
-// Mobile shows a 5-photo window around the highlighted thumbnail (Figma mobile frame).
-$win     = max( 0, min( $active - 2, count( $gallery ) - 5 ) );
+// Thumbnail carousel: up to 6 photos in view (main.js fits fewer on narrow cards). The arrows step the highlighted
+// photo one at a time and the strip slides one photo whenever the highlight reaches an edge.
+$size    = min( 6, count( $gallery ) );
+$win     = max( 0, min( count( $gallery ) - $size, $active - $size + 1 ) );
 $specs   = array(
 	array( array( __( 'Area', 'gp-house' ), $room['area'] ), array( __( 'Guests', 'gp-house' ), $room['guests'] ) ),
 	array( array( __( 'Bed', 'gp-house' ), $room['bed'] ), array( __( 'View', 'gp-house' ), $room['view'] ) ),
@@ -34,12 +36,18 @@ $specs   = $specs ? array_chunk( $specs, (int) ceil( count( $specs ) / 2 ) ) : a
 			<img class="gp-fav__on" src="<?php echo esc_url( gp_img( 'icons/heart-filled.svg' ) ); ?>" width="20" height="20" alt="">
 		</button>
 		<?php if ( count( $gallery ) > 1 ) : ?>
-			<div class="gp-room__thumbs">
-				<?php foreach ( $gallery as $i => $img ) : ?>
-					<button class="gp-room__thumb<?php echo $i === $active ? ' is-active' : ''; ?><?php echo $i < $win || $i > $win + 4 ? ' is-extra' : ''; ?>" type="button" data-full="<?php echo esc_url( $img['full'] ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Photo %d', 'gp-house' ), $i + 1 ) ); ?>"<?php echo $i === $active ? ' aria-current="true"' : ''; ?>>
-						<img src="<?php echo esc_url( $img['thumb'] ); ?>" alt="" loading="lazy">
-					</button>
-				<?php endforeach; ?>
+			<div class="gp-room__thumbs" data-thumbs style="--n:<?php echo (int) $size; ?>;--start:<?php echo (int) $win; ?>">
+				<button class="gp-room__tarrow gp-room__tarrow--prev" type="button" data-thumbs-prev aria-label="<?php esc_attr_e( 'Previous photo', 'gp-house' ); ?>"<?php disabled( 0, $active ); ?>><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9 10.419 9 12c0 1.581 6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+				<div class="gp-room__thumbs-view">
+					<div class="gp-room__thumbs-list">
+						<?php foreach ( $gallery as $i => $img ) : ?>
+							<button class="gp-room__thumb<?php echo $i === $active ? ' is-active' : ''; ?>" type="button" data-full="<?php echo esc_url( $img['full'] ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Photo %d', 'gp-house' ), $i + 1 ) ); ?>"<?php echo $i === $active ? ' aria-current="true"' : ''; ?>>
+								<img src="<?php echo esc_url( $img['thumb'] ); ?>" alt="" loading="lazy">
+							</button>
+						<?php endforeach; ?>
+					</div>
+				</div>
+				<button class="gp-room__tarrow gp-room__tarrow--next" type="button" data-thumbs-next aria-label="<?php esc_attr_e( 'Next photo', 'gp-house' ); ?>"<?php disabled( count( $gallery ) - 1, $active ); ?>><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6c0 0 6 4.419 6 6 0 1.581-6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 			</div>
 		<?php endif; ?>
 	</div>

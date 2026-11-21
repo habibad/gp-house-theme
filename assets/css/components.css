@@ -829,19 +829,36 @@
 .gp-room__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .gp-room__media .gp-chip { top: 12px; left: 12px; }
 .gp-room__media .gp-fav { top: 12px; right: 12px; }
+/* Thumbnail carousel: a window of --n photos (main.js sets --n and --start) and the list slides one photo at a time.
+   --tw/--th = photo, --taw/--tah = highlighted photo, --tgap = gap between photos, --ta = arrow size. */
 .gp-room__thumbs {
+	--n: 6;
+	--start: 0;
+	--tw: 59px;
+	--th: 44px;
+	--taw: 86px;
+	--tah: 73px;
+	--tgap: 13px;
+	--ta: 32px;
 	position: absolute;
+	right: 0;
 	bottom: 20px;
-	left: 50%;
+	left: 0;
+	display: flex;
+	justify-content: center;
+}
+.gp-room__thumbs-view { width: calc((var(--n) - 1) * (var(--tw) + var(--tgap)) + var(--taw)); max-width: 100%; overflow: hidden; overflow: clip; /* clip: focusing a photo out of view cannot scroll the strip */ }
+.gp-room__thumbs-list {
 	display: flex;
 	align-items: flex-end;
-	gap: 13px;
-	transform: translateX(-50%);
+	gap: var(--tgap);
+	transform: translateX(calc(var(--start) * (var(--tw) + var(--tgap)) * -1));
+	transition: transform .35s ease;
 }
 .gp-room__thumb {
 	flex: none;
-	width: 59px;
-	height: 44px;
+	width: var(--tw);
+	height: var(--th);
 	padding: 0;
 	overflow: hidden;
 	border: 0;
@@ -852,7 +869,35 @@
 }
 .gp-room__thumb:hover { opacity: 1; }
 .gp-room__thumb img { width: 100%; height: 100%; object-fit: cover; }
-.gp-room__thumb.is-active { width: 86px; height: 73px; border: 1px solid var(--gp-navy); border-radius: 12px; opacity: 1; }
+.gp-room__thumb.is-active { width: var(--taw); height: var(--tah); border: 1px solid var(--gp-navy); border-radius: 12px; opacity: 1; }
+/* Arrows step the highlighted photo: yellow = there is a photo that way, white = first / last photo. */
+.gp-room__tarrow {
+	position: absolute;
+	bottom: calc((var(--th) - var(--ta)) / 2);
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--ta);
+	height: var(--ta);
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: var(--gp-primary);
+	color: var(--gp-navy);
+	cursor: pointer;
+	transition: transform .2s, background-color .2s, color .2s;
+}
+.gp-room__tarrow--prev { left: 10px; }
+.gp-room__tarrow--next { right: 10px; }
+.gp-room__tarrow:not(:disabled):hover { transform: scale(1.08); }
+.gp-room__tarrow:disabled { background: #fff; color: #6b6b6b; cursor: default; }
+@media (max-width: 1180px) {
+	.gp-room__thumbs { --tgap: 8px; --taw: 59px; --tah: 44px; }
+	/* Same-size photos here, so the highlighted one stands out by dimming the others. */
+	.gp-room__thumb { opacity: .6; }
+	.gp-room__thumb.is-active { border-width: 2px; border-radius: 8px; }
+}
 
 .gp-room__card {
 	display: flex;
@@ -1006,9 +1051,11 @@
 
 	.gp-room { flex-direction: column; gap: 12px; min-height: 0; }
 	.gp-room__media { flex: none; height: 250px; min-height: 0; }
-	.gp-room__thumbs { bottom: 12px; }
-	.gp-room__thumb.is-extra { display: none; }
-	.gp-room__thumb.is-active { width: 59px; height: 44px; border-radius: 8px; }
+	.gp-room__thumbs { --tw: 46px; --th: 35px; --taw: 46px; --tah: 35px; --tgap: 6px; --ta: 28px; bottom: 12px; }
+	.gp-room__thumb,
+	.gp-room__thumb.is-active { border-radius: 6px; }
+	.gp-room__tarrow--prev { left: 8px; }
+	.gp-room__tarrow--next { right: 8px; }
 	.gp-room__card { flex: none; height: auto; }
 	.gp-room__desc { width: auto; }
 	.gp-room__specs { gap: 4px; }

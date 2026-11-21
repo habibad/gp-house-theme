@@ -29,7 +29,7 @@ get_header();
 		<div class="gp-container">
 			<ul class="gp-ir-stats__list">
 				<?php foreach ( $ir['stats'] as $s ) : ?>
-					<li><strong><?php echo esc_html( $s[0] ); ?></strong><span><?php echo esc_html( $s[1] ); ?></span></li>
+					<li><strong data-count><?php echo esc_html( $s[0] ); ?></strong><span><?php echo esc_html( $s[1] ); ?></span></li>
 				<?php endforeach; ?>
 			</ul>
 		</div>
@@ -49,7 +49,7 @@ get_header();
 				<div class="gp-ir-adv__cards">
 					<?php foreach ( $ir['cards'] as $c ) : ?>
 						<article class="gp-adv-card">
-							<img class="gp-adv-card__image" src="<?php echo esc_url( gp_img( $c['image'] ) ); ?>" alt="" loading="lazy">
+							<span class="gp-adv-card__image gp-zoom"><img src="<?php echo esc_url( gp_img( $c['image'] ) ); ?>" alt="" loading="lazy"></span>
 							<div class="gp-adv-card__body">
 								<span class="gp-adv-card__icon"><?php gp_icon( $c['icon'], 24 ); ?></span>
 								<div>
@@ -77,7 +77,7 @@ get_header();
 					<?php endforeach; ?>
 				</ul>
 			</div>
-			<img class="gp-ir-models__image" src="<?php echo esc_url( gp_img( 'investors/partner.jpg' ) ); ?>" alt="" loading="lazy">
+			<span class="gp-ir-models__image gp-zoom"><img src="<?php echo esc_url( gp_img( 'investors/partner.jpg' ) ); ?>" alt="" loading="lazy"></span>
 		</div>
 	</section>
 
@@ -120,7 +120,7 @@ get_header();
 
 	<section class="gp-ir-form" id="inquiry">
 		<div class="gp-container gp-ir-form__inner">
-			<img class="gp-ir-form__image" src="<?php echo esc_url( gp_img( 'investors/form.jpg' ) ); ?>" alt="" loading="lazy">
+			<span class="gp-ir-form__image gp-zoom"><img src="<?php echo esc_url( gp_img( 'investors/form.jpg' ) ); ?>" alt="" loading="lazy"></span>
 			<form class="gp-inquiry" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
 				<input type="hidden" name="action" value="gp_inquiry">
 				<?php wp_nonce_field( 'gp_inquiry', 'gp_inquiry_nonce' ); ?>

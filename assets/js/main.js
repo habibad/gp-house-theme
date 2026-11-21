@@ -470,20 +470,84 @@
 		} );
 	}
 
-	/* Room galleries: thumbnail strip swaps the main photo ---------------- */
+	/* Stays page room cards: big photo + thumbnail carousel ---------------- */
+	// Up to 6 thumbnails are in view (fewer when the card is narrow). The arrows step the highlighted photo one
+	// at a time (the big photo follows) and the strip slides by one photo when the highlight reaches an edge.
 	function initGalleries() {
 		$$( '[data-gallery]' ).forEach( ( g ) => {
 			const main = $( '[data-gallery-main]', g );
+			const bar = $( '[data-thumbs]', g );
 			const thumbs = $$( '.gp-room__thumb', g );
-			thumbs.forEach( ( t ) => {
-				t.addEventListener( 'click', () => {
-					thumbs.forEach( ( x ) => {
-						x.classList.toggle( 'is-active', x === t );
-						x.toggleAttribute( 'aria-current', x === t );
-					} );
-					main.src = t.dataset.full;
+			if ( ! main || ! bar || thumbs.length < 2 ) return;
+			const view = $( '.gp-room__thumbs-view', bar );
+			const prev = $( '[data-thumbs-prev]', bar );
+			const next = $( '[data-thumbs-next]', bar );
+			const last = thumbs.length - 1;
+			let active = Math.max( 0, thumbs.findIndex( ( t ) => t.classList.contains( 'is-active' ) ) );
+			let start = parseInt( bar.style.getPropertyValue( '--start' ), 10 ) || 0;
+			let n = Math.min( 6, thumbs.length );
+
+			// How many thumbnails fit between the two arrows (at most 6).
+			const fit = () => {
+				const cs = getComputedStyle( bar );
+				const px = ( name ) => parseFloat( cs.getPropertyValue( name ) ) || 0;
+				const side = ( parseFloat( getComputedStyle( prev ).left ) || 0 ) + prev.offsetWidth + 8;
+				const room = bar.clientWidth - 2 * side;
+				return Math.max( 1, Math.min( 6, thumbs.length, 1 + Math.floor( ( room - px( '--taw' ) ) / ( px( '--tw' ) + px( '--tgap' ) ) ) ) );
+			};
+
+			const paint = () => {
+				if ( bar.clientWidth ) n = fit(); // a card hidden by the filters has no width yet
+				// Keep the highlighted photo in view, sliding as little as possible.
+				if ( active < start ) start = active;
+				if ( active > start + n - 1 ) start = active - n + 1;
+				start = Math.max( 0, Math.min( start, thumbs.length - n ) );
+				bar.style.setProperty( '--n', n );
+				bar.style.setProperty( '--start', start );
+				thumbs.forEach( ( t, k ) => {
+					const inView = k >= start && k < start + n;
+					t.tabIndex = inView ? 0 : -1; // keyboard users only tab through the photos they can see
+					// Load what is in view plus one photo on each side, so a slide never shows an empty frame.
+					const img = $( 'img', t );
+					if ( img && k >= start - 1 && k <= start + n ) img.loading = 'eager';
 				} );
-			} );
+				const focused = document.activeElement;
+				prev.disabled = active <= 0;
+				next.disabled = active >= last;
+				// An arrow that just switched off would drop keyboard focus: hand it to the other arrow.
+				if ( focused === prev && prev.disabled ) next.focus();
+				if ( focused === next && next.disabled ) prev.focus();
+			};
+
+			const show = ( i ) => {
+				active = Math.max( 0, Math.min( last, i ) );
+				thumbs.forEach( ( t, k ) => {
+					t.classList.toggle( 'is-active', k === active );
+					t.toggleAttribute( 'aria-current', k === active );
+				} );
+				main.src = thumbs[ active ].dataset.full;
+				// Warm up the neighbouring big photos so the next click swaps instantly.
+				[ active - 1, active + 1 ].forEach( ( k ) => {
+					if ( thumbs[ k ] ) ( new Image() ).src = thumbs[ k ].dataset.full;
+				} );
+				paint();
+			};
+
+			thumbs.forEach( ( t, k ) => t.addEventListener( 'click', () => show( k ) ) );
+			prev.addEventListener( 'click', () => show( active - 1 ) );
+			next.addEventListener( 'click', () => show( active + 1 ) );
+			// The strip moves with transform only; undo any scroll the browser adds when focusing a photo.
+			view.addEventListener( 'scroll', () => ( view.scrollLeft = 0 ) );
+			paint();
+			// Re-fit when the card changes size (window resize, or the filters showing a hidden card).
+			if ( 'ResizeObserver' in window ) {
+				let lastW = bar.clientWidth;
+				new ResizeObserver( () => {
+					if ( bar.clientWidth === lastW ) return;
+					lastW = bar.clientWidth;
+					paint();
+				} ).observe( bar );
+			}
 		} );
 	}
 
@@ -679,6 +743,51 @@
 			timer = setTimeout( build, 200 );
 		} );
 		reduced.addEventListener?.( 'change', build );
+	}
+
+	/* Counters: numbers like +38%, 120K+ or 94.2% count up from 0 when they scroll into view ------- */
+	function initCounters() {
+		const els = $$( '[data-count]' );
+		if ( ! els.length ) return;
+		const reduced = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
+		const DURATION = 1800;
+		// "+38%" -> prefix "+", number 38, suffix "%"; "94.2%" keeps one decimal; text without a number stays as it is.
+		const parts = ( text ) => {
+			const m = text.match( /^(\D*?)(\d[\d,]*(?:\.\d+)?)(.*)$/s );
+			if ( ! m ) return null;
+			const dec = ( m[ 2 ].split( '.' )[ 1 ] || '' ).length;
+			return { pre: m[ 1 ], value: parseFloat( m[ 2 ].replace( /,/g, '' ) ), dec, comma: m[ 2 ].includes( ',' ), post: m[ 3 ] };
+		};
+		const fmt = ( p, v ) => p.pre + v.toLocaleString( 'en-US', { minimumFractionDigits: p.dec, maximumFractionDigits: p.dec, useGrouping: p.comma } ) + p.post;
+		const run = ( el, p ) => {
+			let t0 = null;
+			const tick = ( now ) => {
+				if ( null === t0 ) t0 = now; // count from the first frame, so the first value is always 0
+				const k = Math.min( 1, Math.max( 0, ( now - t0 ) / DURATION ) );
+				const eased = 1 - Math.pow( 1 - k, 3 );
+				el.textContent = fmt( p, p.value * eased );
+				if ( k < 1 ) requestAnimationFrame( tick );
+				else el.textContent = el.dataset.final; // exactly the text the page was written with
+			};
+			requestAnimationFrame( tick );
+		};
+		const items = els.map( ( el ) => ( { el, p: parts( el.textContent.trim() ) } ) ).filter( ( i ) => i.p );
+		items.forEach( ( i ) => {
+			i.el.dataset.final = i.el.textContent.trim();
+			i.el.setAttribute( 'aria-label', i.el.dataset.final ); // screen readers get the final value, not the running one
+			if ( ! reduced ) i.el.textContent = fmt( i.p, 0 );
+		} );
+		if ( reduced || ! ( 'IntersectionObserver' in window ) ) {
+			items.forEach( ( i ) => ( i.el.textContent = i.el.dataset.final ) );
+			return;
+		}
+		const io = new IntersectionObserver( ( entries ) => entries.forEach( ( e ) => {
+			if ( ! e.isIntersecting ) return;
+			io.unobserve( e.target );
+			const item = items.find( ( i ) => i.el === e.target );
+			if ( item ) run( item.el, item.p );
+		} ), { threshold: 0.6 } );
+		items.forEach( ( i ) => io.observe( i.el ) );
 	}
 
 	/* Stay card photo slider: the dots under the photo switch photos ------------- */
@@ -1392,6 +1501,7 @@
 		initCardSliders();
 		initPhotoStack();
 		initMarquee();
+		initCounters();
 		initRedeem();
 		initAccordions();
 		initHoverLists();

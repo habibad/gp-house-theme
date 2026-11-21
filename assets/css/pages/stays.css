@@ -14,8 +14,6 @@
 
 @media (max-width: 1180px) {
 	.gp-stays { padding-top: 80px; }
-	.gp-room__thumb.is-extra { display: none; }
-	.gp-room__thumb.is-active { width: 59px; height: 44px; border-radius: 8px; }
 	.gp-filters { flex-wrap: wrap; }
 	.gp-filters__right { flex-wrap: wrap; gap: 16px 32px; }
 	.gp-room__media,
