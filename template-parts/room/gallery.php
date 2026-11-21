@@ -34,8 +34,15 @@ if ( ! $photos ) {
 	</div>
 	<div class="gp-room-gallery__fade gp-room-gallery__fade--left" aria-hidden="true"></div>
 	<div class="gp-room-gallery__fade gp-room-gallery__fade--right" aria-hidden="true"></div>
-	<div class="gp-room-gallery__arrows">
-		<button class="gp-room-gallery__arrow" type="button" data-room-gallery-prev aria-label="<?php esc_attr_e( 'Previous photo', 'gp-house' ); ?>"><?php gp_icon( 'arrow-left-grey', 24 ); ?></button>
-		<button class="gp-room-gallery__arrow gp-room-gallery__arrow--next" type="button" data-room-gallery-next aria-label="<?php esc_attr_e( 'Next photo', 'gp-house' ); ?>"><?php gp_icon( 'arrow-right-navy', 24 ); ?></button>
-	</div>
+	<?php if ( count( $photos ) > 1 ) : ?>
+		<?php // Yellow = can move that way; white = at the first / last photo (main.js keeps this in sync). ?>
+		<div class="gp-room-gallery__arrows">
+			<button class="gp-room-gallery__arrow" type="button" data-room-gallery-prev aria-label="<?php esc_attr_e( 'Previous photo', 'gp-house' ); ?>"<?php disabled( 0, $active ); ?>>
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6C15 6 9 10.419 9 12c0 1.581 6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</button>
+			<button class="gp-room-gallery__arrow gp-room-gallery__arrow--next" type="button" data-room-gallery-next aria-label="<?php esc_attr_e( 'Next photo', 'gp-house' ); ?>"<?php disabled( count( $photos ) - 1, $active ); ?>>
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6c0 0 6 4.419 6 6 0 1.581-6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</button>
+		</div>
+	<?php endif; ?>
 </section>

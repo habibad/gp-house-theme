@@ -494,11 +494,25 @@
 		const main = $( '[data-room-gallery-main]', root );
 		const strip = $( '[data-room-gallery-strip]', root );
 		const thumbs = $$( '.gp-room-gallery__thumb', strip );
+		const prev = $( '[data-room-gallery-prev]', root );
+		const next = $( '[data-room-gallery-next]', root );
 		let index = Math.max( 0, thumbs.findIndex( ( t ) => t.classList.contains( 'is-active' ) ) );
 		let offset = 0;
 
+		// Arrows are active only when there is a photo that way (first photo: back is off; last photo: next is off).
+		const arrows = () => {
+			if ( ! prev || ! next ) return;
+			const wasFocused = document.activeElement;
+			prev.disabled = index <= 0;
+			next.disabled = index >= thumbs.length - 1;
+			// A button that just turned off loses keyboard focus: hand it to the other arrow.
+			if ( wasFocused === prev && prev.disabled && ! next.disabled ) next.focus();
+			if ( wasFocused === next && next.disabled && ! prev.disabled ) prev.focus();
+		};
+
 		const show = ( i ) => {
-			index = ( i + thumbs.length ) % thumbs.length;
+			index = Math.min( thumbs.length - 1, Math.max( 0, i ) );
+			arrows();
 			thumbs.forEach( ( t, k ) => {
 				t.classList.toggle( 'is-active', k === index );
 				t.toggleAttribute( 'aria-current', k === index );
@@ -516,8 +530,9 @@
 		};
 
 		thumbs.forEach( ( t, k ) => t.addEventListener( 'click', () => show( k ) ) );
-		$( '[data-room-gallery-prev]', root ).addEventListener( 'click', () => show( index - 1 ) );
-		$( '[data-room-gallery-next]', root ).addEventListener( 'click', () => show( index + 1 ) );
+		prev && prev.addEventListener( 'click', () => show( index - 1 ) );
+		next && next.addEventListener( 'click', () => show( index + 1 ) );
+		arrows();
 	}
 
 	/* Room page: nights counter updates the estimate --------------------- */

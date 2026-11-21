@@ -36,9 +36,10 @@
 	transform: translateX(-50%);
 	pointer-events: none;
 }
-.gp-room-gallery__arrow { display: flex; padding: 20px; border: 0; border-radius: 60px; background: #fff; pointer-events: auto; transition: transform .2s; }
-.gp-room-gallery__arrow:hover { transform: scale(1.06); }
-.gp-room-gallery__arrow--next { background: var(--gp-primary); }
+/* Active = yellow with a navy arrow; at the first / last photo the arrow turns white with a grey arrow. */
+.gp-room-gallery__arrow { display: flex; padding: 20px; border: 0; border-radius: 60px; background: var(--gp-primary); color: var(--gp-navy); cursor: pointer; pointer-events: auto; transition: transform .2s, background-color .2s, color .2s; }
+.gp-room-gallery__arrow:not(:disabled):hover { transform: scale(1.06); }
+.gp-room-gallery__arrow:disabled { background: #fff; color: #6b6b6b; cursor: default; }
 
 /* Details + booking card (1148:10244) */
 .gp-room-details { display: flex; align-items: flex-start; justify-content: center; gap: 80px; padding: 80px 0; background: #fff; }
