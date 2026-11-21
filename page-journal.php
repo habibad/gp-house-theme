@@ -10,7 +10,11 @@ defined( 'ABSPATH' ) || exit;
 
 $topic   = gp_journal_current_topic();
 $topics  = gp_journal_topics();
-$stories = gp_get_journal( -1, array( 'topic' => $topic, 'listing' => true ) );
+$per     = gp_journal_per_page();
+$total   = gp_journal_total( $topic );
+$pages   = max( 1, (int) ceil( $total / $per ) );
+$page    = gp_journal_current_page( $pages );
+$stories = gp_get_journal( $per, array( 'topic' => $topic, 'listing' => true, 'offset' => ( $page - 1 ) * $per ) );
 $hero_id = (int) gp_opt( 'jp_hero_image' );
 
 get_header();
@@ -47,6 +51,31 @@ get_header();
 					}
 					?>
 				</div>
+				<?php if ( $pages > 1 ) : ?>
+					<nav class="gp-pager" aria-label="<?php esc_attr_e( 'Journal pages', 'gp-house' ); ?>">
+						<?php if ( $page > 1 ) : ?>
+							<a class="gp-pager__link gp-pager__link--nav" href="<?php echo esc_url( gp_journal_topic_url( $topic, $page - 1 ) ); ?>" rel="prev"><?php esc_html_e( 'Previous', 'gp-house' ); ?></a>
+						<?php else : ?>
+							<span class="gp-pager__link gp-pager__link--nav is-disabled" aria-disabled="true"><?php esc_html_e( 'Previous', 'gp-house' ); ?></span>
+						<?php endif; ?>
+						<ol class="gp-pager__pages">
+							<?php foreach ( gp_journal_page_list( $page, $pages ) as $n ) : ?>
+								<?php if ( 0 === $n ) : ?>
+									<li class="gp-pager__gap" aria-hidden="true">…</li>
+								<?php elseif ( $n === $page ) : ?>
+									<li><span class="gp-pager__link is-active" aria-current="page"><?php echo (int) $n; ?></span></li>
+								<?php else : ?>
+									<li><a class="gp-pager__link" href="<?php echo esc_url( gp_journal_topic_url( $topic, $n ) ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: page number */ __( 'Page %d', 'gp-house' ), $n ) ); ?>"><?php echo (int) $n; ?></a></li>
+								<?php endif; ?>
+							<?php endforeach; ?>
+						</ol>
+						<?php if ( $page < $pages ) : ?>
+							<a class="gp-pager__link gp-pager__link--nav" href="<?php echo esc_url( gp_journal_topic_url( $topic, $page + 1 ) ); ?>" rel="next"><?php esc_html_e( 'Next', 'gp-house' ); ?></a>
+						<?php else : ?>
+							<span class="gp-pager__link gp-pager__link--nav is-disabled" aria-disabled="true"><?php esc_html_e( 'Next', 'gp-house' ); ?></span>
+						<?php endif; ?>
+					</nav>
+				<?php endif; ?>
 			<?php else : ?>
 				<?php gp_component( 'empty-state', array( 'icon' => gp_img( 'journal/empty-notepad.png' ), 'title' => gp_opt( 'jp_empty_title' ), 'text' => gp_opt( 'jp_empty_text' ), 'class' => 'gp-journal-list__empty' ) ); ?>
 			<?php endif; ?>

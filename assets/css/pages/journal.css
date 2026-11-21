@@ -14,6 +14,17 @@
 .gp-journal-list__head .gp-pills { margin-top: 40px; }
 .gp-journal-list__stories { display: flex; flex-direction: column; gap: 48px; margin-top: 72px; }
 
+/* Pagination under the story list (5 stories per page). */
+.gp-pager { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 56px; }
+.gp-pager__pages { display: flex; align-items: center; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.gp-pager__link { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; height: 44px; padding: 0 14px; border: 1px solid var(--gp-stroke); border-radius: 8px; background: #fff; color: var(--gp-text); font-weight: 500; font-size: 16px; line-height: 1; text-decoration: none; transition: background-color .2s, color .2s, border-color .2s; }
+a.gp-pager__link:hover { background: var(--gp-sand-light); color: var(--gp-navy); }
+.gp-pager__link.is-active { border-color: var(--gp-navy); background: var(--gp-navy); color: #fff; }
+.gp-pager__link--nav { padding: 0 20px; background: var(--gp-primary); border-color: var(--gp-primary); color: var(--gp-navy); }
+a.gp-pager__link--nav:hover { background: var(--gp-primary); color: var(--gp-navy); filter: brightness(.96); }
+.gp-pager__link.is-disabled { border-color: var(--gp-stroke); background: #fff; color: #9a9ca8; cursor: default; }
+.gp-pager__gap { padding: 0 2px; color: var(--gp-text); }
+
 /* Story cards as a plain list (the Home section stacks them). */
 .gp-story--flat { position: relative; top: auto; transform: none !important; will-change: auto; }
 .gp-journal-list .gp-story__text p { width: 257px; max-width: 100%; }
@@ -113,6 +124,10 @@
 	.gp-journal-list__head .gp-pills::-webkit-scrollbar { display: none; }
 	.gp-journal-list__head .gp-pills__tab { flex: none; }
 	.gp-journal-list__stories { gap: 16px; margin-top: 32px; }
+	.gp-pager { flex-wrap: wrap; gap: 12px 8px; margin-top: 32px; }
+	.gp-pager__pages { order: 3; flex: 0 0 100%; justify-content: center; gap: 6px; }
+	.gp-pager__link { min-width: 40px; height: 40px; padding: 0 12px; font-size: 14px; }
+	.gp-pager__link--nav { flex: 1 1 0; max-width: 150px; padding: 0 12px; }
 	.gp-journal-list .gp-story__text p { width: auto; font-size: 12px; line-height: 19.2px; }
 	.gp-journal-list .gp-story__main { gap: 14px; }
 	.gp-journal-list .gp-story__text { gap: 14px; }

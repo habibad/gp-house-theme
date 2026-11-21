@@ -228,6 +228,23 @@ function gp_get_testimonials( $limit = 9 ) {
 	}, array_slice( gp_demo_content()['testimonials'], 0, $limit ) );
 }
 
+/** How many journal stories the listing has for a topic ('' = all) — used for the page numbers. */
+function gp_journal_total( $topic = '' ) {
+	$query = array( 'post_type' => 'post', 'posts_per_page' => -1, 'fields' => 'ids', 'meta_key' => 'gp_read_time', 'ignore_sticky_posts' => true ); // phpcs:ignore WordPress.DB.SlowDBQuery
+	if ( $topic ) {
+		$query['category_name'] = $topic;
+	}
+	$ids = get_posts( $query );
+	if ( $ids ) {
+		return count( $ids );
+	}
+	// Real stories exist (just none in this topic): no demo content is mixed in.
+	if ( get_posts( array( 'post_type' => 'post', 'posts_per_page' => 1, 'fields' => 'ids', 'meta_key' => 'gp_read_time' ) ) ) { // phpcs:ignore WordPress.DB.SlowDBQuery
+		return 0;
+	}
+	return count( array_filter( gp_demo_content()['journal'], fn( $j ) => ! $topic || ( $j['topic'] ?? '' ) === $topic ) );
+}
+
 /**
  * Journal stories (regular posts, tagged with a destination and filed under a topic category).
  *
@@ -238,7 +255,7 @@ function gp_get_testimonials( $limit = 9 ) {
  * }
  */
 function gp_get_journal( $limit = 3, $args = array() ) {
-	$args  = wp_parse_args( $args, array( 'destination' => '', 'home' => false, 'topic' => '', 'listing' => false ) );
+	$args  = wp_parse_args( $args, array( 'destination' => '', 'home' => false, 'topic' => '', 'listing' => false, 'offset' => 0 ) );
 	$query = array( 'post_type' => 'post', 'posts_per_page' => $limit, 'meta_key' => 'gp_read_time', 'ignore_sticky_posts' => true ); // phpcs:ignore WordPress.DB.SlowDBQuery
 	if ( $args['home'] ) {
 		$query['meta_query'] = array( array( 'key' => 'gp_home_featured', 'value' => '1' ) ); // phpcs:ignore WordPress.DB.SlowDBQuery
@@ -252,11 +269,14 @@ function gp_get_journal( $limit = 3, $args = array() ) {
 	}
 
 	if ( $args['listing'] ) {
+		// Sticky stories first, then the rest. Work with IDs so only the stories on this page are loaded in full.
 		$sticky = array_filter( array_map( 'intval', (array) get_option( 'sticky_posts', array() ) ) );
-		$first  = $sticky ? get_posts( array( 'post__in' => $sticky, 'posts_per_page' => -1 ) + $query ) : array();
-		$rest   = get_posts( array( 'post__not_in' => $sticky ) + $query );
-		$posts  = array_merge( $first, $rest );
-		$posts  = $limit > 0 ? array_slice( $posts, 0, $limit ) : $posts;
+		$ids_q  = array( 'fields' => 'ids', 'posts_per_page' => -1 ) + $query;
+		$first  = $sticky ? get_posts( array( 'post__in' => $sticky ) + $ids_q ) : array();
+		$rest   = get_posts( array( 'post__not_in' => $sticky ) + $ids_q );
+		$ids    = array_merge( $first, $rest );
+		$ids    = $limit > 0 ? array_slice( $ids, max( 0, (int) $args['offset'] ), $limit ) : $ids;
+		$posts  = array_filter( array_map( 'get_post', $ids ) );
 	} else {
 		$posts = get_posts( $query );
 	}
@@ -273,6 +293,7 @@ function gp_get_journal( $limit = 3, $args = array() ) {
 	} );
 	if ( $args['listing'] ) {
 		usort( $journal, fn( $a, $b ) => (int) empty( $a['sticky'] ) <=> (int) empty( $b['sticky'] ) );
+		$journal = $limit > 0 ? array_slice( $journal, max( 0, (int) $args['offset'] ), $limit ) : $journal;
 	}
 	$topics = gp_journal_default_topics();
 	return array_map( function ( $j ) use ( $dests, $topics ) {
