@@ -54,8 +54,15 @@ $ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//GP House//Stay//EN\r\nBEGIN:
 				<section class="gp-it__box gp-it__desk">
 					<h3><?php echo esc_html( sprintf( /* translators: %s: hotel */ __( 'Concierge Desk — %s', 'gp-house' ), $b['concierge'] ) ); ?></h3>
 					<p><?php esc_html_e( 'Need A Transfer, Ride, Or Private Dining?', 'gp-house' ); ?></p>
-					<a href="mailto:<?php echo esc_attr( $b['email'] ); ?>"><?php gp_icon( 'mail-grey', 16 ); ?><?php echo esc_html( $b['email'] ); ?></a>
-					<a href="tel:<?php echo esc_attr( preg_replace( '/[^\d+]/', '', $b['phone'] ) ); ?>"><?php gp_icon( 'phone-grey', 16 ); ?><?php echo esc_html( $b['phone'] ); ?></a>
+					<?php if ( ! empty( $b['email'] ) ) : ?>
+						<a href="mailto:<?php echo esc_attr( $b['email'] ); ?>"><?php gp_icon( 'mail-grey', 16 ); ?><?php echo esc_html( $b['email'] ); ?></a>
+					<?php endif; ?>
+					<?php if ( ! empty( $b['phone'] ) ) : ?>
+						<a href="tel:<?php echo esc_attr( preg_replace( '/[^\d+]/', '', $b['phone'] ) ); ?>"><?php gp_icon( 'phone-grey', 16 ); ?><?php echo esc_html( $b['phone'] ); ?></a>
+					<?php endif; ?>
+					<?php if ( empty( $b['email'] ) && empty( $b['phone'] ) ) : // Property concierge contacts not set yet (GP House Booking → Settings). ?>
+						<a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php gp_icon( 'mail-grey', 16 ); ?><?php esc_html_e( 'Contact Our Concierge Team', 'gp-house' ); ?></a>
+					<?php endif; ?>
 				</section>
 			</div>
 
@@ -63,7 +70,11 @@ $ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//GP House//Stay//EN\r\nBEGIN:
 				<section class="gp-it__box gp-it__rate">
 					<h3><?php esc_html_e( 'Rate Breakdown', 'gp-house' ); ?></h3>
 					<div class="gp-it__total"><span><?php esc_html_e( 'Total Paid In Full', 'gp-house' ); ?></span><strong><?php echo esc_html( $b['total'] ); ?></strong></div>
-					<p class="gp-it__note"><?php esc_html_e( 'Direct Best-Rate Guaranteed • Fully Paid & Secured.', 'gp-house' ); ?></p>
+					<?php if ( ! empty( $b['test'] ) ) : ?>
+						<p class="gp-it__note"><?php esc_html_e( 'Test Booking — PayPal Sandbox, No Real Payment. Not Reserved At The Hotel.', 'gp-house' ); ?></p>
+					<?php else : ?>
+						<p class="gp-it__note"><?php esc_html_e( 'Direct Best-Rate Guaranteed • Fully Paid & Secured.', 'gp-house' ); ?></p>
+					<?php endif; ?>
 					<dl>
 						<div><dt><?php echo esc_html( sprintf( /* translators: %d: nights */ __( 'Accommodation (%d Nights):', 'gp-house' ), (int) $b['nights'] ) ); ?></dt><dd><?php echo esc_html( $b['accommodation'] ); ?></dd></div>
 						<?php if ( isset( $b['rate_rows'] ) ) : ?>
@@ -83,7 +94,7 @@ $ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//GP House//Stay//EN\r\nBEGIN:
 					<a class="gp-it__btn" href="data:text/calendar;charset=utf-8,<?php echo esc_attr( rawurlencode( $ics ) ); ?>" download="<?php echo esc_attr( sanitize_file_name( $b['id'] ) ); ?>.ics"><?php esc_html_e( 'Add To Calendar (.Ics)', 'gp-house' ); ?></a>
 					<button class="gp-it__btn" type="button" data-print><?php esc_html_e( 'Print Itinerary', 'gp-house' ); ?></button>
 					<?php if ( 'can_request' === ( $b['cancel_state'] ?? '' ) ) : ?>
-						<button class="gp-it__btn gp-it__btn--danger" type="button" data-cancel-request="<?php echo (int) $b['booking_id']; ?>" data-rest="<?php echo esc_url( rest_url( 'gp/v1/booking/cancel-request' ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>"><?php echo esc_html( __( 'Request Cancellation', 'gp-house' ) ); ?></button>
+						<button class="gp-it__btn gp-it__btn--danger" type="button" data-cancel-request="<?php echo (int) $b['booking_id']; ?>" data-rest="<?php echo esc_url( rest_url( 'gp/v1/booking/cancel-request' ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>"<?php echo isset( $b['free_cancel'] ) && ! $b['free_cancel'] ? ' data-nonrefundable' : ''; ?>><?php echo esc_html( __( 'Request Cancellation', 'gp-house' ) ); ?></button>
 					<?php elseif ( 'requested' === ( $b['cancel_state'] ?? '' ) ) : ?>
 						<p class="gp-it__note"><?php esc_html_e( 'Cancellation requested — the team will confirm by email.', 'gp-house' ); ?></p>
 					<?php endif; ?>

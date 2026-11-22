@@ -47,6 +47,7 @@ a.gp-pager__link--nav:hover { background: var(--gp-primary); color: var(--gp-nav
 .gp-newsletter__input::placeholder { color: var(--gp-text); }
 .gp-newsletter__input:focus-visible { outline: 2px solid var(--gp-primary); outline-offset: 2px; }
 .gp-newsletter__button { height: 44px; padding: 0 20px; border: 0; font-size: 16px; }
+.gp-newsletter__notice { margin: 16px 0 0; }
 .gp-journal-page + .gp-footer-area { padding-top: 83px; }
 
 /* Story page ------------------------------------------------------------- */

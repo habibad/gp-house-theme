@@ -1453,7 +1453,11 @@
 			$$( '[data-itinerary-close]', dlg ).forEach( ( b ) => b.addEventListener( 'click', () => dlg.close() ) );
 			$$( '[data-print]', dlg ).forEach( ( b ) => b.addEventListener( 'click', () => window.print() ) );
 			$$( '[data-cancel-request]', dlg ).forEach( ( b ) => b.addEventListener( 'click', async () => {
-				if ( ! window.confirm( 'Send a cancellation request for this reservation?' ) ) return;
+				// Non-refundable rates (eZee "prepaid / non-refundable"): say so before the guest asks.
+				const ask = 'nonrefundable' in b.dataset
+					? 'This reservation was booked at a non-refundable rate, so a refund is not guaranteed. Send a cancellation request to our team anyway?'
+					: 'Send a cancellation request for this reservation?';
+				if ( ! window.confirm( ask ) ) return;
 				b.disabled = true;
 				const res = await fetch( b.dataset.rest, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': b.dataset.nonce }, body: JSON.stringify( { booking_id: b.dataset.cancelRequest } ) } ).then( ( r ) => r.json() ).catch( () => ( {} ) );
 				window.alert( res.message || 'We could not send the request. Please try again.' );
