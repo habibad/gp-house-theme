@@ -26,7 +26,7 @@ $specs   = array(
 $specs   = array_values( array_filter( array_merge( ...$specs ), fn( $x ) => '' !== trim( (string) $x[1] ) ) );
 $specs   = $specs ? array_chunk( $specs, (int) ceil( count( $specs ) / 2 ) ) : array();
 ?>
-<article class="gp-room" data-room data-location="<?php echo esc_attr( $room['loc_slug'] ); ?>" data-type="<?php echo esc_attr( $room['type'] ); ?>" data-beds="<?php echo esc_attr( implode( ' ', $room['beds'] ) ); ?>" data-tags="<?php echo esc_attr( implode( ' ', $room['tags'] ) ); ?>" data-price="<?php echo esc_attr( $room['price'] ); ?>" data-area="<?php echo esc_attr( (int) $room['area'] ); ?>"<?php echo empty( $args['hidden'] ) ? '' : ' hidden'; ?>>
+<article class="gp-room" data-room data-location="<?php echo esc_attr( $room['loc_slug'] ); ?>" data-type="<?php echo esc_attr( $room['type'] ); ?>" data-beds="<?php echo esc_attr( implode( ' ', $room['beds'] ) ); ?>" data-tags="<?php echo esc_attr( implode( ' ', $room['tags'] ) ); ?>" data-price="<?php echo esc_attr( $room['price'] ); ?>" data-area="<?php echo esc_attr( (int) $room['area'] ); ?>"<?php echo empty( $room['booking_property'] ) ? '' : ' data-room-id="' . esc_attr( $room['id'] ) . '" data-property="' . esc_attr( $room['booking_property'] ) . '"'; ?><?php echo empty( $args['hidden'] ) ? '' : ' hidden'; ?>>
 	<div class="gp-room__media" data-gallery>
 		<img class="gp-room__photo" src="<?php echo esc_url( $main ); ?>" alt="<?php echo esc_attr( $room['title'] ); ?>" loading="lazy" data-gallery-main>
 		<?php gp_chip( $room['location'] ); ?>
@@ -78,7 +78,11 @@ $specs   = $specs ? array_chunk( $specs, (int) ceil( count( $specs ) / 2 ) ) : a
 			</dl>
 		</div>
 		<div class="gp-room__foot">
-			<p class="gp-room__price"><strong><?php echo esc_html( gp_price( $room['price'] ) ); ?></strong> <span>/ night</span></p>
+			<?php // Without dates: the lowest eZee price of the coming weeks ("From"). With the visitor's dates main.js shows that stay's price. ?>
+			<div class="gp-room__pricing">
+				<p class="gp-room__price" data-room-price><span data-room-from><?php esc_html_e( 'From', 'gp-house' ); ?></span> <s class="gp-room__was" data-room-was hidden></s> <strong data-room-night><?php echo esc_html( gp_money_thb( $room['price'], $room['price_thb'] ?? 0 ) ); ?></strong> <span>/ night</span></p>
+				<p class="gp-room__stay" data-room-stay hidden></p>
+			</div>
 			<div class="gp-room__actions">
 				<?php
 				gp_button( array( 'label' => __( 'Details', 'gp-house' ), 'url' => $room['url'], 'variant' => 'outline', 'size' => 'room', 'text' => 'navy' ) );

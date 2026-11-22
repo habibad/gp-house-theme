@@ -30,7 +30,18 @@ get_header();
 		<div class="gp-container">
 			<?php get_template_part( 'template-parts/stays/filters', null, array( 'query' => $query ) ); ?>
 
-			<div class="gp-stays__list" data-rooms>
+			<?php
+			// Live eZee prices for the visitor's dates (main.js initRoomPrices).
+			$prices = function_exists( 'gp_booking_enabled' ) && gp_booking_enabled()
+				? ' data-prices="' . esc_url( rest_url( 'gp/v1/booking/prices' ) ) . '" data-prices-i18n="' . esc_attr( wp_json_encode( array(
+					'adult'  => __( 'Adult', 'gp-house' ),
+					'adults' => __( 'Adults', 'gp-house' ),
+					'none'   => __( 'Not Available', 'gp-house' ),
+					'save'   => __( 'Save %d%', 'gp-house' ),
+				) ) ) . '"' . ( is_user_logged_in() ? ' data-nonce="' . esc_attr( wp_create_nonce( 'wp_rest' ) ) . '"' : '' )
+				: '';
+			?>
+			<div class="gp-stays__list" data-rooms<?php echo $prices; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above. ?>>
 				<?php
 				foreach ( $rooms as $room ) {
 					gp_component( 'room-card', array( 'room' => $room, 'hidden' => ! in_array( $room['id'], $shown, true ) ) );

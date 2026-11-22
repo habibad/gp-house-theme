@@ -168,6 +168,7 @@ function gp_get_stays( $args = array() ) {
 				'tagline'    => get_post_meta( $p->ID, 'gp_tagline', true ),
 				'excerpt'    => get_the_excerpt( $p ),
 				'price'      => (float) get_post_meta( $p->ID, 'gp_price', true ),
+				'price_thb'  => (float) get_post_meta( $p->ID, 'gp_price_thb', true ),
 				'reviews'    => (int) get_post_meta( $p->ID, 'gp_reviews', true ),
 				'image'      => get_the_post_thumbnail_url( $p, 'gp-card' ) ?: '',
 				'images'     => gp_stay_images( $p ),

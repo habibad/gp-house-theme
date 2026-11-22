@@ -48,7 +48,7 @@ if ( ! $slider ) {
 			<p class="gp-stay-card__desc"><?php echo esc_html( $stay['excerpt'] ); ?></p>
 		</div>
 		<div class="gp-stay-card__foot">
-			<p class="gp-stay-card__price"><?php echo esc_html( gp_price( $stay['price'] ) ); ?>/<span>night</span></p>
+			<p class="gp-stay-card__price"><span class="gp-stay-card__from"><?php esc_html_e( 'From', 'gp-house' ); ?></span> <?php echo esc_html( gp_money_thb( $stay['price'], $stay['price_thb'] ?? 0 ) ); ?>/<span>night</span></p>
 			<?php gp_button( array( 'label' => $cta, 'url' => $stay['url'], 'size' => 'xs' ) ); ?>
 		</div>
 	</div>

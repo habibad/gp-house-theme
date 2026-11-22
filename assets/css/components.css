@@ -299,6 +299,7 @@
 }
 .gp-stay-card__price { color: var(--gp-black); font-size: 18px; line-height: normal; text-transform: none; white-space: nowrap; }
 .gp-stay-card__price span { color: var(--gp-text); }
+.gp-stay-card__price .gp-stay-card__from { font-size: 14px; }
 .gp-testimonials {
 	position: relative;
 	display: flex;
@@ -941,6 +942,13 @@
 .gp-room__price { display: flex; align-items: center; gap: 4px; line-height: normal; white-space: nowrap; }
 .gp-room__price strong { color: var(--gp-navy); font-weight: 600; font-size: 16px; }
 .gp-room__price span { color: var(--gp-text); font-size: 12px; }
+/* "From" price, or the live price for the visitor's dates (main.js initRoomPrices) with the stay under it. */
+.gp-room__pricing { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.gp-room__price[hidden], .gp-room__stay[hidden] { display: none; }
+.gp-room__was { color: var(--gp-text); font-size: 12px; }
+.gp-room__stay { margin: 0; color: var(--gp-text); font-size: 12px; line-height: 1.4; white-space: normal; }
+.gp-room__stay.is-none { color: #b42318; }
+.gp-room.is-pricing .gp-room__price { opacity: .5; }
 .gp-room__actions { display: flex; gap: 12px; width: 247px; }
 
 @media (max-width: 860px) {
@@ -1219,8 +1227,9 @@
 @media (min-width: 1181px) {
 	.gp-room__media, .gp-room__card { flex: 1 1 0; }
 	.gp-dest-grid .gp-dest-card { flex: 1 1 0; min-width: 0; }
+	/* Three per row (24px gaps). One or two cards keep that width instead of stretching across the row. */
 	.gp-dest-rooms__grid > *,
-	.gp-dest-articles__grid > * { flex: 1 1 0; min-width: 0; }
+	.gp-dest-articles__grid > * { flex: 0 0 calc((100% - 48px) / 3); min-width: 0; }
 	.gp-offers__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 

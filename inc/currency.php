@@ -42,6 +42,17 @@ function gp_money( $usd, $currency = '' ) {
 	return $all[ $code ]['symbol'] . number_format_i18n( round( (float) $usd * $all[ $code ]['rate'] ) );
 }
 
+/**
+ * A "from" price (room / stay cards): US$ → the visitor's currency, but baht visitors see the exact baht amount
+ * the eZee sync stored, so it never drifts by a baht when the exchange rate changes.
+ */
+function gp_money_thb( $usd, $thb = 0 ) {
+	if ( 'THB' === gp_current_currency() && (float) $thb > 0 ) {
+		return '฿' . number_format_i18n( round( (float) $thb ) );
+	}
+	return gp_money( $usd );
+}
+
 /** Currency data for scripts (main.js formats the room booking card; booking.js shows approximations). */
 add_action( 'wp_enqueue_scripts', function () {
 	$all  = gp_currencies();

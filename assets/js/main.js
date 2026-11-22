@@ -470,6 +470,80 @@
 		} );
 	}
 
+	/* Stays: live eZee price per room for the visitor's dates -------------- */
+	// Dates come from the home search (?checkin=&guests=) or the last room page (sessionStorage gpStay), with the
+	// same defaults as the room page (3 nights, 2 adults), so a card shows exactly the price the room page shows.
+	// Without dates the cards keep the "From" price of the coming weeks.
+	function initRoomPrices() {
+		const list = $( '[data-rooms][data-prices]' );
+		if ( ! list ) return;
+		const cards = $$( '[data-room][data-room-id][data-property]', list );
+		if ( ! cards.length ) return;
+		let stay = {};
+		let promo = '';
+		try {
+			stay = JSON.parse( sessionStorage.getItem( 'gpStay' ) || '{}' ) || {};
+			promo = sessionStorage.getItem( 'gpPromo' ) || '';
+		} catch ( e ) {}
+		const q = new URLSearchParams( window.location.search );
+		const isDate = ( s ) => /^\d{4}-\d{2}-\d{2}$/.test( s || '' );
+		const pad = ( n ) => String( n ).padStart( 2, '0' );
+		const now = new Date();
+		const today = `${ now.getFullYear() }-${ pad( now.getMonth() + 1 ) }-${ pad( now.getDate() ) }`;
+		const checkin = isDate( q.get( 'checkin' ) ) ? q.get( 'checkin' ) : ( isDate( stay.checkin ) ? stay.checkin : '' );
+		if ( ! checkin || checkin < today ) return;
+		const nights = Math.min( 30, Math.max( 1, parseInt( stay.nights, 10 ) || 3 ) );
+		const adults = Math.min( 8, Math.max( 1, parseInt( ( q.get( 'guests' ) || '' ).split( '-' )[ 0 ], 10 ) || parseInt( stay.adults, 10 ) || 2 ) );
+		let t = {};
+		try {
+			t = JSON.parse( list.dataset.pricesI18n || '{}' );
+		} catch ( e ) {}
+		const c = window.gpCurrency;
+		// eZee prices are in baht: exact for THB, converted for other currencies (like the room page booking card).
+		const money = ( thb ) => ( ! c || 'THB' === c.code || ! c.thb )
+			? '฿' + thb.toLocaleString( 'en-US', { minimumFractionDigits: Math.abs( thb - Math.round( thb ) ) >= 0.005 ? 2 : 0, maximumFractionDigits: 2 } )
+			: c.symbol + Math.round( ( thb / c.thb ) * c.rate ).toLocaleString( 'en-US' );
+		const day = ( s ) => new Date( s + 'T00:00:00' ).toLocaleDateString( 'en-GB', { day: 'numeric', month: 'short' } );
+		const paint = ( card, p, s ) => {
+			const box = $( '[data-room-price]', card );
+			const line = $( '[data-room-stay]', card );
+			if ( ! box || ! line ) return;
+			const range = `${ day( s.checkin ) } – ${ day( s.checkout ) }`;
+			if ( p.available ) {
+				$( '[data-room-from]', box ).hidden = true;
+				$( '[data-room-night]', box ).textContent = money( p.night );
+				const was = $( '[data-room-was]', box );
+				was.hidden = ! p.before_night;
+				was.textContent = p.before_night ? money( p.before_night ) : '';
+				box.hidden = false;
+				line.textContent = `${ range } · ${ s.adults } ${ 1 === Number( s.adults ) ? t.adult : t.adults }` + ( p.save_pct > 0 && t.save ? ' · ' + t.save.replace( '%d', p.save_pct ) : '' );
+				line.classList.remove( 'is-none' );
+				if ( c && c.thb ) card.dataset.price = String( p.night / c.thb ); // the price sort follows the card
+			} else {
+				box.hidden = true;
+				line.textContent = `${ t.none || '' } · ${ range }`;
+				line.classList.add( 'is-none' );
+			}
+			line.hidden = false;
+		};
+		const groups = {};
+		cards.forEach( ( card ) => ( groups[ card.dataset.property ] = groups[ card.dataset.property ] || [] ).push( card ) );
+		Object.keys( groups ).forEach( async ( property ) => {
+			const mine = groups[ property ];
+			const params = new URLSearchParams( { property, checkin, nights: String( nights ), adults: String( adults ), promo, rooms: mine.map( ( r ) => r.dataset.roomId ).join( ',' ) } );
+			mine.forEach( ( r ) => r.classList.add( 'is-pricing' ) );
+			const res = await fetch( list.dataset.prices + '?' + params.toString(), {
+				credentials: 'same-origin',
+				headers: list.dataset.nonce ? { 'X-WP-Nonce': list.dataset.nonce } : {},
+			} ).then( ( r ) => r.json() ).catch( () => ( {} ) );
+			mine.forEach( ( card ) => {
+				card.classList.remove( 'is-pricing' );
+				const p = res && res.ok && res.rooms ? res.rooms[ card.dataset.roomId ] : null;
+				if ( p && res.stay ) paint( card, p, res.stay ); // otherwise the card keeps its "From" price
+			} );
+		} );
+	}
+
 	/* Stays page room cards: big photo + thumbnail carousel ---------------- */
 	// Up to 6 thumbnails are in view (fewer when the card is narrow). The arrows step the highlighted photo one
 	// at a time (the big photo follows) and the strip slides by one photo when the highlight reaches an edge.
@@ -1497,6 +1571,7 @@
 		initCurrency();
 		initDropdowns();
 		initRoomFilters();
+		initRoomPrices();
 		initGalleries();
 		initRoomGallery();
 		initBookingCard();

@@ -265,6 +265,9 @@ function gp_room_from_post( WP_Post $p ) {
 		'bed'        => get_post_meta( $p->ID, 'gp_bed_label', true ),
 		'view'       => get_post_meta( $p->ID, 'gp_view', true ),
 		'price'      => (float) get_post_meta( $p->ID, 'gp_price', true ),
+		'price_thb'  => (float) get_post_meta( $p->ID, 'gp_price_thb', true ),
+		// Booking property of a room linked to eZee (the Stays page asks it for live prices).
+		'booking_property' => function_exists( 'gp_booking_room_property' ) && ( get_post_meta( $p->ID, 'gp_ezee_roomtype_id', true ) || get_post_meta( $p->ID, 'gp_ezee_room', true ) ) ? (string) gp_booking_room_property( $p->ID ) : '',
 		'gallery'    => $images,
 		'active'     => (int) get_post_meta( $p->ID, 'gp_gallery_active', true ),
 		'detail_gallery' => $detail ?: $images,
