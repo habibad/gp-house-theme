@@ -21,10 +21,6 @@ foreach ( $stays as $i => $s ) {
 }
 ?>
 <section class="gp-explore" data-view="map" data-view-root>
-	<a class="gp-chatbot" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>" aria-label="<?php esc_attr_e( 'Chat with GP House', 'gp-house' ); ?>">
-		<img src="<?php echo esc_url( gp_img( 'icons/chatbot.svg' ) ); ?>" width="100" height="100" alt="">
-	</a>
-
 	<div class="gp-container">
 		<?php
 		gp_component( 'section-head', array(

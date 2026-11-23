@@ -102,6 +102,11 @@ $cta = apply_filters( 'gp_house_footer_cta', array(
 	</div>
 </section>
 
+<?php // Chat button (Figma "Chatbot") on every page: opens the HiJiffy web chat when it is live, else the contact page. ?>
+<a class="gp-chatbot" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>" data-chat-open aria-label="<?php esc_attr_e( 'Chat with GP House', 'gp-house' ); ?>">
+	<img src="<?php echo esc_url( gp_img( 'icons/chatbot.svg' ) ); ?>" width="64" height="64" alt="">
+</a>
+
 <?php wp_footer(); ?>
 </body>
 </html>

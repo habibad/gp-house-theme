@@ -42,6 +42,11 @@ function gp_countries() {
 	);
 }
 
+/** HiJiffy web chat (GP House Booking): its greetings and chat sit by the theme's chat button (bottom right). */
+add_filter( 'gp_booking_hijiffy_options', function ( $options ) {
+	return array_merge( array( 'right' => 24, 'bottom' => 24 ), (array) $options );
+} );
+
 /** Script + data for the booking page. */
 add_action( 'wp_enqueue_scripts', function () {
 	if ( ! is_singular( 'gp_room' ) || ! function_exists( 'gp_booking_properties' ) ) {

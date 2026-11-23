@@ -1541,6 +1541,33 @@
 		} );
 	}
 
+	/* Chat button (every page): opens the HiJiffy web chat ---------------- */
+	// HiJiffy's script (GP House Booking → Settings) renders its widget only on the domains HiJiffy has whitelisted.
+	// Once it is on the page, the button opens its chat and HiJiffy's own bubble is hidden (CSS .gp-chat-live);
+	// until then — or without HiJiffy — the button is a plain link to the contact page.
+	function initChat() {
+		const btn = $( '[data-chat-open]' );
+		if ( ! btn ) return;
+		const live = () => !! ( document.querySelector( '.hi-widget-container' ) && window.HiJiffyWidget && window.HiJiffyWidget.Api && 'function' === typeof window.HiJiffyWidget.Api.open );
+		const mark = () => {
+			if ( ! live() ) return false;
+			document.documentElement.classList.add( 'gp-chat-live' );
+			return true;
+		};
+		if ( ! mark() && window.HiJiffyWidget && 'MutationObserver' in window ) {
+			const obs = new MutationObserver( () => {
+				if ( mark() ) obs.disconnect();
+			} );
+			obs.observe( document.body, { childList: true, subtree: true } );
+			setTimeout( () => obs.disconnect(), 60000 );
+		}
+		btn.addEventListener( 'click', ( e ) => {
+			if ( ! mark() ) return; // no live chat: follow the link
+			e.preventDefault();
+			window.HiJiffyWidget.Api.open();
+		} );
+	}
+
 	/* Promo codes from offers (?promo=CODE) follow the visitor to the room's Reserve panel (booking.js reads it). */
 	function rememberPromo() {
 		try {
@@ -1556,6 +1583,7 @@
 
 	document.addEventListener( 'DOMContentLoaded', () => {
 		rememberPromo();
+		initChat();
 		initPopovers();
 		initAuth();
 		initReviewForm();

@@ -146,17 +146,7 @@ input.gp-search__value::placeholder { color: rgba(255, 255, 255, .6); opacity: 1
 
 /* Explore destinations ---------------------------------------------------- */
 .gp-explore { position: relative; padding: 80px 0; background: #fff; }
-.gp-chatbot {
-	position: absolute;
-	top: -60px;
-	right: 74px;
-	z-index: 5;
-	width: 100px;
-	height: 100px;
-	transition: transform .2s;
-}
-.gp-chatbot:hover { transform: scale(1.05); }
-.gp-chatbot img { width: 100%; height: 100%; }
+/* The chat button is on every page now (footer.php, components.css). */
 
 .gp-dest-grid { display: flex; gap: 24px; margin-top: 72px; }
 .gp-dest-grid[hidden] { display: none; }
@@ -269,10 +259,6 @@ input.gp-search__value::placeholder { color: rgba(255, 255, 255, .6); opacity: 1
 
 .gp-journal__more { display: flex; justify-content: center; margin-top: 40px; }
 
-@media (max-width: 1360px) {
-	.gp-chatbot { right: 24px; }
-}
-
 @media (max-width: 1280px) {
 	.gp-hero__booking { left: 0; width: 100%; }
 	.gp-search { gap: 16px; padding-right: 16px; }
@@ -298,7 +284,6 @@ input.gp-search__value::placeholder { color: rgba(255, 255, 255, .6); opacity: 1
 	.gp-search__field { flex: 1 1 50%; border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, .15); }
 	.gp-search > .gp-btn { width: 100%; }
 	.gp-explore { padding-top: 64px; }
-	.gp-chatbot { position: fixed; top: auto; bottom: 16px; right: 16px; width: 64px; height: 64px; }
 	.gp-reviews__intro { flex-direction: column; align-items: flex-start; }
 	.gp-reviews__copy,
 	.gp-reviews__lead,
@@ -375,8 +360,6 @@ input.gp-search__value::placeholder { color: rgba(255, 255, 255, .6); opacity: 1
 	.gp-search__value { height: auto; font-family: var(--gp-font-body); font-size: 16px; line-height: 1.5; font-variation-settings: "opsz" 14; }
 	/* Explore destinations */
 	.gp-explore { padding: 38px 0 22px; background: linear-gradient(to bottom, #eeeff1, #fff 160px); }
-	/* Floating chat button (like tablet): it sat on top of the map region tabs. */
-	.gp-chatbot { position: fixed; top: auto; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 40; width: 52px; height: 52px; filter: drop-shadow(0 6px 14px rgba(1, 16, 65, .18)); }
 	.gp-dest-grid { margin-top: 24px; }
 	/* Featured */
 	.gp-featured { padding: 40px 0 31px; overflow: hidden; }

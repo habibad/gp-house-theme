@@ -1233,6 +1233,18 @@
 	.gp-offers__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+/* Chat button on every page (Figma "Chatbot", footer.php) ------------------- */
+/* With HiJiffy live it opens the HiJiffy web chat (main.js initChat); otherwise it leads to the contact page. */
+.gp-chatbot { position: fixed; right: 24px; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 90; display: block; width: 64px; height: 64px; border-radius: 50%; filter: drop-shadow(0 6px 14px rgba(1, 16, 65, .18)); transition: transform .2s; }
+.gp-chatbot:hover { transform: scale(1.05); }
+.gp-chatbot:focus-visible { outline: 2px solid var(--gp-navy); outline-offset: 3px; }
+.gp-chatbot img { display: block; width: 100%; height: 100%; }
+@media (max-width: 600px) {
+	.gp-chatbot { right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); width: 52px; height: 52px; }
+}
+/* Our button is the launcher: HiJiffy's own bubble stays hidden (its chat window and greetings still show). */
+.gp-chat-live .hi-launcher-container { display: none !important; }
+
 /* Review cards without a photo + the review form */
 .gp-testimonial__initial { display: flex; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--gp-navy); color: #fff; font-family: var(--gp-font-head); font-weight: 500; font-size: 18px; line-height: 1; font-variation-settings: normal; }
 @media (max-width: 600px) {
